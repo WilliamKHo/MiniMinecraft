@@ -8,19 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		0B0CC9D7200BEAB0003ADD36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9D6200BEAB0003ADD36 /* AppDelegate.swift */; };
-		0B0CC9D9200BEAB0003ADD36 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9D8200BEAB0003ADD36 /* ViewController.swift */; };
 		0B0CC9DB200BEAB0003ADD36 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B0CC9DA200BEAB0003ADD36 /* Assets.xcassets */; };
 		0B0CC9DE200BEAB0003ADD36 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B0CC9DC200BEAB0003ADD36 /* Main.storyboard */; };
+		0B0CC9E7200BFE15003ADD36 /* MetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9E6200BFE15003ADD36 /* MetalView.swift */; };
+		0B0CC9E9200BFE93003ADD36 /* simd_la.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9E8200BFE93003ADD36 /* simd_la.swift */; };
+		0B0CC9EB200BFEAB003ADD36 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9EA200BFEAB003ADD36 /* Camera.swift */; };
+		0B0CC9ED200C0211003ADD36 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9EC200C0211003ADD36 /* Shaders.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0B0CC9D3200BEAB0003ADD36 /* MiniMinecraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniMinecraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B0CC9D6200BEAB0003ADD36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0B0CC9D8200BEAB0003ADD36 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		0B0CC9DA200BEAB0003ADD36 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0B0CC9DD200BEAB0003ADD36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0B0CC9DF200BEAB0003ADD36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0B0CC9E0200BEAB0003ADD36 /* MiniMinecraft.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MiniMinecraft.entitlements; sourceTree = "<group>"; };
+		0B0CC9E6200BFE15003ADD36 /* MetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalView.swift; sourceTree = "<group>"; };
+		0B0CC9E8200BFE93003ADD36 /* simd_la.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = simd_la.swift; sourceTree = "<group>"; };
+		0B0CC9EA200BFEAB003ADD36 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
+		0B0CC9EC200C0211003ADD36 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,11 +60,14 @@
 			isa = PBXGroup;
 			children = (
 				0B0CC9D6200BEAB0003ADD36 /* AppDelegate.swift */,
-				0B0CC9D8200BEAB0003ADD36 /* ViewController.swift */,
 				0B0CC9DA200BEAB0003ADD36 /* Assets.xcassets */,
 				0B0CC9DC200BEAB0003ADD36 /* Main.storyboard */,
 				0B0CC9DF200BEAB0003ADD36 /* Info.plist */,
 				0B0CC9E0200BEAB0003ADD36 /* MiniMinecraft.entitlements */,
+				0B0CC9E6200BFE15003ADD36 /* MetalView.swift */,
+				0B0CC9E8200BFE93003ADD36 /* simd_la.swift */,
+				0B0CC9EA200BFEAB003ADD36 /* Camera.swift */,
+				0B0CC9EC200C0211003ADD36 /* Shaders.metal */,
 			);
 			path = MiniMinecraft;
 			sourceTree = "<group>";
@@ -134,7 +143,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B0CC9D9200BEAB0003ADD36 /* ViewController.swift in Sources */,
+				0B0CC9ED200C0211003ADD36 /* Shaders.metal in Sources */,
+				0B0CC9E7200BFE15003ADD36 /* MetalView.swift in Sources */,
+				0B0CC9EB200BFEAB003ADD36 /* Camera.swift in Sources */,
+				0B0CC9E9200BFE93003ADD36 /* simd_la.swift in Sources */,
 				0B0CC9D7200BEAB0003ADD36 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
