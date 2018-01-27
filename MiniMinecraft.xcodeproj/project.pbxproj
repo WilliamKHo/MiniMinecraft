@@ -14,6 +14,7 @@
 		0B0CC9E9200BFE93003ADD36 /* simd_la.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9E8200BFE93003ADD36 /* simd_la.swift */; };
 		0B0CC9EB200BFEAB003ADD36 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9EA200BFEAB003ADD36 /* Camera.swift */; };
 		0B0CC9ED200C0211003ADD36 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9EC200C0211003ADD36 /* Shaders.metal */; };
+		0B798964201D1D0A0060855A /* MetalViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B798963201D1D0A0060855A /* MetalViewDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		0B0CC9E8200BFE93003ADD36 /* simd_la.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = simd_la.swift; sourceTree = "<group>"; };
 		0B0CC9EA200BFEAB003ADD36 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		0B0CC9EC200C0211003ADD36 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		0B798963201D1D0A0060855A /* MetalViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalViewDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				0B0CC9E8200BFE93003ADD36 /* simd_la.swift */,
 				0B0CC9EA200BFEAB003ADD36 /* Camera.swift */,
 				0B0CC9EC200C0211003ADD36 /* Shaders.metal */,
+				0B798963201D1D0A0060855A /* MetalViewDelegate.swift */,
 			);
 			path = MiniMinecraft;
 			sourceTree = "<group>";
@@ -146,6 +149,7 @@
 				0B0CC9ED200C0211003ADD36 /* Shaders.metal in Sources */,
 				0B0CC9E7200BFE15003ADD36 /* MetalView.swift in Sources */,
 				0B0CC9EB200BFEAB003ADD36 /* Camera.swift in Sources */,
+				0B798964201D1D0A0060855A /* MetalViewDelegate.swift in Sources */,
 				0B0CC9E9200BFE93003ADD36 /* simd_la.swift in Sources */,
 				0B0CC9D7200BEAB0003ADD36 /* AppDelegate.swift in Sources */,
 			);
