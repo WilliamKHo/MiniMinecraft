@@ -57,3 +57,5 @@ kernel void kern_tessellation_quad(constant float& edge_factor [[ buffer(0) ]],
     factors[pid].insideTessellationFactor[1] = inside_factor;
 }
 
+
+
