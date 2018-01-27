@@ -87,27 +87,28 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn [[stage_in]],
 }
 
 // Quad post-tessellation vertex function
-[[patch(quad, 4)]]
+[[patch(quad, 1)]]
 vertex FunctionOutIn tessellation_vertex_quad(PatchIn patchIn [[stage_in]],
                                               constant Uniforms &uniforms [[buffer(1)]],
                                               float2 patch_coord [[ position_in_patch ]])
 {
     // Parameter coordinates
-    float u = patch_coord.x;
-    float v = patch_coord.y;
+    float u = patch_coord.x - 1.0;
+    float v = patch_coord.y - 1.0;
     
     //camera matrices
     float4x4 modMatrix = uniforms.modelMatrix;
     float4x4 viewProjection = uniforms.viewProjectionMatrix;
     
     // Linear interpolation
-    float2 upper_middle = mix(patchIn.control_points[0].position.xy, patchIn.control_points[1].position.xy, u);
-    float2 lower_middle = mix(patchIn.control_points[2].position.xy, patchIn.control_points[3].position.xy, 1-u);
+//    float2 upper_middle = mix(patchIn.control_points[0].position.xy, patchIn.control_points[1].position.xy, u);
+//    float2 lower_middle = mix(patchIn.control_points[2].position.xy, patchIn.control_points[3].position.xy, 1-u);
+    float4 preTransformPosition = patchIn.control_points[0].position + float4(u * 2.0, v * 2.0, 0.0, 0.0);
     
     // Output
     FunctionOutIn vertexOut;
-    vertexOut.position = viewProjection * modMatrix * float4(mix(upper_middle, lower_middle, v), 0.0, 1.0);
-    vertexOut.color = half4(u, v, 1.0-v, 1.0);
+    vertexOut.position = viewProjection * modMatrix * preTransformPosition;
+    vertexOut.color = half4(u + 1.0, v + 1.0, 1.0-(v + 1.0), 1.0);
     return vertexOut;
 }
 

@@ -115,10 +115,7 @@ class MetalView: MTKView {
     func setUpBuffers() {
         tessellationFactorsBuffer = device!.makeBuffer(length: 256, options: MTLResourceOptions.storageModePrivate)
         let controlPointPositions: [Float] = [
-            -0.8, -0.8, 0.0, 1.0,   // center position
-            -0.8,  0.8, 0.0, 1.0,   // face normal
-             0.8,  0.8, 0.0, 1.0,   // upper-right
-             0.8, -0.8, 0.0, 1.0,   // lower-right
+            0.0, 0.0, 0.0, 1.0,   // center position
         ]
         controlPointsBuffer = device!.makeBuffer(bytes: controlPointPositions, length: MemoryLayout<Float>.stride * 16, options: [])
     }
@@ -147,8 +144,8 @@ class MetalView: MTKView {
         // Tessellation
         let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
         computeCommandEncoder?.setComputePipelineState(ps_tessellation!)
-        let edgeFactor: [Float] = [4.0]
-        let insideFactor: [Float] = [4.0]
+        let edgeFactor: [Float] = [1.0]
+        let insideFactor: [Float] = [1.0]
         computeCommandEncoder?.setBytes(edgeFactor, length: MemoryLayout<Float>.size, index: 0)
         computeCommandEncoder?.setBytes(insideFactor, length: MemoryLayout<Float>.size, index: 1)
         computeCommandEncoder?.setBuffer(tessellationFactorsBuffer, offset: 0, index: 2)
@@ -162,7 +159,7 @@ class MetalView: MTKView {
         renderCommandEncoder?.setVertexBuffer(uniform_buffer, offset: 0, index: 1)
         //renderCommandEncoder?.setTriangleFillMode(.lines)
         renderCommandEncoder?.setTessellationFactorBuffer(tessellationFactorsBuffer, offset: 0, instanceStride: 0)
-        renderCommandEncoder?.drawPatches(numberOfPatchControlPoints: 4, patchStart: 0, patchCount: 1, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
+        renderCommandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: 1, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
         renderCommandEncoder?.endEncoding()
         
         commandBuffer?.present(currentDrawable!)
