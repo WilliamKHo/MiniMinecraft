@@ -93,8 +93,8 @@ vertex FunctionOutIn tessellation_vertex_quad(PatchIn patchIn [[stage_in]],
                                               float2 patch_coord [[ position_in_patch ]])
 {
     // Parameter coordinates
-    float u = patch_coord.x - 1.0;
-    float v = patch_coord.y - 1.0;
+    float u = patch_coord.x - 0.5;
+    float v = patch_coord.y - 0.5;
     
     //camera matrices
     float4x4 modMatrix = uniforms.modelMatrix;
@@ -108,7 +108,7 @@ vertex FunctionOutIn tessellation_vertex_quad(PatchIn patchIn [[stage_in]],
     // Output
     FunctionOutIn vertexOut;
     vertexOut.position = viewProjection * modMatrix * preTransformPosition;
-    vertexOut.color = half4(u + 1.0, v + 1.0, 1.0-(v + 1.0), 1.0);
+    vertexOut.color = half4(u + 0.5, v + 0.5, 1.0-(v + 1.0), 1.0);
     return vertexOut;
 }
 

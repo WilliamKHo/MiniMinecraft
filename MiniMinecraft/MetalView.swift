@@ -41,6 +41,8 @@ class MetalView: MTKView {
     var vert_func : MTLFunction!
     var frag_func : MTLFunction!
     
+    var depthTexture : MTLTexture!
+    
     var rotY : Float = 30.0
     // This needs to be fixed
     
@@ -72,6 +74,15 @@ class MetalView: MTKView {
     }
     
     func registerShaders() {
+        // build depth texture
+        let depthStencilTextureDescriptor = MTLTextureDescriptor()
+        depthStencilTextureDescriptor.pixelFormat = .depth32Float
+        depthStencilTextureDescriptor.width = 2 * Int(self.bounds.size.width)
+        depthStencilTextureDescriptor.height = 2 * Int(self.bounds.size.height)
+        depthStencilTextureDescriptor.storageMode = .private
+        depthStencilTextureDescriptor.usage = .renderTarget
+        depthTexture = device!.makeTexture(descriptor: depthStencilTextureDescriptor)
+        
         //library
         library = device!.makeDefaultLibrary()
         
@@ -95,6 +106,7 @@ class MetalView: MTKView {
         // Setup Render Pipeline
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
+        renderPipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
         renderPipelineDescriptor.colorAttachments[0].pixelFormat = colorPixelFormat
         renderPipelineDescriptor.fragmentFunction = frag_func
         renderPipelineDescriptor.isTessellationFactorScaleEnabled = false
@@ -113,9 +125,11 @@ class MetalView: MTKView {
     }
     
     func setUpBuffers() {
-        tessellationFactorsBuffer = device!.makeBuffer(length: 256, options: MTLResourceOptions.storageModePrivate)
+        tessellationFactorsBuffer = device!.makeBuffer(length: 1024, options: MTLResourceOptions.storageModePrivate)
         let controlPointPositions: [Float] = [
             0.0, 0.0, 0.0, 1.0,   // center position
+            0.0, 0.0, 1.0, 1.0,
+            0.0, 0.0, 2.0, 1.0,
         ]
         controlPointsBuffer = device!.makeBuffer(bytes: controlPointPositions, length: MemoryLayout<Float>.stride * 16, options: [])
     }
@@ -149,17 +163,29 @@ class MetalView: MTKView {
         computeCommandEncoder?.setBytes(edgeFactor, length: MemoryLayout<Float>.size, index: 0)
         computeCommandEncoder?.setBytes(insideFactor, length: MemoryLayout<Float>.size, index: 1)
         computeCommandEncoder?.setBuffer(tessellationFactorsBuffer, offset: 0, index: 2)
-        computeCommandEncoder?.dispatchThreadgroups(MTLSizeMake(1, 1, 1), threadsPerThreadgroup: MTLSizeMake(1, 1, 1))
+        computeCommandEncoder?.dispatchThreadgroups(MTLSizeMake(1, 1, 1), threadsPerThreadgroup: MTLSizeMake(3, 1, 1))
         computeCommandEncoder?.endEncoding()
         
+        self.depthStencilPixelFormat = .depth32Float
         let renderPassDescriptor = currentRenderPassDescriptor
+        let depthAttachmentDescriptor = MTLRenderPassDepthAttachmentDescriptor()
+        depthAttachmentDescriptor.clearDepth = 1.0
+        depthAttachmentDescriptor.texture = depthTexture
+        renderPassDescriptor?.depthAttachment = depthAttachmentDescriptor
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor!)
         renderCommandEncoder?.setRenderPipelineState(rps!)
         renderCommandEncoder?.setVertexBuffer(controlPointsBuffer, offset: 0, index: 0)
         renderCommandEncoder?.setVertexBuffer(uniform_buffer, offset: 0, index: 1)
         //renderCommandEncoder?.setTriangleFillMode(.lines)
+        //renderCommandEncoder?.setCullMode(.back)
+        
+        let depthStencilDescriptor = MTLDepthStencilDescriptor()
+        depthStencilDescriptor.depthCompareFunction = MTLCompareFunction(rawValue: 1)! // less case
+        depthStencilDescriptor.isDepthWriteEnabled = true
+        let depthStencilState = device?.makeDepthStencilState(descriptor : depthStencilDescriptor)
+        renderCommandEncoder?.setDepthStencilState(depthStencilState)
         renderCommandEncoder?.setTessellationFactorBuffer(tessellationFactorsBuffer, offset: 0, instanceStride: 0)
-        renderCommandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: 1, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
+        renderCommandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: 3, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
         renderCommandEncoder?.endEncoding()
         
         commandBuffer?.present(currentDrawable!)
