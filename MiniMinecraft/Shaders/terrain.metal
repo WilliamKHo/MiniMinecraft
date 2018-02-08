@@ -11,8 +11,8 @@
 using namespace metal;
 
 bool inSinWeightedTerrain(thread float3 pos) {
-    float heightx = (sin((pos.x / 32.0f) * M_PI)) * 16.0f + 8.0f;
-    float heightz = (sin((pos.z / 32.0f) * M_PI)) * 16.0f + 8.0f;
+    float heightx = (sin((pos.x / 4.0f) * M_PI)) * 2.0f + 8.0f;
+    float heightz = (sin((pos.z / 4.0f) * M_PI)) * 2.0f + 8.0f;
     float height = min(heightx, heightz);
     return (pos.y < height);
 }

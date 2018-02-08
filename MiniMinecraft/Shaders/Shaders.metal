@@ -7,6 +7,7 @@
 //
 
 #include <metal_stdlib>
+#include "terrain_header.metal"
 using namespace metal;
 
 struct Vertex {
@@ -48,13 +49,15 @@ kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
     uint x = pid - y * 16 - z * 16 * 16;
     
     float3 output = float3(x, y, z) + startPos;
+    float valid = 1.0f;
+    if (inSinWeightedTerrain(output)) valid = 0.0f;
     
-    voxels[voxelId] = float4(output, 0.0f);
-    voxels[voxelId+1] = float4(output, 1.0f);
-    voxels[voxelId+2] = float4(output, 2.0f);
-    voxels[voxelId+3] = float4(output, 3.0f);
-    voxels[voxelId+4] = float4(output, 4.0f);
-    voxels[voxelId+5] = float4(output, 5.0f);
+    voxels[voxelId] = float4(output, 0.0f - valid);
+    voxels[voxelId+1] = float4(output, 1.0f - 2.0f * valid);
+    voxels[voxelId+2] = float4(output, 2.0f - 3.0f * valid);
+    voxels[voxelId+3] = float4(output, 3.0f - 4.0f * valid);
+    voxels[voxelId+4] = float4(output, 4.0f - 5.0f * valid);
+    voxels[voxelId+5] = float4(output, 5.0f - 6.0f * valid);
 }
 
 

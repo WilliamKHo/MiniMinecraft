@@ -104,9 +104,14 @@ vertex FunctionOutIn tessellation_vertex_quad(PatchIn patchIn [[stage_in]],
     float4x4 viewProjection = uniforms.viewProjectionMatrix;
     
     float4 controlPoint = patchIn.control_points[0].position;
+    FunctionOutIn vertexOut;
     
     float myFloat = controlPoint.a;
-    uint cornerIdx = (uint) myFloat;
+    int cornerIdx = (int) myFloat;
+    if(cornerIdx < 0) {
+        vertexOut.position = float4(0.0f);
+        return vertexOut;
+    }
     cornerIdx *= 2;
     
     float3 offset = cross(corners[cornerIdx], corners[cornerIdx+1]);
@@ -115,7 +120,6 @@ vertex FunctionOutIn tessellation_vertex_quad(PatchIn patchIn [[stage_in]],
     float3 preTransformPosition = controlPoint.xyz + u * corners[cornerIdx] + v * corners[cornerIdx + 1] + 0.5f * offset;
     
     // Output
-    FunctionOutIn vertexOut;
     vertexOut.position = viewProjection * modMatrix * float4(preTransformPosition, 1.0);
     vertexOut.color = half4(u + 0.5, v + 0.5, 1.0-(v + 1.0), 1.0);
     vertexOut.normal = cross(corners[cornerIdx], corners[cornerIdx + 1]);

@@ -238,7 +238,7 @@ class MetalView: MTKView {
         renderCommandEncoder?.setVertexBuffer(voxel_buffer, offset: 0, index: 0)
         renderCommandEncoder?.setVertexBuffer(uniform_buffer, offset: 0, index: 1)
         renderCommandEncoder?.setVertexBuffer(controlPointsIndicesBuffer, offset: 0, index: 2)
-        //renderCommandEncoder?.setTriangleFillMode(.lines)
+//        renderCommandEncoder?.setTriangleFillMode(.lines)
         //renderCommandEncoder?.setCullMode(.back)
         
         let depthStencilDescriptor = MTLDepthStencilDescriptor()
