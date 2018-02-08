@@ -26,6 +26,7 @@ class MetalView: MTKView {
         var viewProjectionMatrix : float4x4
     }
     
+    var commandQueue : MTLCommandQueue!
     var vertex_buffer : MTLBuffer!
     var index_buffer : MTLBuffer!
     var rps : MTLRenderPipelineState! = nil
@@ -35,8 +36,12 @@ class MetalView: MTKView {
     var faces : Int = 0
     var controlPointsIndicesBuffer : MTLBuffer!
     
-    // Terrain Generation data
+    // -------Terrain Generation data
+    var voxel_buffer : MTLBuffer!
     
+    var kern_computeControlPoints : MTLFunction!
+    var ps_computeControlPoints : MTLComputePipelineState!
+    //--------End Terrain Generation data
     
     var library : MTLLibrary?
     
@@ -56,8 +61,12 @@ class MetalView: MTKView {
         //setup Metal
         //setup Compute Pipeline
         //setup Vertex Descriptor and Render pipeline
+        self.preferredFramesPerSecond = 60
         device = MTLCreateSystemDefaultDevice()
         registerShaders()
+        registerTerrainShaders()
+        setUpBuffers()
+        setUpTerrainBuffers()
     }
     
     override func draw(_ dirtyRect: NSRect) {
@@ -73,7 +82,6 @@ class MetalView: MTKView {
 //        sendToGPU()
         // setup Buffers
         generateTerrain()
-        setUpBuffers()
         update()
         sendToGPU()
         // draw
@@ -191,18 +199,32 @@ class MetalView: MTKView {
 //            commandBuffer?.commit()
 //        }
         
-        let commandQueue = device!.makeCommandQueue()
+        commandQueue = device!.makeCommandQueue()
         let commandBuffer = commandQueue?.makeCommandBuffer()
+
+        let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
+
+        
+        computeCommandEncoder?.setComputePipelineState(ps_computeControlPoints!)
+        let startPos: [vector_float3] = [vector_float3(0.0, 0.0, 0.0)]
+        computeCommandEncoder?.setBytes(startPos, length: MemoryLayout<vector_float3>.size, index: 0)
+        computeCommandEncoder?.setBuffer(voxel_buffer, offset: 0, index: 1)
+        var threadExecutionWidth = ps_computeControlPoints.threadExecutionWidth;
+        var threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
+        var threadgroupsPerGrid = MTLSize(width: ((16 * 16 * 16) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
+        computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         
         // Tessellation
-        let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
         computeCommandEncoder?.setComputePipelineState(ps_tessellation!)
         let edgeFactor: [Float] = [1.0]
         let insideFactor: [Float] = [1.0]
         computeCommandEncoder?.setBytes(edgeFactor, length: MemoryLayout<Float>.size, index: 0)
         computeCommandEncoder?.setBytes(insideFactor, length: MemoryLayout<Float>.size, index: 1)
         computeCommandEncoder?.setBuffer(tessellationFactorsBuffer, offset: 0, index: 2)
-        computeCommandEncoder?.dispatchThreadgroups(MTLSizeMake(1, 1, 1), threadsPerThreadgroup: MTLSizeMake(3, 1, 1))
+        threadExecutionWidth = ps_tessellation.threadExecutionWidth
+        threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
+        threadgroupsPerGrid = MTLSize(width: ((16 * 16 * 16 * 6) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
+        computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         computeCommandEncoder?.endEncoding()
         
         self.depthStencilPixelFormat = .depth32Float
@@ -213,7 +235,7 @@ class MetalView: MTKView {
         renderPassDescriptor?.depthAttachment = depthAttachmentDescriptor
         let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor!)
         renderCommandEncoder?.setRenderPipelineState(rps!)
-        renderCommandEncoder?.setVertexBuffer(controlPointsBuffer, offset: 0, index: 0)
+        renderCommandEncoder?.setVertexBuffer(voxel_buffer, offset: 0, index: 0)
         renderCommandEncoder?.setVertexBuffer(uniform_buffer, offset: 0, index: 1)
         renderCommandEncoder?.setVertexBuffer(controlPointsIndicesBuffer, offset: 0, index: 2)
         //renderCommandEncoder?.setTriangleFillMode(.lines)
@@ -225,7 +247,7 @@ class MetalView: MTKView {
         let depthStencilState = device?.makeDepthStencilState(descriptor : depthStencilDescriptor)
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
         renderCommandEncoder?.setTessellationFactorBuffer(tessellationFactorsBuffer, offset: 0, instanceStride: 0)
-        renderCommandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: 3, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
+        renderCommandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: 16 * 16 * 16 * 6, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
         renderCommandEncoder?.endEncoding()
         
         commandBuffer?.present(currentDrawable!)
@@ -306,8 +328,33 @@ class MetalView: MTKView {
         memcpy(bufferPointer, &uniforms, MemoryLayout<Uniforms>.stride)
     }
     
+    func registerTerrainShaders() {
+        // setUp Compute Pipeline
+        kern_computeControlPoints = library?.makeFunction(name: "kern_computeControlPoints")
+        do { try ps_computeControlPoints = device!.makeComputePipelineState(function: kern_computeControlPoints) }
+        catch { fatalError("compute control points computePipelineState failed") }
+    }
+    
+    func setUpTerrainBuffers() {
+        let bufferLength = 16 * 16 * 16 * 6 * 4; //chunk dimensions * floats4 per voxel
+        voxel_buffer = device!.makeBuffer(length: MemoryLayout<Float32>.stride * bufferLength, options: [])
+    }
+    
     func generateTerrain() {
-        
+//        let commandQueue = device!.makeCommandQueue()
+//        let commandBuffer = commandQueue?.makeCommandBuffer()
+//
+//        // Tessellation
+//        let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
+//        computeCommandEncoder?.setComputePipelineState(ps_computeControlPoints!)
+//        let startPos: [vector_float3] = [vector_float3(0.0, 0.0, 0.0)]
+//        computeCommandEncoder?.setBytes(startPos, length: MemoryLayout<vector_float3>.size, index: 0)
+//        computeCommandEncoder?.setBuffer(voxel_buffer, offset: 0, index: 1)
+//        let threadExecutionWidth = ps_computeControlPoints.threadExecutionWidth;
+//        let threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
+//        let threadgroupsPerGrid = MTLSize(width: ((16 * 16 * 16) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
+//        computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+//        computeCommandEncoder?.endEncoding()
     }
 }
 

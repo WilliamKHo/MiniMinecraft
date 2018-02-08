@@ -109,8 +109,10 @@ vertex FunctionOutIn tessellation_vertex_quad(PatchIn patchIn [[stage_in]],
     uint cornerIdx = (uint) myFloat;
     cornerIdx *= 2;
     
+    float3 offset = cross(corners[cornerIdx], corners[cornerIdx+1]);
+    
     // Linear interpolation
-    float3 preTransformPosition = controlPoint.xyz + u * corners[cornerIdx] + v * corners[cornerIdx + 1];
+    float3 preTransformPosition = controlPoint.xyz + u * corners[cornerIdx] + v * corners[cornerIdx + 1] + 0.5f * offset;
     
     // Output
     FunctionOutIn vertexOut;

@@ -37,22 +37,24 @@ fragment float4 fragment_func(Vertex vert [[stage_in]]) {
 }
 
 // Voxel grid to control points shader
-kernel kern_computeControlPoints(device float4* voxels,
-                                 uint3 tgPid [[ threadgroup_position_in_grid ]],
-                                 uint3 tPid [[ thread_position_in_threadgroup ]],
-                                 uint tid   [[ trhead_index_in_threadgroup ]]) {
-    uint voxelId = tid * 6;
+kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
+                                      device float4* voxels [[buffer(1)]],
+                                      uint pid [[ thread_position_in_grid ]]) {
+    if (pid >= 16 * 16 * 16) return;
+    uint voxelId = pid * 6;
     
-    uint3 position = tgPid * 32.0f + tPid;
+    uint z = (uint) floor(pid / (16.0f * 16.0f));
+    uint y = (uint) floor((pid - (z * 16 * 16)) / 16.0f);
+    uint x = pid - y * 16 - z * 16 * 16;
     
-    float3 output = float3(position.x, position.y, position.z);
+    float3 output = float3(x, y, z) + startPos;
     
     voxels[voxelId] = float4(output, 0.0f);
-    voxels[voxelId] = float4(output, 1.0f);
-    voxels[voxelId] = float4(output, 2.0f);
-    voxels[voxelId] = float4(output, 3.0f);
-    voxels[voxelId] = float4(output, 4.0f);
-    voxels[voxelId] = float4(output, 5.0f);
+    voxels[voxelId+1] = float4(output, 1.0f);
+    voxels[voxelId+2] = float4(output, 2.0f);
+    voxels[voxelId+3] = float4(output, 3.0f);
+    voxels[voxelId+4] = float4(output, 4.0f);
+    voxels[voxelId+5] = float4(output, 5.0f);
 }
 
 
