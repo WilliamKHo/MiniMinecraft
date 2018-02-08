@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MiniMinecraft/TessellationShaders.metal"
+            timestampString = "539756385.3113509"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
+            landmarkName = "tessellation_kernel_quad(constant float&amp; edge_factor [[ buffer(0) ]], constant float&amp; inside_factor [[ buffer(1) ]], device MTLQuadTessellationFactorsHalf* factors [[ buffer(2) ]], uint pid [[ thread_position_in_grid ]])"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MiniMinecraft/TessellationShaders.metal"
+            timestampString = "539756386.8809479"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
+            landmarkName = "tessellation_kernel_quad(constant float&amp; edge_factor [[ buffer(0) ]], constant float&amp; inside_factor [[ buffer(1) ]], device MTLQuadTessellationFactorsHalf* factors [[ buffer(2) ]], uint pid [[ thread_position_in_grid ]])"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

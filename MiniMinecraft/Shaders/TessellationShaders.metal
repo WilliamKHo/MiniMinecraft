@@ -22,6 +22,7 @@ struct PatchIn {
 // Vertex-to-Fragment struct
 struct FunctionOutIn {
     float4 position [[position]];
+    float3 normal [[attribute(1)]];
     half4  color [[flat]];
 };
 
@@ -90,7 +91,9 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn [[stage_in]],
 [[patch(quad, 1)]]
 vertex FunctionOutIn tessellation_vertex_quad(PatchIn patchIn [[stage_in]],
                                               constant Uniforms &uniforms [[buffer(1)]],
-                                              float2 patch_coord [[ position_in_patch ]])
+                                              constant float3 *corners[[buffer(2)]],
+                                              float2 patch_coord [[ position_in_patch ]],
+                                              uint vid [[ patch_id ]])
 {
     // Parameter coordinates
     float u = patch_coord.x - 0.5;
@@ -100,21 +103,26 @@ vertex FunctionOutIn tessellation_vertex_quad(PatchIn patchIn [[stage_in]],
     float4x4 modMatrix = uniforms.modelMatrix;
     float4x4 viewProjection = uniforms.viewProjectionMatrix;
     
+    float4 controlPoint = patchIn.control_points[0].position;
+    
+    float myFloat = controlPoint.a;
+    uint cornerIdx = (uint) myFloat;
+    cornerIdx *= 2;
+    
     // Linear interpolation
-//    float2 upper_middle = mix(patchIn.control_points[0].position.xy, patchIn.control_points[1].position.xy, u);
-//    float2 lower_middle = mix(patchIn.control_points[2].position.xy, patchIn.control_points[3].position.xy, 1-u);
-    float4 preTransformPosition = patchIn.control_points[0].position + float4(u * 2.0, v * 2.0, 0.0, 0.0);
+    float3 preTransformPosition = controlPoint.xyz + u * corners[cornerIdx] + v * corners[cornerIdx + 1];
     
     // Output
     FunctionOutIn vertexOut;
-    vertexOut.position = viewProjection * modMatrix * preTransformPosition;
+    vertexOut.position = viewProjection * modMatrix * float4(preTransformPosition, 1.0);
     vertexOut.color = half4(u + 0.5, v + 0.5, 1.0-(v + 1.0), 1.0);
+    vertexOut.normal = cross(corners[cornerIdx], corners[cornerIdx + 1]);
     return vertexOut;
 }
-
 
 // Common fragment function
 fragment half4 tessellation_fragment(FunctionOutIn fragmentIn [[stage_in]])
 {
+    
     return fragmentIn.color;
 }

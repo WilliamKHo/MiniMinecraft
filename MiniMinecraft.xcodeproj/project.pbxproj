@@ -14,6 +14,8 @@
 		0B0CC9E9200BFE93003ADD36 /* simd_la.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9E8200BFE93003ADD36 /* simd_la.swift */; };
 		0B0CC9EB200BFEAB003ADD36 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9EA200BFEAB003ADD36 /* Camera.swift */; };
 		0B0CC9ED200C0211003ADD36 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9EC200C0211003ADD36 /* Shaders.metal */; };
+		0B53A27A202C0C5D00164119 /* terrain_header.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B53A279202C0C5D00164119 /* terrain_header.metal */; };
+		0B53A27C202C0C6800164119 /* terrain.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B53A27B202C0C6800164119 /* terrain.metal */; };
 		0B798966201D1F980060855A /* TessellationShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B798965201D1F980060855A /* TessellationShaders.metal */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +30,8 @@
 		0B0CC9E8200BFE93003ADD36 /* simd_la.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = simd_la.swift; sourceTree = "<group>"; };
 		0B0CC9EA200BFEAB003ADD36 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		0B0CC9EC200C0211003ADD36 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		0B53A279202C0C5D00164119 /* terrain_header.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = terrain_header.metal; sourceTree = "<group>"; };
+		0B53A27B202C0C6800164119 /* terrain.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = terrain.metal; sourceTree = "<group>"; };
 		0B798965201D1F980060855A /* TessellationShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = TessellationShaders.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -61,6 +65,7 @@
 		0B0CC9D5200BEAB0003ADD36 /* MiniMinecraft */ = {
 			isa = PBXGroup;
 			children = (
+				0B53A278202C0C2E00164119 /* Shaders */,
 				0B0CC9D6200BEAB0003ADD36 /* AppDelegate.swift */,
 				0B0CC9DA200BEAB0003ADD36 /* Assets.xcassets */,
 				0B0CC9DC200BEAB0003ADD36 /* Main.storyboard */,
@@ -69,10 +74,19 @@
 				0B0CC9E6200BFE15003ADD36 /* MetalView.swift */,
 				0B0CC9E8200BFE93003ADD36 /* simd_la.swift */,
 				0B0CC9EA200BFEAB003ADD36 /* Camera.swift */,
-				0B0CC9EC200C0211003ADD36 /* Shaders.metal */,
-				0B798965201D1F980060855A /* TessellationShaders.metal */,
 			);
 			path = MiniMinecraft;
+			sourceTree = "<group>";
+		};
+		0B53A278202C0C2E00164119 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				0B0CC9EC200C0211003ADD36 /* Shaders.metal */,
+				0B798965201D1F980060855A /* TessellationShaders.metal */,
+				0B53A279202C0C5D00164119 /* terrain_header.metal */,
+				0B53A27B202C0C6800164119 /* terrain.metal */,
+			);
+			path = Shaders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -149,9 +163,11 @@
 				0B0CC9ED200C0211003ADD36 /* Shaders.metal in Sources */,
 				0B798966201D1F980060855A /* TessellationShaders.metal in Sources */,
 				0B0CC9E7200BFE15003ADD36 /* MetalView.swift in Sources */,
+				0B53A27C202C0C6800164119 /* terrain.metal in Sources */,
 				0B0CC9EB200BFEAB003ADD36 /* Camera.swift in Sources */,
 				0B0CC9E9200BFE93003ADD36 /* simd_la.swift in Sources */,
 				0B0CC9D7200BEAB0003ADD36 /* AppDelegate.swift in Sources */,
+				0B53A27A202C0C5D00164119 /* terrain_header.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

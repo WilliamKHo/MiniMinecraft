@@ -32,6 +32,11 @@ class MetalView: MTKView {
     var uniform_buffer : MTLBuffer!
     var tessellationFactorsBuffer : MTLBuffer!
     var controlPointsBuffer : MTLBuffer!
+    var faces : Int = 0
+    var controlPointsIndicesBuffer : MTLBuffer!
+    
+    // Terrain Generation data
+    
     
     var library : MTLLibrary?
     
@@ -67,6 +72,7 @@ class MetalView: MTKView {
 //        createUniformBuffer()
 //        sendToGPU()
         // setup Buffers
+        generateTerrain()
         setUpBuffers()
         update()
         sendToGPU()
@@ -126,12 +132,45 @@ class MetalView: MTKView {
     
     func setUpBuffers() {
         tessellationFactorsBuffer = device!.makeBuffer(length: 1024, options: MTLResourceOptions.storageModePrivate)
-        let controlPointPositions: [Float] = [
-            0.0, 0.0, 0.0, 1.0,   // center position
-            0.0, 0.0, 1.0, 1.0,
-            0.0, 0.0, 2.0, 1.0,
+        let controlPointPositions: [Float32] = [
+            0.5, 0.0, 0.0, 0.0,   // center position
+            0.0, 0.0, 0.5, 2.0,
+            0.0, 0.5, 0.0, 4.0,
         ]
-        controlPointsBuffer = device!.makeBuffer(bytes: controlPointPositions, length: MemoryLayout<Float>.stride * 16, options: [])
+        controlPointsBuffer = device!.makeBuffer(bytes: controlPointPositions, length: MemoryLayout<Float32>.stride * 12, options: [])
+//        var controlPointPositions: [Float32] = []
+//        faces = 0
+//        for i in 0 ..< 32 {
+//            for j in 0 ..< 32 {
+//                for k in 0 ..< 32 {
+//                    if (i + j + k >= 32) {
+//                        var center = float3(Float(i) * 1.0, Float(j) * 1.0, Float(k) * 1.0)
+//                        controlPointPositions.append(center.x)
+//                        controlPointPositions.append(center.y)
+//                        controlPointPositions.append(center.z)
+//                        controlPointPositions.append(2.0)
+//                        faces += 1
+//                    }
+//                }
+//            }
+//        }
+//        controlPointsBuffer = device!.makeBuffer(bytes: controlPointPositions, length: MemoryLayout<Float32>.stride * faces * 4, options: [])
+
+        let controlPointIndices: [float3] = [
+                float3(0.0, 0.0, -1.0),
+                float3(0.0, 1.0, 0.0),
+                float3(0.0, 0.0, 1.0),
+                float3(0.0, 1.0, 0.0),
+                float3(1.0, 0.0, 0.0),
+                float3(0.0, 1.0, 0.0),
+                float3(-1.0, 0.0, 0.0),
+                float3(0.0, 1.0, 0.0),
+                float3(0.0, 0.0, 1.0),
+                float3(1.0, 0.0, 0.0),
+                float3(1.0, 0.0, 0.0),
+                float3(0.0, 0.0, 1.0)
+        ]
+        controlPointsIndicesBuffer = device!.makeBuffer(bytes: controlPointIndices, length: MemoryLayout<float3>.stride * 12, options: [])
     }
     
     func sendToGPU() {
@@ -176,6 +215,7 @@ class MetalView: MTKView {
         renderCommandEncoder?.setRenderPipelineState(rps!)
         renderCommandEncoder?.setVertexBuffer(controlPointsBuffer, offset: 0, index: 0)
         renderCommandEncoder?.setVertexBuffer(uniform_buffer, offset: 0, index: 1)
+        renderCommandEncoder?.setVertexBuffer(controlPointsIndicesBuffer, offset: 0, index: 2)
         //renderCommandEncoder?.setTriangleFillMode(.lines)
         //renderCommandEncoder?.setCullMode(.back)
         
@@ -264,6 +304,10 @@ class MetalView: MTKView {
             viewProjectionMatrix: camera.computeViewProjectionMatrix()
         )
         memcpy(bufferPointer, &uniforms, MemoryLayout<Uniforms>.stride)
+    }
+    
+    func generateTerrain() {
+        
     }
 }
 
