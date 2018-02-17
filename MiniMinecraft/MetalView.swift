@@ -8,6 +8,9 @@
 
 import Cocoa
 import MetalKit
+import Dispatch
+
+import Carbon.HIToolbox.Events
 import simd
 
 class MetalView: MTKView {
@@ -33,6 +36,7 @@ class MetalView: MTKView {
     var uniform_buffer : MTLBuffer!
     var tessellationFactorsBuffer : MTLBuffer!
     var controlPointsBuffer : MTLBuffer!
+    var voxelValuesBuffer : MTLBuffer!
     var faces : Int = 0
     var controlPointsIndicesBuffer : MTLBuffer!
     
@@ -56,12 +60,30 @@ class MetalView: MTKView {
     var rotY : Float = 30.0
     // This needs to be fixed
     
+    var chunkDimension: Int = 16
+    
+    var camera : Camera!
+    var velocity : float3 = float3(0.0, 0.0, 0.0)
+    var acceleration : float3 = float3(0.0, 0.0, 0.0)
+    
     required init(coder: NSCoder) {
         super.init(coder: coder)
         //setup Metal
         //setup Compute Pipeline
         //setup Vertex Descriptor and Render pipeline
         self.preferredFramesPerSecond = 60
+        
+        camera = Camera(
+            fov : 45,
+            aspect : 1,
+            farClip : 100,
+            nearClip : 0.01,
+            pos : [0.0, 12.0, 30.0, 1.0],
+            forward : [0.0, 0.0, -1.0],
+            right : [1.0, 0.0, 0.0],
+            up : [0.0, 1.0, 0.0]
+        )
+        
         device = MTLCreateSystemDefaultDevice()
         registerShaders()
         registerTerrainShaders()
@@ -179,6 +201,18 @@ class MetalView: MTKView {
                 float3(0.0, 0.0, 1.0)
         ]
         controlPointsIndicesBuffer = device!.makeBuffer(bytes: controlPointIndices, length: MemoryLayout<float3>.stride * 12, options: [])
+        
+        let voxelValues: [float3] = [
+            float3(-1.0, -1.0, -1.0), //000
+            float3(-1.0, -1.0, 2.0),  //001
+            float3(-1.0, 4.0, -1.0), //010
+            float3(-1.0, 4.0, 2.0),  //011
+            float3(0.0, -1.0, -1.0),  //100
+            float3(0.0, -1.0, 2.0),   //101
+            float3(0.0, 4.0, -1.0),   //110
+            float3(0.0, 4.0, 2.0),    //111
+        ]
+        voxelValuesBuffer = device!.makeBuffer(bytes: voxelValues, length: MemoryLayout<float3>.stride * 8, options: [])
     }
     
     func sendToGPU() {
@@ -209,9 +243,10 @@ class MetalView: MTKView {
         let startPos: [vector_float3] = [vector_float3(0.0, 0.0, 0.0)]
         computeCommandEncoder?.setBytes(startPos, length: MemoryLayout<vector_float3>.size, index: 0)
         computeCommandEncoder?.setBuffer(voxel_buffer, offset: 0, index: 1)
+        computeCommandEncoder?.setBuffer(voxelValuesBuffer, offset: 0, index: 2)
         var threadExecutionWidth = ps_computeControlPoints.threadExecutionWidth;
         var threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
-        var threadgroupsPerGrid = MTLSize(width: ((16 * 16 * 16) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
+        var threadgroupsPerGrid = MTLSize(width: ((chunkDimension * chunkDimension * chunkDimension) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
         computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         
         // Tessellation
@@ -223,7 +258,7 @@ class MetalView: MTKView {
         computeCommandEncoder?.setBuffer(tessellationFactorsBuffer, offset: 0, index: 2)
         threadExecutionWidth = ps_tessellation.threadExecutionWidth
         threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
-        threadgroupsPerGrid = MTLSize(width: ((16 * 16 * 16 * 6) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
+        threadgroupsPerGrid = MTLSize(width: ((chunkDimension * chunkDimension * chunkDimension * 6) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
         computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         computeCommandEncoder?.endEncoding()
         
@@ -247,7 +282,7 @@ class MetalView: MTKView {
         let depthStencilState = device?.makeDepthStencilState(descriptor : depthStencilDescriptor)
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
         renderCommandEncoder?.setTessellationFactorBuffer(tessellationFactorsBuffer, offset: 0, instanceStride: 0)
-        renderCommandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: 16 * 16 * 16 * 6, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
+        renderCommandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: chunkDimension * chunkDimension * chunkDimension * 6, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
         renderCommandEncoder?.endEncoding()
         
         commandBuffer?.present(currentDrawable!)
@@ -308,24 +343,30 @@ class MetalView: MTKView {
     }
     
     func update() {
+        updatePhysics()
         rotY = rotY + 1.0
-        let camera = Camera(
-            fov : 45,
-            aspect : 1,
-            farClip : 100,
-            nearClip : 0.01,
-            pos : [0.0, 0.0, 30.0, 1.0],
-            forward : [0.0, 0.0, -1.0],
-            right : [1.0, 0.0, 0.0],
-            up : [0.0, 1.0, 0.0]
-        )
+        
         uniform_buffer = device!.makeBuffer(length: MemoryLayout<Uniforms>.stride, options: [])
         let bufferPointer = uniform_buffer.contents()
         var uniforms = Uniforms(
-            modelMatrix: simd_rotation(dr: [30, rotY, 30]),
+            modelMatrix: simd_rotation(dr: [0, 0, 0]),
             viewProjectionMatrix: camera.computeViewProjectionMatrix()
         )
         memcpy(bufferPointer, &uniforms, MemoryLayout<Uniforms>.stride)
+    }
+    
+    func updatePhysics() {
+        let dt : Float = 1.0 / 60.0
+        if (length(velocity) > 10.0){
+            velocity = normalize(velocity) * 10
+        }
+        if (length(velocity) > 0.5) {
+            velocity *= 0.8
+        } else if (length(velocity) < 0.5) {
+            velocity = float3(0.0, 0.0, 0.0)
+        }
+        velocity += dt * acceleration
+        camera.pos += float4(velocity.x, velocity.y, velocity.z, 0.0)
     }
     
     func registerTerrainShaders() {
@@ -336,7 +377,7 @@ class MetalView: MTKView {
     }
     
     func setUpTerrainBuffers() {
-        let bufferLength = 16 * 16 * 16 * 6 * 4; //chunk dimensions * floats4 per voxel
+        let bufferLength = chunkDimension * chunkDimension * chunkDimension * 6 * 4; //chunk dimensions * floats4 per voxel
         voxel_buffer = device!.makeBuffer(length: MemoryLayout<Float32>.stride * bufferLength, options: [])
     }
     
@@ -355,6 +396,54 @@ class MetalView: MTKView {
 //        let threadgroupsPerGrid = MTLSize(width: ((16 * 16 * 16) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
 //        computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
 //        computeCommandEncoder?.endEncoding()
+    }
+    
+    override var acceptsFirstResponder: Bool { return true }
+    
+    override func keyDown(with event: NSEvent) {
+        guard !event.isARepeat else { return }
+        
+        switch Int(event.keyCode) {
+        case kVK_ANSI_W:
+            acceleration.z = -5
+            
+        case kVK_ANSI_A:
+            acceleration.x = -5
+
+        case kVK_ANSI_S:
+            acceleration.z = 5
+
+        case kVK_ANSI_D:
+            acceleration.x = 5
+
+            
+        default:
+            break;
+        }
+
+    }
+    
+    override func keyUp(with event: NSEvent) {
+        guard !event.isARepeat else { return }
+        
+        switch Int(event.keyCode) {
+        case kVK_ANSI_W:
+            acceleration = float3(0.0, 0.0, 0.0)
+            
+        case kVK_ANSI_A:
+            acceleration = float3(0.0, 0.0, 0.0)
+
+        case kVK_ANSI_S:
+            acceleration = float3(0.0, 0.0, 0.0)
+
+        case kVK_ANSI_D:
+            acceleration = float3(0.0, 0.0, 0.0)
+
+            
+        default:
+            break;
+        }
+        
     }
 }
 

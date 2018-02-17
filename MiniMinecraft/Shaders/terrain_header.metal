@@ -11,6 +11,6 @@ using namespace metal;
 
 #define M_PI 3.1415926535f
 
-bool inSinWeightedTerrain(thread float3 pos);
+uint8_t inSinWeightedTerrain(thread float3 pos);
 
 
