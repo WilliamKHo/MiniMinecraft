@@ -10,19 +10,20 @@ import Cocoa
 import Metal
 
 class BufferProvider: NSObject {
-    let inflightBufferscount : Int
+    let inflightBuffersCount : Int
     private var buffers : [MTLBuffer]
     private var availableBufferIndex : Int
     var availableResourcesSemaphore : DispatchSemaphore
     
     init(device: MTLDevice, inflightBuffersCount: Int, sizeOfBuffer: Int) {
         self.availableResourcesSemaphore = DispatchSemaphore(value: inflightBuffersCount)
-        self.inflightBufferscount = inflightBufferscount
+        self.inflightBuffersCount = inflightBuffersCount
         buffers = [MTLBuffer]()
         for _ in 0...inflightBuffersCount-1 {
-            let buffer = device.makeBuffer(sizeOfBuffer, options: [])
-            buffers.append(buffer)
+            let buffer = device.makeBuffer(length: sizeOfBuffer, options: [])
+            buffers.append(buffer!)
         }
+        self.availableBufferIndex = 0
     }
     
     deinit{
@@ -31,7 +32,7 @@ class BufferProvider: NSObject {
         }
     }
     
-    func nextBuffer() { // Pass in as arguments the data for a chunk
+    func nextBuffer() -> MTLBuffer { // Pass in as arguments the data for a chunk
         let buffer = buffers[availableBufferIndex]
         
         let bufferPointer = buffer.contents()
@@ -39,7 +40,7 @@ class BufferProvider: NSObject {
         // memcpy
         
         availableBufferIndex += 1
-        if availableBufferIndex == inflightBufferscount {
+        if availableBufferIndex == inflightBuffersCount {
             availableBufferIndex = 0
         }
         return buffer

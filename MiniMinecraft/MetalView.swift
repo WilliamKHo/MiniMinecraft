@@ -261,6 +261,9 @@ class MetalView: MTKView {
         threadgroupsPerGrid = MTLSize(width: ((chunkDimension * chunkDimension * chunkDimension * 6) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
         computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         computeCommandEncoder?.endEncoding()
+        commandBuffer?.commit();
+        
+        let commandBuffer2 = commandQueue?.makeCommandBuffer();
         
         self.depthStencilPixelFormat = .depth32Float
         let renderPassDescriptor = currentRenderPassDescriptor
@@ -268,7 +271,7 @@ class MetalView: MTKView {
         depthAttachmentDescriptor.clearDepth = 1.0
         depthAttachmentDescriptor.texture = depthTexture
         renderPassDescriptor?.depthAttachment = depthAttachmentDescriptor
-        let renderCommandEncoder = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor!)
+        let renderCommandEncoder = commandBuffer2?.makeRenderCommandEncoder(descriptor: renderPassDescriptor!)
         renderCommandEncoder?.setRenderPipelineState(rps!)
         renderCommandEncoder?.setVertexBuffer(voxel_buffer, offset: 0, index: 0)
         renderCommandEncoder?.setVertexBuffer(uniform_buffer, offset: 0, index: 1)
@@ -285,8 +288,8 @@ class MetalView: MTKView {
         renderCommandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: chunkDimension * chunkDimension * chunkDimension * 6, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
         renderCommandEncoder?.endEncoding()
         
-        commandBuffer?.present(currentDrawable!)
-        commandBuffer?.commit()
+        commandBuffer2?.present(currentDrawable!)
+        commandBuffer2?.commit()
 
     }
     
