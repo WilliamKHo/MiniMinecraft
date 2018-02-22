@@ -45,5 +45,9 @@ class BufferProvider: NSObject {
         }
         return buffer
     }
+    
+    func buffer(at : Int) -> MTLBuffer {
+        return buffers[at]
+    }
 
 }
