@@ -81,7 +81,7 @@ class MetalView: MTKView {
         camera = Camera(
             fov : 45,
             aspect : 1,
-            farClip : 100,
+            farClip : 1000,
             nearClip : 0.01,
             pos : [0.0, 12.0, 30.0, 1.0],
             forward : [0.0, 0.0, -1.0],
@@ -192,17 +192,17 @@ class MetalView: MTKView {
 //        controlPointsBuffer = device!.makeBuffer(bytes: controlPointPositions, length: MemoryLayout<Float32>.stride * faces * 4, options: [])
 
         let controlPointIndices: [float3] = [
-                float3(0.0, 0.0, -1.0),
+                float3(0.0, 0.0, -1.0), // +x
                 float3(0.0, 1.0, 0.0),
-                float3(0.0, 0.0, 1.0),
+                float3(0.0, 0.0, 1.0), // -x
                 float3(0.0, 1.0, 0.0),
+                float3(1.0, 0.0, 0.0), // +z
+                float3(0.0, 1.0, 0.0),
+                float3(-1.0, 0.0, 0.0), // -z
+                float3(0.0, 1.0, 0.0),
+                float3(0.0, 0.0, 1.0), // +y
                 float3(1.0, 0.0, 0.0),
-                float3(0.0, 1.0, 0.0),
-                float3(-1.0, 0.0, 0.0),
-                float3(0.0, 1.0, 0.0),
-                float3(0.0, 0.0, 1.0),
-                float3(1.0, 0.0, 0.0),
-                float3(1.0, 0.0, 0.0),
+                float3(1.0, 0.0, 0.0), // -y
                 float3(0.0, 0.0, 1.0)
         ]
         controlPointsIndicesBuffer = device!.makeBuffer(bytes: controlPointIndices, length: MemoryLayout<float3>.stride * 12, options: [])
@@ -291,7 +291,7 @@ class MetalView: MTKView {
         
         
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
-        for i in 0...2 {
+        for i in 0..<terrainBufferProvider.buffercount() {
             renderCommandEncoder?.setVertexBuffer(terrainBufferProvider.buffer(at: i), offset: 0, index: 0)
             renderCommandEncoder?.setTessellationFactorBuffer(tessellationFactorsBuffer, offset: 0, instanceStride: 0)
             renderCommandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: chunkDimension * chunkDimension * chunkDimension * 6, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
@@ -391,7 +391,7 @@ class MetalView: MTKView {
     func setUpTerrainBuffers() {
         let bufferLength = chunkDimension * chunkDimension * chunkDimension * 6 * 4; //chunk dimensions * floats4 per voxel
 //        voxel_buffer = device!.makeBuffer(length: MemoryLayout<Float32>.stride * bufferLength, options: [])
-        self.terrainBufferProvider = BufferProvider(device: self.device!, inflightBuffersCount: 3, sizeOfBuffer: MemoryLayout<Float32>.stride * bufferLength)
+        self.terrainBufferProvider = BufferProvider(device: self.device!, inflightBuffersCount: 25, sizeOfBuffer: MemoryLayout<Float32>.stride * bufferLength)
         let tessellationFactorsLength = 1024
         self.tessellationBufferProvider = BufferProvider(device: self.device!, inflightBuffersCount: 3, sizeOfBuffer: tessellationFactorsLength)
 
@@ -422,9 +422,11 @@ class MetalView: MTKView {
         computeCommandEncoder?.setBuffer(voxelValuesBuffer, offset: 0, index: 2)
         var threadExecutionWidth = ps_computeControlPoints.threadExecutionWidth;
         var threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
-        var threadgroupsPerGrid = MTLSize(width: ((16 * 16 * 16) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
-        for i in 0...2 {
-            let startPos: [vector_float3] = [vector_float3(16.0 * Float(i), 0.0, 0.0)]
+        var threadgroupsPerGrid = MTLSize(width: ((chunkDimension * chunkDimension * chunkDimension) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
+        for i in 0..<terrainBufferProvider.buffercount() {
+            let x =  i / 10
+            let z = i % 10
+            let startPos: [vector_float3] = [vector_float3(Float(chunkDimension * x), 0.0, -Float(chunkDimension * z))]
             let buffer = terrainBufferProvider.buffer(at: i)
             computeCommandEncoder?.setBytes(startPos, length: MemoryLayout<vector_float3>.size, index: 0)
             computeCommandEncoder?.setBuffer(buffer, offset: 0, index: 1)

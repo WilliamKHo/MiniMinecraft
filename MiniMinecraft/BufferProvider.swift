@@ -49,5 +49,9 @@ class BufferProvider: NSObject {
     func buffer(at : Int) -> MTLBuffer {
         return buffers[at]
     }
+    
+    func buffercount() -> Int {
+        return inflightBuffersCount
+    }
 
 }
