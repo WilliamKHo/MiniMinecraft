@@ -208,16 +208,24 @@ class MetalView: MTKView {
         controlPointsIndicesBuffer = device!.makeBuffer(bytes: controlPointIndices, length: MemoryLayout<float3>.stride * 12, options: [])
         
         let voxelValues: [float3] = [
-            float3(-1.0, -1.0, -1.0), //000
-            float3(-1.0, -1.0, 2.0),  //001
-            float3(-1.0, 4.0, -1.0), //010
-            float3(-1.0, 4.0, 2.0),  //011
-            float3(0.0, -1.0, -1.0),  //100
-            float3(0.0, -1.0, 2.0),   //101
-            float3(0.0, 4.0, -1.0),   //110
-            float3(0.0, 4.0, 2.0),    //111
+            float3(-1.0, -1.0, -1.0), //0000
+            float3(-1.0, -1.0, 3.0),  //0001
+            float3(-1.0, 5.0, -1.0),  //0010
+            float3(-1.0, 5.0, 3.0),   //0011
+            float3(1.0, -1.0, -1.0),  //0100
+            float3(1.0, -1.0, 3.0),   //0101
+            float3(1.0, 5.0, -1.0),   //0110
+            float3(1.0, 5.0, 3.0),    //0111
+            float3(-1.0, -1.0, -1.0), //1000
+            float3(-1.0, -1.0, 2.0),  //1001
+            float3(-1.0, 4.0, -1.0),  //1010
+            float3(-1.0, 4.0, 2.0),   //1011
+            float3(0.0, -1.0, -1.0),  //1100
+            float3(0.0, -1.0, 2.0),   //1101
+            float3(0.0, 4.0, -1.0),   //1110
+            float3(0.0, 4.0, 2.0),    //1111
         ]
-        voxelValuesBuffer = device!.makeBuffer(bytes: voxelValues, length: MemoryLayout<float3>.stride * 8, options: [])
+        voxelValuesBuffer = device!.makeBuffer(bytes: voxelValues, length: MemoryLayout<float3>.stride * 16, options: [])
     }
     
     func sendToGPU() {
