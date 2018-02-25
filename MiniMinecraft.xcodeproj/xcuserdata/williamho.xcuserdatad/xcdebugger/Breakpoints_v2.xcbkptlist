@@ -41,29 +41,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "MiniMinecraft/MetalView.swift"
-            timestampString = "541055911.0310431"
+            filePath = "MiniMinecraft/TerrainManager.swift"
+            timestampString = "541283776.268158"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "468"
-            endingLineNumber = "468"
-            landmarkName = "keyDown(with:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "MiniMinecraft/MetalView.swift"
-            timestampString = "541055911.048736"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "418"
-            endingLineNumber = "418"
-            landmarkName = "generateTerrain()"
+            startingLineNumber = "130"
+            endingLineNumber = "130"
+            landmarkName = "drawTerrain(_:tessellationBuffer:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
