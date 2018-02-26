@@ -39,8 +39,6 @@ public class RenderManager {
     var depthTexture : MTLTexture!
     
     var camera : Camera! = nil
-    var velocity : float3 = float3(0.0, 0.0, 0.0)
-    var acceleration : float3 = float3(0.0, 0.0, 0.0)
     
     public var terrainManager : TerrainManager! = nil
     
@@ -55,7 +53,7 @@ public class RenderManager {
             aspect : 1,
             farClip : 1000,
             nearClip : 0.01,
-            pos : [0.0, 12.0, 30.0, 1.0],
+            pos : [0.0, 12.0, 30.0],
             forward : [0.0, 0.0, -1.0],
             right : [1.0, 0.0, 0.0],
             up : [0.0, 1.0, 0.0]
@@ -169,7 +167,7 @@ public class RenderManager {
     }
     
     func update() {
-        updatePhysics()
+        camera.update()
         
         let bufferPointer = graphicsBuffer.contents()
         var uniforms = Uniforms(
@@ -179,60 +177,11 @@ public class RenderManager {
         memcpy(bufferPointer, &uniforms, MemoryLayout<Uniforms>.stride)
     }
     
-    func updatePhysics() {
-        let dt : Float = 1.0 / 60.0
-        if (length(velocity) > 10.0){
-            velocity = normalize(velocity) * 10
-        }
-        if (length(velocity) > 0.5) {
-            velocity *= 0.8
-        } else if (length(velocity) < 0.5) {
-            velocity = float3(0.0, 0.0, 0.0)
-        }
-        velocity += dt * acceleration
-        camera.pos += float4(velocity.x, velocity.y, velocity.z, 0.0)
-    }
-    
     func keyUpEvent(_ event : NSEvent) {
-        guard !event.isARepeat else { return }
-        
-        switch Int(event.keyCode) {
-        case kVK_ANSI_W:
-            acceleration = float3(0.0, 0.0, 0.0)
-            
-        case kVK_ANSI_A:
-            acceleration = float3(0.0, 0.0, 0.0)
-            
-        case kVK_ANSI_S:
-            acceleration = float3(0.0, 0.0, 0.0)
-            
-        case kVK_ANSI_D:
-            acceleration = float3(0.0, 0.0, 0.0)
-            
-            
-        default:
-            break;
-        }
+        camera.keyUpEvent(event)
     }
     
     func keyDownEvent(_ event : NSEvent) {
-        guard !event.isARepeat else { return }
-        
-        switch Int(event.keyCode) {
-        case kVK_ANSI_W:
-            acceleration.z = -5
-            
-        case kVK_ANSI_A:
-            acceleration.x = -5
-            
-        case kVK_ANSI_S:
-            acceleration.z = 5
-            
-        case kVK_ANSI_D:
-            acceleration.x = 5
-            
-        default:
-            break;
-        }
+        camera.keyDownEvent(event)
     }
 }

@@ -45,5 +45,6 @@ class MetalView: MTKView {
     override func keyUp(with event: NSEvent) {
         RenderManager.sharedInstance.keyUpEvent(event)
     }
+    
 }
 

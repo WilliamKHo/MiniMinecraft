@@ -16,6 +16,7 @@
 		0B0CC9ED200C0211003ADD36 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9EC200C0211003ADD36 /* Shaders.metal */; };
 		0B3A583420432EC2003CD13B /* RenderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3A583320432EC2003CD13B /* RenderManager.swift */; };
 		0B3A583620433CA4003CD13B /* TerrainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3A583520433CA4003CD13B /* TerrainManager.swift */; };
+		0B3A583820435C1E003CD13B /* simd+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3A583720435C1E003CD13B /* simd+ext.swift */; };
 		0B489BD3203E3B6400BDDBC2 /* BufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B489BD2203E3B6400BDDBC2 /* BufferProvider.swift */; };
 		0B53A27A202C0C5D00164119 /* terrain_header.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B53A279202C0C5D00164119 /* terrain_header.metal */; };
 		0B53A27C202C0C6800164119 /* terrain.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B53A27B202C0C6800164119 /* terrain.metal */; };
@@ -37,6 +38,7 @@
 		0B0CC9EC200C0211003ADD36 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		0B3A583320432EC2003CD13B /* RenderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderManager.swift; sourceTree = "<group>"; };
 		0B3A583520433CA4003CD13B /* TerrainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerrainManager.swift; sourceTree = "<group>"; };
+		0B3A583720435C1E003CD13B /* simd+ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "simd+ext.swift"; sourceTree = "<group>"; };
 		0B489BD2203E3B6400BDDBC2 /* BufferProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferProvider.swift; sourceTree = "<group>"; };
 		0B53A279202C0C5D00164119 /* terrain_header.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = terrain_header.metal; sourceTree = "<group>"; };
 		0B53A27B202C0C6800164119 /* terrain.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = terrain.metal; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 				0B0CC9EA200BFEAB003ADD36 /* Camera.swift */,
 				0B3A583320432EC2003CD13B /* RenderManager.swift */,
 				0B3A583520433CA4003CD13B /* TerrainManager.swift */,
+				0B3A583720435C1E003CD13B /* simd+ext.swift */,
 			);
 			path = MiniMinecraft;
 			sourceTree = "<group>";
@@ -184,6 +187,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B3A583820435C1E003CD13B /* simd+ext.swift in Sources */,
 				0B0CC9ED200C0211003ADD36 /* Shaders.metal in Sources */,
 				0B3A583420432EC2003CD13B /* RenderManager.swift in Sources */,
 				0B489BD3203E3B6400BDDBC2 /* BufferProvider.swift in Sources */,
