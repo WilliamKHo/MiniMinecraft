@@ -25,7 +25,7 @@ class MetalView: MTKView {
         commandQueue = device?.makeCommandQueue()
         let commandBuffer = commandQueue.makeCommandBuffer()
         RenderManager.sharedInstance.buildTessellationFactorsBuffer(commandBuffer: commandBuffer)
-        RenderManager.sharedInstance.terrainManager.generateTerrain(commandBuffer: commandBuffer)
+        RenderManager.sharedInstance.generateTerrain(commandBuffer: commandBuffer)
         commandBuffer?.commit()
     }
     

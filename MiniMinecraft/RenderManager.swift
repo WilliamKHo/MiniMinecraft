@@ -59,7 +59,7 @@ public class RenderManager {
             up : [0.0, 1.0, 0.0]
         )
         
-        self.terrainManager = TerrainManager(device: device, library: library!, inflightChunksCount: 2)
+        self.terrainManager = TerrainManager(device: device, library: library!, inflightChunksCount: 10)
         
         registerGraphicsShaders()
         buildDepthTexture()
@@ -159,6 +159,10 @@ public class RenderManager {
         computeCommandEncoder?.setBuffer(tessellationFactorsBuffer, offset: 0, index: 2)
         computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         computeCommandEncoder?.endEncoding()
+    }
+    
+    func generateTerrain(commandBuffer : MTLCommandBuffer?) {
+        self.terrainManager.generateTerrain(commandBuffer: commandBuffer, camera: camera)
     }
     
     func setUpBuffers() {
