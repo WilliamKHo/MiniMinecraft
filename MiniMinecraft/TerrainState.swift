@@ -46,7 +46,7 @@ class TerrainState {
         if let xLayer = chunks[chunk.x] {
             if let yLayer = xLayer[chunk.y] {
                 if let _ = yLayer[chunk.z] { chunks[chunk.x]![chunk.y]![chunk.z] = 0.0 //This should also never happen
-                } else { chunks[chunk.x]![chunk.y]![chunk.z] = 0.0  }
+                } else { chunks[chunk.x]![chunk.y]![chunk.z] = 0.0 }
             } else { chunks[chunk.x]![chunk.y] = [chunk.z : 0.0] }
         } else { chunks[chunk.x] = [chunk.y : [chunk.z : 0.0]] }
     }
@@ -79,7 +79,7 @@ class TerrainState {
         chunkWorld.y = floorf(chunkWorld.y / Float(chunkDimension)) * Float(chunkDimension)
         chunkWorld.z = floorf(chunkWorld.z / Float(chunkDimension)) * Float(chunkDimension)
         let chunkVector = normalize(chunkWorld - camera.pos)
-        if abs(dot(chunkVector, camera.forward)) < 0.5 { return true } else { return false }
+        if abs(dot(chunkVector, camera.forward)) > 0.7 { return true } else { return false }
     }
     
     func computeChunksToRender( chunks : inout [vector_float3], eye : vector_float3, count : Int, camera : Camera) {
@@ -95,7 +95,7 @@ class TerrainState {
         chunks.append(vector_float3(Float(chunkDimension),
                                     Float(chunkDimension),
                                     Float(chunkDimension)))
-        for i in 0..<count-1 {
+        for _ in 0..<count-1 {
             // Dequeue until we see something valid
             var validChunkFound = false
             var chunk : simd_int3

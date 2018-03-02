@@ -94,9 +94,6 @@ public class TerrainManager {
         let threadgroupsPerGrid = MTLSize(width: ((chunkDimension * chunkDimension * chunkDimension) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
         for i in 0..<self.terrainState.inflightChunksCount {
             let startPos: [vector_float3] = [chunks[i]]
-            var x = chunks[i].x
-            var y = chunks[i].y
-            var z = chunks[i].z
             let buffer = self.terrainState.chunk(at: i).terrainBuffer
             computeCommandEncoder?.setBytes(startPos, length: MemoryLayout<vector_float3>.size, index: 0)
             computeCommandEncoder?.setBuffer(buffer, offset: 0, index: 1)
