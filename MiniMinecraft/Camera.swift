@@ -16,7 +16,7 @@ import Dispatch
 
 
 class Camera {
-    var fov: Float
+    var fovy: Float
     var aspect: Float
     var farClip: Float
     var nearClip: Float
@@ -33,7 +33,7 @@ class Camera {
     var rotVelocity : float3 = float3(0.0, 0.0, 0.0)
     var rotAcceleration : float3 = float3(0.0, 0.0, 0.0)
     
-    init(fov: Float,
+    init(fovy: Float,
          aspect: Float,
          farClip: Float,
          nearClip: Float,
@@ -41,7 +41,7 @@ class Camera {
          forward: vector_float3,
          right: vector_float3,
          up: vector_float3) {
-        self.fov = fov
+        self.fovy = fovy
         self.aspect = aspect
         self.farClip = farClip
         self.nearClip = nearClip
@@ -76,7 +76,7 @@ class Camera {
         let view = orientation * translation;
         
         // calculate projection matrix
-        let s = 1 / (tanf((fov / 2) * Float.pi / 180));
+        let s = 1 / (tanf((fovy / 2) * Float.pi / 180));
         let p = farClip / (farClip - nearClip);
         let q = (-farClip * nearClip) / (farClip - nearClip);
         

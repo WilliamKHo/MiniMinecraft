@@ -78,6 +78,17 @@ class TerrainState {
         chunkWorld.x = floorf(chunkWorld.x / Float(chunkDimension)) * Float(chunkDimension)
         chunkWorld.y = floorf(chunkWorld.y / Float(chunkDimension)) * Float(chunkDimension)
         chunkWorld.z = floorf(chunkWorld.z / Float(chunkDimension)) * Float(chunkDimension)
+//        for x in 0...1 {
+//            for y in 0...1 {
+//                for z in 0...1 {
+//                    let corner =
+//                }
+//            }
+//        }
+        
+        // Case I: one of the corners is in view of the camera
+        // Case II: none of corners are in view of the camera, but the view frustrum
+        // passes through the sides of the chunk
         let chunkVector = normalize(chunkWorld - camera.pos)
         if abs(dot(chunkVector, camera.forward)) > 0.7 { return true } else { return false }
     }

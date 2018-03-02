@@ -37,6 +37,7 @@ public class RenderManager {
     var graphicsBuffer : MTLBuffer!
     var controlPointsIndicesBuffer : MTLBuffer!
     var depthTexture : MTLTexture!
+    var depthStencilState : MTLDepthStencilState!
     
     var camera : Camera! = nil
     
@@ -49,7 +50,7 @@ public class RenderManager {
         // register shaders
         
         self.camera = Camera(
-            fov : 45,
+            fovy : 45,
             aspect : 1,
             farClip : 1000,
             nearClip : 0.01,
@@ -69,6 +70,8 @@ public class RenderManager {
     func draw(commandBuffer : MTLCommandBuffer) {
         update() // Update camera attributes
         
+        terrainManager.generateTerrain(commandBuffer: commandBuffer, camera: camera)
+        
         self.view.depthStencilPixelFormat = .depth32Float
         let renderPassDescriptor = self.view.currentRenderPassDescriptor
         let depthAttachmentDescriptor = MTLRenderPassDepthAttachmentDescriptor()
@@ -76,18 +79,11 @@ public class RenderManager {
         depthAttachmentDescriptor.texture = depthTexture
         renderPassDescriptor?.depthAttachment = depthAttachmentDescriptor
         
-        let depthStencilDescriptor = MTLDepthStencilDescriptor()
-        depthStencilDescriptor.depthCompareFunction = MTLCompareFunction(rawValue: 1)! // less case
-        depthStencilDescriptor.isDepthWriteEnabled = true
-        let depthStencilState = device?.makeDepthStencilState(descriptor : depthStencilDescriptor)
-        
         let renderCommandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor!)
         renderCommandEncoder?.setRenderPipelineState(rps!)
         renderCommandEncoder?.setVertexBuffer(graphicsBuffer, offset: 0, index: 1)
         //renderCommandEncoder?.setTriangleFillMode(.lines)
         //renderCommandEncoder?.setCullMode(.back)
-        
-        
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
 
         terrainManager.drawTerrain(renderCommandEncoder, tessellationBuffer: tessellationFactorsBuffer)
@@ -143,6 +139,11 @@ public class RenderManager {
         depthStencilTextureDescriptor.storageMode = .private
         depthStencilTextureDescriptor.usage = .renderTarget
         depthTexture = device!.makeTexture(descriptor: depthStencilTextureDescriptor)
+        
+        let depthStencilDescriptor = MTLDepthStencilDescriptor()
+        depthStencilDescriptor.depthCompareFunction = MTLCompareFunction(rawValue: 1)! // less case
+        depthStencilDescriptor.isDepthWriteEnabled = true
+        depthStencilState = device?.makeDepthStencilState(descriptor : depthStencilDescriptor)
     }
     
     func buildTessellationFactorsBuffer(commandBuffer : MTLCommandBuffer?) {
