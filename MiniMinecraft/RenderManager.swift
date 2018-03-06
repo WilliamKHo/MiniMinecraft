@@ -89,8 +89,6 @@ public class RenderManager {
         terrainManager.drawTerrain(renderCommandEncoder, tessellationBuffer: tessellationFactorsBuffer)
         
         renderCommandEncoder?.endEncoding()
-        commandBuffer.present(self.view.currentDrawable!)
-        commandBuffer.commit()
     }
     
     func registerGraphicsShaders() {

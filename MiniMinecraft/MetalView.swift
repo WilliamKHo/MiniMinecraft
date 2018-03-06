@@ -41,6 +41,8 @@ class MetalView: MTKView {
         self.capScope.begin()
         let commandBuffer = commandQueue.makeCommandBuffer()
         RenderManager.sharedInstance.draw(commandBuffer: commandBuffer!)
+        commandBuffer!.present(currentDrawable!)
+        commandBuffer!.commit()
         self.capScope.end()
     }
     
