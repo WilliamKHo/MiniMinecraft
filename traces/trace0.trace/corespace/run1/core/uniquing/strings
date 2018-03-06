@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<string></string>
+	<string>Unknown</string>
+	<string>User</string>
+	<string>Supervisor</string>
+	<string>Running</string>
+	<string>Runnable</string>
+	<string>Blocked</string>
+	<string>Preempted</string>
+	<string>Uninterruptible</string>
+	<string>Suspended</string>
+	<string>Idle</string>
+	<string>Terminating</string>
+	<string>Terminated</string>
+	<string>TODO</string>
+	<string>Flattened copy (wid = 329, sid = 1053)</string>
+	<string>Flattened copy (wid = 328, sid = 102d)</string>
+	<string>Flattened copy (wid = 328, sid = 102c)</string>
+	<string>Surface Ref (wid = 53a, sid = 101c)</string>
+	<string>com.apple.CoreImage-Internal</string>
+	<string>main</string>
+	<string>MTLIOAccelResourcePool</string>
+	<string>CUIWindowFrameLayer</string>
+	<string>CUIWindowBorderLayer</string>
+	<string>Drawable</string>
+	<string>MTKView Depth</string>
+	<string>tile (wid=547)</string>
+	<string>Flattened copy (wid = 53a, sid = 1021)</string>
+	<string>Kernel</string>
+	<string>IOSurface write</string>
+	<string></string>
+	<string>Render (Driver)</string>
+	<string>Busy</string>
+	<string> (</string>
+	<string>)</string>
+	<string>Command Buffer 0</string>
+	<string>Render Pass 0</string>
+	<string>[0] Command Buffer 0</string>
+	<string>[0] Render Pass 0</string>
+	<string>Render (GPU 1)</string>
+	<string>Render Pass 4</string>
+	<string>[4] Render Pass 4</string>
+	<string>Render Pass 3</string>
+	<string>[3] Render Pass 3</string>
+	<string>Render Pass 2</string>
+	<string>[2] Render Pass 2</string>
+	<string>Render Pass 1</string>
+	<string>[1] Render Pass 1</string>
+	<string>Command Buffer 1</string>
+	<string>[1] Command Buffer 1</string>
+	<string>Command Buffer 2</string>
+	<string>[2] Command Buffer 2</string>
+	<string>Command Buffer 3</string>
+	<string>[3] Command Buffer 3</string>
+	<string>Command Buffer 4</string>
+	<string>[4] Command Buffer 4</string>
+	<string>Command Buffer 5</string>
+	<string>[5] Command Buffer 5</string>
+	<string>Vsync</string>
+	<string>Display</string>
+	<string>On Display</string>
+	<string>IOSurface read</string>
+	<string>Render Pass 8</string>
+	<string>[8] Render Pass 8</string>
+	<string>Render Pass 7</string>
+	<string>[7] Render Pass 7</string>
+	<string>Render Pass 6</string>
+	<string>[6] Render Pass 6</string>
+	<string>Render Pass 5</string>
+	<string>[5] Render Pass 5</string>
+	<string>Render Pass 10</string>
+	<string>[10] Render Pass 10</string>
+	<string>Render Pass 9</string>
+	<string>[9] Render Pass 9</string>
+	<string>Render Pass 16</string>
+	<string>[16] Render Pass 16</string>
+	<string>Render Pass 15</string>
+	<string>[15] Render Pass 15</string>
+	<string>Render Pass 14</string>
+	<string>[14] Render Pass 14</string>
+	<string>Render Pass 13</string>
+	<string>[13] Render Pass 13</string>
+	<string>Render Pass 12</string>
+	<string>[12] Render Pass 12</string>
+	<string>Render Pass 11</string>
+	<string>[11] Render Pass 11</string>
+	<string>Render Pass 27</string>
+	<string>[27] Render Pass 27</string>
+	<string>Render Pass 26</string>
+	<string>[26] Render Pass 26</string>
+	<string>Render Pass 25</string>
+	<string>[25] Render Pass 25</string>
+	<string>Render Pass 24</string>
+	<string>[24] Render Pass 24</string>
+	<string>Render Pass 23</string>
+	<string>[23] Render Pass 23</string>
+	<string>Render Pass 22</string>
+	<string>[22] Render Pass 22</string>
+	<string>Render Pass 21</string>
+	<string>[21] Render Pass 21</string>
+	<string>Render Pass 20</string>
+	<string>[20] Render Pass 20</string>
+	<string>Render Pass 19</string>
+	<string>[19] Render Pass 19</string>
+	<string>Render Pass 18</string>
+	<string>[18] Render Pass 18</string>
+	<string>Render Pass 17</string>
+	<string>[17] Render Pass 17</string>
+	<string>Command Buffer 6</string>
+	<string>[6] Command Buffer 6</string>
+	<string>Render Pass 43</string>
+	<string>[43] Render Pass 43</string>
+	<string>Render Pass 42</string>
+	<string>[42] Render Pass 42</string>
+	<string>Render Pass 41</string>
+	<string>[41] Render Pass 41</string>
+	<string>Render Pass 40</string>
+	<string>[40] Render Pass 40</string>
+	<string>Render Pass 39</string>
+	<string>[39] Render Pass 39</string>
+	<string>Render Pass 38</string>
+	<string>[38] Render Pass 38</string>
+	<string>Render Pass 37</string>
+	<string>[37] Render Pass 37</string>
+	<string>Render Pass 36</string>
+	<string>[36] Render Pass 36</string>
+	<string>Render Pass 35</string>
+	<string>[35] Render Pass 35</string>
+	<string>Render Pass 34</string>
+	<string>[34] Render Pass 34</string>
+	<string>Render Pass 33</string>
+	<string>[33] Render Pass 33</string>
+	<string>Render Pass 32</string>
+	<string>[32] Render Pass 32</string>
+	<string>Render Pass 31</string>
+	<string>[31] Render Pass 31</string>
+	<string>Render Pass 30</string>
+	<string>[30] Render Pass 30</string>
+	<string>Render Pass 29</string>
+	<string>[29] Render Pass 29</string>
+	<string>Render Pass 28</string>
+	<string>[28] Render Pass 28</string>
+	<string>Blit Command 1</string>
+	<string>[0] com.apple.CoreImage-Internal</string>
+	<string>[1] Blit Command 1</string>
+	<string>[0] main</string>
+	<string>Completed Callback</string>
+	<string>Compute Command 1</string>
+	<string>[1] Compute Command 1</string>
+	<string>Compute Command 0</string>
+	<string>[0] Compute Command 0</string>
+	<string>N/A</string>
+	<string>ZeroFillResource</string>
+	<string>8192</string>
+	<string>PageOnResource</string>
+	<string>Command Buffer 7</string>
+	<string>[7] Command Buffer 7</string>
+	<string>3932160</string>
+	<string>PageOffResource</string>
+	<string>655360</string>
+	<string>"</string>
+	<string>" took </string>
+	<string> to complete (Upper bound </string>
+	<string>Surface was displayed for </string>
+	<string>GPU spent </string>
+	<string> executing </string>
+	<string> (Upper bound </string>
+	<string>Render for "Render Pass 4"</string>
+	<string>Render for "Render Pass 2"</string>
+	<string>Render for "Render Pass 0"</string>
+	<string>Render for "Unknown"</string>
+	<string>Command Buffers</string>
+	<string>Render Encoders</string>
+	<string>Scheduled</string>
+	<string>Completed</string>
+	<string>States</string>
+	<string>Could not determine the application state for </string>
+	<string>.  This is normal when the target was not launched by Instruments.</string>
+	<string>Launching</string>
+	<string>Application took </string>
+	<string> between when UIApplicationMain() or NSApplicationMain() started and when the did-finish-launching notifications finished.</string>
+	<string>Foreground</string>
+	<string>The application was in the foreground for </string>
+	<string>.</string>
+	<string>Background</string>
+	<string>Currently running in the background...</string>
+</array>
+</plist>

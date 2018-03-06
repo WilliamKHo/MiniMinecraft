@@ -17,6 +17,9 @@ class MetalView: MTKView {
     
     var commandQueue : MTLCommandQueue! = nil
     
+    var capManager : MTLCaptureManager! = nil
+    var capScope : MTLCaptureScope! = nil
+    
     required init(coder: NSCoder) {
         super.init(coder: coder)
         self.preferredFramesPerSecond = 60
@@ -27,13 +30,18 @@ class MetalView: MTKView {
         RenderManager.sharedInstance.buildTessellationFactorsBuffer(commandBuffer: commandBuffer)
         RenderManager.sharedInstance.generateTerrain(commandBuffer: commandBuffer)
         commandBuffer?.commit()
+        self.capManager = MTLCaptureManager.shared()
+        self.capScope = self.capManager.makeCaptureScope(device: device!)
+        self.capScope.label = "draw capture scope"
     }
     
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
         // Drawing code here.
+        self.capScope.begin()
         let commandBuffer = commandQueue.makeCommandBuffer()
         RenderManager.sharedInstance.draw(commandBuffer: commandBuffer!)
+        self.capScope.end()
     }
     
     override var acceptsFirstResponder: Bool { return true }

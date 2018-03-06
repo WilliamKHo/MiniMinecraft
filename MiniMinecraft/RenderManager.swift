@@ -41,6 +41,7 @@ public class RenderManager {
     
     var camera : Camera! = nil
     
+    
     public var terrainManager : TerrainManager! = nil
     
     func initManager(_ device: MTLDevice, view: MTKView) {
@@ -60,7 +61,7 @@ public class RenderManager {
             up : [0.0, 1.0, 0.0]
         )
         
-        self.terrainManager = TerrainManager(device: device, library: library!, inflightChunksCount: 25)
+        self.terrainManager = TerrainManager(device: device, library: library!, inflightChunksCount: 50)
         
         registerGraphicsShaders()
         buildDepthTexture()
@@ -69,7 +70,6 @@ public class RenderManager {
     
     func draw(commandBuffer : MTLCommandBuffer) {
         update() // Update camera attributes
-        
         terrainManager.generateTerrain(commandBuffer: commandBuffer, camera: camera)
         
         self.view.depthStencilPixelFormat = .depth32Float

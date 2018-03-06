@@ -24,6 +24,9 @@
 		0B5D5CAE202CE553003E65BB /* StreamCompactor.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B5D5CAC202CE552003E65BB /* StreamCompactor.metal */; };
 		0B5D5CAF202CE553003E65BB /* StreamCompactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5D5CAD202CE553003E65BB /* StreamCompactor.swift */; };
 		0B798966201D1F980060855A /* TessellationShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B798965201D1F980060855A /* TessellationShaders.metal */; };
+		0BAA4C68204E1B2100AAAC4A /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAA4C65204E1B2000AAAC4A /* MetalKit.framework */; };
+		0BAA4C69204E1B2100AAAC4A /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAA4C66204E1B2000AAAC4A /* Metal.framework */; };
+		0BAA4C6A204E1B2100AAAC4A /* MetalPerformanceShaders.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAA4C67204E1B2000AAAC4A /* MetalPerformanceShaders.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +50,9 @@
 		0B5D5CAC202CE552003E65BB /* StreamCompactor.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = StreamCompactor.metal; path = MiniMinecraft/StreamCompaction/StreamCompactor.metal; sourceTree = SOURCE_ROOT; };
 		0B5D5CAD202CE553003E65BB /* StreamCompactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StreamCompactor.swift; path = MiniMinecraft/StreamCompaction/StreamCompactor.swift; sourceTree = SOURCE_ROOT; };
 		0B798965201D1F980060855A /* TessellationShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = TessellationShaders.metal; sourceTree = "<group>"; };
+		0BAA4C65204E1B2000AAAC4A /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
+		0BAA4C66204E1B2000AAAC4A /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		0BAA4C67204E1B2000AAAC4A /* MetalPerformanceShaders.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalPerformanceShaders.framework; path = System/Library/Frameworks/MetalPerformanceShaders.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +60,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0BAA4C68204E1B2100AAAC4A /* MetalKit.framework in Frameworks */,
+				0BAA4C69204E1B2100AAAC4A /* Metal.framework in Frameworks */,
+				0BAA4C6A204E1B2100AAAC4A /* MetalPerformanceShaders.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +74,7 @@
 			children = (
 				0B0CC9D5200BEAB0003ADD36 /* MiniMinecraft */,
 				0B0CC9D4200BEAB0003ADD36 /* Products */,
+				0BAA4C64204E1B1F00AAAC4A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -117,6 +127,16 @@
 			);
 			name = StreamCompaction;
 			path = "New Group";
+			sourceTree = "<group>";
+		};
+		0BAA4C64204E1B1F00AAAC4A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0BAA4C66204E1B2000AAAC4A /* Metal.framework */,
+				0BAA4C65204E1B2000AAAC4A /* MetalKit.framework */,
+				0BAA4C67204E1B2000AAAC4A /* MetalPerformanceShaders.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

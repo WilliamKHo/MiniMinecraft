@@ -15,7 +15,7 @@
 //import Metal
 //import MetalKit
 //
-//let TG_SIZE = 64
+//let TG_SIZE = 32
 //var sc_iter = 0
 //
 //// Stream Compactor takes in a generic `T` parameter type and
@@ -72,11 +72,11 @@
 //    // **** Buffer Data ****
 //    // *********************
 //    private var items : MTLBuffer! = nil
-//    private var size  : uint2      = uint2(1,1)
-//    private let device_items : DeviceBuffer<T>
-//    private let block_sums   : DeviceBuffer<uint>
-//    private let sums_y       : DeviceBuffer<uint>
-//    private let block_sums_y : DeviceBuffer<uint>
+//    private var size  : Int = 0
+//    private var count : Int = 0
+//    private var logCeiling : Int = 0
+//    private var validation_buffer : MTLBuffer!
+//    private var sum_buffers : [MTLBuffer]
 //
 //
 //    // *********************
@@ -95,14 +95,7 @@
 //    // Adds the accumulated sum of the block (adjustment) and scatters the new value
 //    private var kern_AdjustAndScatter       : MTLFunction!
 //    private var ps_AdjustAndScatter         : MTLComputePipelineState!
-//
-//    //Buffers
-//    private var validation_buffer    : DeviceBuffer<uint>?
-//    private var scan_result_buffer   : DeviceBuffer<uint>?
-//
-//    private var count_buffer         : SharedBuffer<uint>
-//
-//
+//    
 //    // Whether or not to reverse the predicate evaluation
 //    private var reverse_predicate    = false
 //
@@ -128,17 +121,20 @@
 //    //
 //    init(on device: MTLDevice,
 //         with library: MTLLibrary,
-//         applying predicateKernel: String) {
+//         applying predicateKernel: String,
+//         count : Int,
+//         dimension: Int = 2) {
 //        self.device              = device
 //        self.library             = library
 //        self.name_ApplyPredicate = predicateKernel
-//        self.device_items        = DeviceBuffer(count:  Int(self.size.x * self.size.y) , with: device)
-//        self.block_sums          = DeviceBuffer(count: (Int(self.size.x * self.size.y) / TG_SIZE) + 1, with: device)
-//        self.sums_y              = DeviceBuffer(count: (Int(self.size.y)          ) + 0, with: device)
-//        self.block_sums_y        = DeviceBuffer(count: (Int(self.size.y) / TG_SIZE) + 1, with: device)
-//
-//        self.count_buffer        = SharedBuffer<uint>(count: 1, with: device,
-//                                                      containing: [uint(self.device_items.count)])
+//        self.count = count
+//        self.size = count * MemoryLayout<T>.stride
+//        self.logCeiling = Int(ceilf(log2f(Float(self.size))))
+//        sum_buffers = [MTLBuffer]()
+//        for _ in 0...dimension-1 {
+//            let buffer = device.makeBuffer(length: self.size, options: [])
+//            sum_buffers.append(buffer!)
+//        }
 //
 //        self.createHelperBuffers()
 //

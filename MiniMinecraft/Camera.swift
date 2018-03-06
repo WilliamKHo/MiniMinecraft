@@ -58,7 +58,7 @@ class Camera {
         self.up = normalize(cross(right, forward));
     }
     
-    public func computeViewProjectionMatrix() -> float4x4 {
+    public func computeViewMatrix() -> float4x4 {
         // orientation matrix
         let o0 = float4(right[0], right[1], right[2], 0);
         let o1 = float4(up[0], up[1], up[2], 0);
@@ -73,8 +73,11 @@ class Camera {
         let t3 = float4(0, 0, 0, 1);
         let translation = float4x4(rows: [t0, t1, t2, t3]);
         
-        let view = orientation * translation;
-        
+        let view = orientation * translation
+        return view
+    }
+    
+    public func computeProjectionMatrix() -> float4x4 {
         // calculate projection matrix
         let s = 1 / (tanf((fovy / 2) * Float.pi / 180));
         let p = farClip / (farClip - nearClip);
@@ -86,8 +89,11 @@ class Camera {
         let p3 = float4(0, 0, 1, 0);
         
         let projection = float4x4(rows: [p0, p1, p2, p3] );
-        
-        return projection * view
+        return projection
+    }
+    
+    public func computeViewProjectionMatrix() -> float4x4 {
+        return computeProjectionMatrix() * computeViewMatrix()
     }
     
     func update() {
