@@ -71,24 +71,30 @@ class TerrainState {
         if !containsChunk(chunks: &traversed, chunk: posX) { queue.append(negZ) }
     }
     
-    func inCameraView(chunk : simd_int3, camera : Camera) -> Bool {
+    func inCameraView(chunk : simd_int3, camera : Camera, planes : [float4]) -> Bool {
         let chunkDim = Int32(chunkDimension)
         var chunkWorld = float3(Float(chunk.x * chunkDim), Float(chunk.y * chunkDim), Float(chunk.z * chunkDim))
         chunkWorld += camera.pos
         chunkWorld.x = floorf(chunkWorld.x / Float(chunkDimension)) * Float(chunkDimension)
         chunkWorld.y = floorf(chunkWorld.y / Float(chunkDimension)) * Float(chunkDimension)
         chunkWorld.z = floorf(chunkWorld.z / Float(chunkDimension)) * Float(chunkDimension)
-//        for x in 0...1 {
-//            for y in 0...1 {
-//                for z in 0...1 {
-//                    let corner =
-//                }
-//            }
-//        }
-        
-        // Case I: one of the corners is in view of the camera
-        // Case II: none of corners are in view of the camera, but the view frustrum
-        // passes through the sides of the chunk
+        for plane in planes {
+            var possible = false
+            for x in 0...1 {
+                for y in 0...1 {
+                    for z in 0...1 {
+                        let corner = chunkWorld + float3(Float(Int32(x) * chunkDim),
+                                                         Float(Int32(y) * chunkDim),
+                                                         Float(Int32(z) * chunkDim))
+                        if pointPlaneDistance(plane: plane, point: corner) > 0.0 {
+                            possible = true
+                        }
+                    }
+                }
+            }
+            if !possible { return false }
+        }
+        // return true
         let chunkVector = normalize(chunkWorld - camera.pos)
         if abs(dot(chunkVector, camera.forward)) > 0.7 { return true } else { return false }
     }
@@ -96,6 +102,8 @@ class TerrainState {
     func computeChunksToRender( chunks : inout [vector_float3], eye : vector_float3, count : Int, camera : Camera) {
         // Queue for traversal and table for recording traversed
         var traversed : [Int32 : [Int32 : [Int32 : Float]]] = [0 : [0 : [0 : 0.0]]] // Chunk currently inside of
+        var planes = [float4]()
+        camera.extractPlanes(planes: &planes)
         var queue = [simd_int3]()
         queue.append(simd_int3(1, 0, 0))
         queue.append(simd_int3(-1, 0, 0))
@@ -116,7 +124,7 @@ class TerrainState {
                 } else {
                     chunk = queue.removeFirst()
                     addChunk(chunks: &traversed, chunk: chunk)
-                    if inCameraView(chunk: chunk, camera: camera) {
+                    if inCameraView(chunk : chunk, camera : camera, planes : planes) {
                         addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed)
                         let chunkDim = Int32(chunkDimension)
                         var chunkWorld = float3(Float(chunk.x * chunkDim), Float(chunk.y * chunkDim), Float(chunk.z * chunkDim))

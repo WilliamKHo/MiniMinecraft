@@ -34,9 +34,7 @@ class BufferProvider: NSObject {
     
     func nextBuffer() -> MTLBuffer { // Pass in as arguments the data for a chunk
         let buffer = buffers[availableBufferIndex]
-        
-        let bufferPointer = buffer.contents()
-        
+                
         // memcpy
         
         availableBufferIndex += 1

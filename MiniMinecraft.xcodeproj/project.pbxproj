@@ -27,6 +27,7 @@
 		0BAA4C68204E1B2100AAAC4A /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAA4C65204E1B2000AAAC4A /* MetalKit.framework */; };
 		0BAA4C69204E1B2100AAAC4A /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAA4C66204E1B2000AAAC4A /* Metal.framework */; };
 		0BAA4C6A204E1B2100AAAC4A /* MetalPerformanceShaders.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAA4C67204E1B2000AAAC4A /* MetalPerformanceShaders.framework */; };
+		0BAA4C6C204F576900AAAC4A /* MathUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA4C6B204F576900AAAC4A /* MathUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +54,7 @@
 		0BAA4C65204E1B2000AAAC4A /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		0BAA4C66204E1B2000AAAC4A /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		0BAA4C67204E1B2000AAAC4A /* MetalPerformanceShaders.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalPerformanceShaders.framework; path = System/Library/Frameworks/MetalPerformanceShaders.framework; sourceTree = SDKROOT; };
+		0BAA4C6B204F576900AAAC4A /* MathUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 				0B3A583520433CA4003CD13B /* TerrainManager.swift */,
 				0B3A583720435C1E003CD13B /* simd+ext.swift */,
 				0B3A58392043A475003CD13B /* TerrainState.swift */,
+				0BAA4C6B204F576900AAAC4A /* MathUtils.swift */,
 			);
 			path = MiniMinecraft;
 			sourceTree = "<group>";
@@ -215,6 +218,7 @@
 				0B3A583420432EC2003CD13B /* RenderManager.swift in Sources */,
 				0B489BD3203E3B6400BDDBC2 /* BufferProvider.swift in Sources */,
 				0B5D5CAE202CE553003E65BB /* StreamCompactor.metal in Sources */,
+				0BAA4C6C204F576900AAAC4A /* MathUtils.swift in Sources */,
 				0B798966201D1F980060855A /* TessellationShaders.metal in Sources */,
 				0B0CC9E7200BFE15003ADD36 /* MetalView.swift in Sources */,
 				0B53A27C202C0C6800164119 /* terrain.metal in Sources */,

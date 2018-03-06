@@ -26,6 +26,10 @@ class Camera {
     var up: vector_float3
     var ref: vector_float3
     
+    // Internal Matrices
+    var view_matrix : float4x4
+    var proj_matrix : float4x4
+    
     
     // Movement
     var velocity : float3 = float3(0.0, 0.0, 0.0)
@@ -50,15 +54,16 @@ class Camera {
         self.right = right
         self.up = up
         self.ref = pos + 10 * forward
+        
+        self.view_matrix = float4x4(1.0)
+        self.proj_matrix = float4x4(1.0)
     }
     
     public func recomputeAttributes() {
         self.forward = normalize(ref - pos);
         self.right = normalize(cross(forward, vector_float3(0.0, 1.0, 0.0)));
         self.up = normalize(cross(right, forward));
-    }
-    
-    public func computeViewMatrix() -> float4x4 {
+        
         // orientation matrix
         let o0 = float4(right[0], right[1], right[2], 0);
         let o1 = float4(up[0], up[1], up[2], 0);
@@ -73,11 +78,8 @@ class Camera {
         let t3 = float4(0, 0, 0, 1);
         let translation = float4x4(rows: [t0, t1, t2, t3]);
         
-        let view = orientation * translation
-        return view
-    }
-    
-    public func computeProjectionMatrix() -> float4x4 {
+        view_matrix = orientation * translation
+        
         // calculate projection matrix
         let s = 1 / (tanf((fovy / 2) * Float.pi / 180));
         let p = farClip / (farClip - nearClip);
@@ -88,12 +90,47 @@ class Camera {
         let p2 = float4(0, 0, p, q);
         let p3 = float4(0, 0, 1, 0);
         
-        let projection = float4x4(rows: [p0, p1, p2, p3] );
-        return projection
+        proj_matrix = float4x4(rows: [p0, p1, p2, p3] );
+    }
+    
+    public func computeViewMatrix() -> float4x4 {
+        return view_matrix
+    }
+    
+    public func computeProjectionMatrix() -> float4x4 {
+        return proj_matrix
     }
     
     public func computeViewProjectionMatrix() -> float4x4 {
-        return computeProjectionMatrix() * computeViewMatrix()
+        return proj_matrix * view_matrix
+    }
+    
+    func extractPlanes(planes : inout [float4]) {
+        let viewProj = computeViewProjectionMatrix()
+        
+        let row0 = float4(viewProj.columns.0.x,
+                          viewProj.columns.1.x,
+                          viewProj.columns.2.x,
+                          viewProj.columns.3.x)
+        let row1 = float4(viewProj.columns.0.y,
+                          viewProj.columns.1.y,
+                          viewProj.columns.2.y,
+                          viewProj.columns.3.y)
+        let row2 = float4(viewProj.columns.0.z,
+                          viewProj.columns.1.z,
+                          viewProj.columns.2.z,
+                          viewProj.columns.3.z)
+        let row3 = float4(viewProj.columns.0.w,
+                          viewProj.columns.1.w,
+                          viewProj.columns.2.w,
+                          viewProj.columns.3.w)
+        
+        planes.append(row3 - row0)
+        planes.append(row3 + row0)
+        planes.append(row3 - row1)
+        planes.append(row3 + row1)
+        planes.append(row3 - row2)
+        planes.append(row3 + row2)
     }
     
     func update() {
