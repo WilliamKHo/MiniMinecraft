@@ -24,6 +24,8 @@ public class TerrainManager {
     var controlPointsIndicesBuffer : MTLBuffer!
     var voxelValuesBuffer : MTLBuffer!
     
+    var updateBuffers = true
+    
     init(device: MTLDevice, library: MTLLibrary, inflightChunksCount: Int) {
         self.device = device
         self.library = library
@@ -81,6 +83,7 @@ public class TerrainManager {
     }
     
     func generateTerrain(commandBuffer : MTLCommandBuffer?, camera : Camera) {
+        if !updateBuffers { return }
         let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
         let chunkDimension = self.terrainState.chunkDimension
         
@@ -111,5 +114,9 @@ public class TerrainManager {
             commandEncoder?.setTessellationFactorBuffer(tessellationBuffer, offset: 0, instanceStride: 0)
             commandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: chunkDimension * chunkDimension * chunkDimension * 6, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
         }
+    }
+    
+    func toggleFreeze() {
+        updateBuffers = !updateBuffers
     }
 }
