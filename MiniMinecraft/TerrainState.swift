@@ -52,23 +52,26 @@ class TerrainState {
     }
     
     func addNeighbors( queue : inout [simd_int3], chunk : simd_int3, traversed : inout [Int32 : [Int32 : [Int32 : Float]]]) {
-        let posX = simd_int3(chunk.x+1, chunk.y, chunk.z)
-        if !containsChunk(chunks: &traversed, chunk: posX) { queue.append(posX) }
-        
-        let posY = simd_int3(chunk.x, chunk.y+1, chunk.z)
-        if !containsChunk(chunks: &traversed, chunk: posX) { queue.append(posY) }
-        
-        let posZ = simd_int3(chunk.x, chunk.y, chunk.z+1)
-        if !containsChunk(chunks: &traversed, chunk: posX) { queue.append(posZ) }
-        
-        let negX = simd_int3(chunk.x-1, chunk.y, chunk.z)
-        if !containsChunk(chunks: &traversed, chunk: posX) { queue.append(negX) }
-        
-        let negY = simd_int3(chunk.x, chunk.y-1, chunk.z)
-        if !containsChunk(chunks: &traversed, chunk: posX) { queue.append(negY) }
-        
-        let negZ = simd_int3(chunk.x, chunk.y, chunk.z-1)
-        if !containsChunk(chunks: &traversed, chunk: posX) { queue.append(negZ) }
+        for x in -1...1 {
+            for y in -1...1 {
+                for z in -1...1 {
+                    if !(x == 0 && y == 0 && z == 0) {
+                        let pos = simd_int3(chunk.x+Int32(x), chunk.y+Int32(y), chunk.z+Int32(z))
+                        if !containsChunk(chunks: &traversed, chunk: pos) { queue.append(pos) }
+                    }
+                }
+            }
+        }
+    }
+    
+    func chunkIntToWorld(chunkId : int3, camera : Camera) -> float3 {
+        let chunkDim = Int32(chunkDimension)
+        var chunkWorld = float3(Float(chunkId.x * chunkDim), Float(chunkId.y * chunkDim), Float(chunkId.z * chunkDim))
+        chunkWorld += camera.pos
+        chunkWorld.x = floorf(chunkWorld.x / Float(chunkDimension)) * Float(chunkDimension)
+        chunkWorld.y = floorf(chunkWorld.y / Float(chunkDimension)) * Float(chunkDimension)
+        chunkWorld.z = floorf(chunkWorld.z / Float(chunkDimension)) * Float(chunkDimension)
+        return chunkWorld
     }
     
     func inCameraView(chunk : simd_int3, camera : Camera, planes : [float4]) -> Bool {
@@ -94,9 +97,9 @@ class TerrainState {
             }
             if !possible { return false }
         }
-        // return true
-        let chunkVector = normalize(chunkWorld - camera.pos)
-        if abs(dot(chunkVector, camera.forward)) > 0.7 { return true } else { return false }
+        return true
+//        let chunkVector = normalize(chunkWorld - camera.pos)
+//        if abs(dot(chunkVector, camera.forward)) > 0.7 { return true } else { return false }
     }
     
     func computeChunksToRender( chunks : inout [vector_float3], eye : vector_float3, count : Int, camera : Camera) {
@@ -105,15 +108,8 @@ class TerrainState {
         var planes = [float4]()
         camera.extractPlanes(planes: &planes)
         var queue = [simd_int3]()
-        queue.append(simd_int3(1, 0, 0))
-        queue.append(simd_int3(-1, 0, 0))
-        queue.append(simd_int3(0, 1, 0))
-        queue.append(simd_int3(0, -1, 0))
-        queue.append(simd_int3(0, 0, 1))
-        queue.append(simd_int3(0, 0, -1))
-        chunks.append(vector_float3(Float(chunkDimension),
-                                    Float(chunkDimension),
-                                    Float(chunkDimension)))
+        addNeighbors(queue: &queue, chunk: int3(0, 0, 0), traversed: &traversed)
+        chunks.append(chunkIntToWorld(chunkId: int3(0, 0, 0), camera: camera))
         for _ in 0..<count-1 {
             // Dequeue until we see something valid
             var validChunkFound = false
@@ -126,13 +122,7 @@ class TerrainState {
                     addChunk(chunks: &traversed, chunk: chunk)
                     if inCameraView(chunk : chunk, camera : camera, planes : planes) {
                         addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed)
-                        let chunkDim = Int32(chunkDimension)
-                        var chunkWorld = float3(Float(chunk.x * chunkDim), Float(chunk.y * chunkDim), Float(chunk.z * chunkDim))
-                        chunkWorld += camera.pos
-                        chunkWorld.x = floorf(chunkWorld.x / Float(chunkDimension)) * Float(chunkDimension)
-                        chunkWorld.y = floorf(chunkWorld.y / Float(chunkDimension)) * Float(chunkDimension)
-                        chunkWorld.z = floorf(chunkWorld.z / Float(chunkDimension)) * Float(chunkDimension)
-                        chunks.append(chunkWorld)
+                        chunks.append(chunkIntToWorld(chunkId: chunk, camera: camera))
                         validChunkFound = true
                     }
                 }

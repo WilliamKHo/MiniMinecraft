@@ -57,6 +57,7 @@ class Camera {
         
         self.view_matrix = float4x4(1.0)
         self.proj_matrix = float4x4(1.0)
+        recomputeAttributes()
     }
     
     public func recomputeAttributes() {
@@ -135,14 +136,15 @@ class Camera {
     
     func update() {
         let dt : Float = 1.0 / 60.0
-        if (length(velocity) > 10.0){
-            velocity = normalize(velocity) * 10
+        velocity += dt * acceleration
+        if (length(velocity) > 600.0){
+            velocity = normalize(velocity) * 600
         }
-        if (length(velocity) > 0.5) {
-            velocity *= 0.8
-        } else if (length(velocity) < 0.5) {
-            velocity = float3(0.0, 0.0, 0.0)
+        if (length(acceleration) < 0.5) {
+            velocity *= 0.9
         }
+        self.pos += dt * velocity
+        self.ref += dt * velocity
         
         if (length(rotVelocity) > 10.0){
             rotVelocity = normalize(rotVelocity) * 10
@@ -153,10 +155,8 @@ class Camera {
             rotVelocity = float3(0.0, 0.0, 0.0)
         }
         rotVelocity += dt * rotAcceleration
-        rotateY()
-        velocity += dt * acceleration
-        self.pos += velocity
-        self.ref += velocity
+        rotateYaw()
+        rotatePitch()
         recomputeAttributes()
     }
     
@@ -164,7 +164,17 @@ class Camera {
         return deg * Float.pi / 180.0
     }
     
-    func rotateY() {
+    func rotatePitch() {
+        var mat : float4x4 = simd_float4x4(1.0)
+        let radians = deg2Rad(rotVelocity.x)
+        mat = mat.rotate(radians: radians, self.right.x, self.right.y, self.right.z)
+        ref = ref - pos
+        var newRef = mat * float4(ref.x, ref.y, ref.z, 1.0)
+        ref = float3(newRef.x, newRef.y, newRef.z)
+        ref = ref + pos
+    }
+    
+    func rotateYaw() {
         var mat : float4x4 = simd_float4x4(1.0)
         let radians = deg2Rad(rotVelocity.y)
         mat = mat.rotate(radians: radians, 0.0, 1.0, 0.0)
@@ -196,6 +206,12 @@ class Camera {
         case 124:
             rotAcceleration = float3(0.0, 0.0, 0.0)
             
+        case 125:
+            rotAcceleration = float3(0.0, 0.0, 0.0)
+            
+        case 126:
+            rotAcceleration = float3(0.0, 0.0, 0.0)
+            
         default:
             break;
         }
@@ -206,29 +222,31 @@ class Camera {
         
         switch Int(event.keyCode) {
         case kVK_ANSI_W:
-            acceleration += 5 * self.forward
+            acceleration += 250 * self.forward
             
         case kVK_ANSI_A:
-            acceleration -= 5 * self.right
+            acceleration -= 250 * self.right
             
         case kVK_ANSI_S:
-            acceleration -= 5 * self.forward
+            acceleration -= 250 * self.forward
             
         case kVK_ANSI_D:
-            acceleration += 5 * self.right
+            acceleration += 250 * self.right
             
         case 123:
-            rotAcceleration.y = 20
+            rotAcceleration.y = 50
             
         case 124:
-            rotAcceleration.y = -20
+            rotAcceleration.y = -50
+            
+        case 125:
+            rotAcceleration.x = 50
+        
+        case 126:
+            rotAcceleration.x = -50
             
         default:
             break;
-        }
-        
-        if (length(acceleration) > 5.0) {
-            acceleration = 5 * normalize(acceleration)
         }
     }
     

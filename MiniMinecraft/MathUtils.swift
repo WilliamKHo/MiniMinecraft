@@ -14,7 +14,7 @@ func pointPlaneDistance(plane : float4, point : float3) -> Float {
     var normal = float3(plane.x, plane.y, plane.z)
     let distance = plane.w / length(normal)
     normal = normalize(normal)
-    let p0 = normal * distance
+    let p0 = -normal * distance
     let pointVector = point - p0
     return dot(normal, pointVector)
 }
