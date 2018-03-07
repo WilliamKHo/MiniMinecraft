@@ -33,6 +33,12 @@ class MetalView: MTKView {
         self.capManager = MTLCaptureManager.shared()
         self.capScope = self.capManager.makeCaptureScope(device: device!)
         self.capScope.label = "draw capture scope"
+        
+        var pos0 = float3(0.2, 0.1, 0.3);
+        var pos1 = float3(1.0, 12.0, 1.0);
+        var perlin0 = perlin(pos: pos0);
+        var perlin1 = perlin(pos: pos1);
+        var blah = perlin0 + perlin1
     }
     
     override func draw(_ dirtyRect: NSRect) {

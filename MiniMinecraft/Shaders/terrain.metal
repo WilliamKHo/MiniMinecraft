@@ -30,3 +30,80 @@ uint8_t inSphereTerrain(thread float3 pos) {
     return (length(pos - center) < radius) ? 1 : 0;
 }
 
+float3 randGrad(float3 n) {
+    float3 result = float3(fract(sin(dot(n, float3(12.9898, -56.31985, 4.1414))) * 43758.5453),
+                          fract(cos(dot(n, float3(-32.53920, -324.32515, 89.3203))) * 21044.2185),
+                          fract(sin(dot(n, float3(39.9315028, 1.32593, -304.3285))) * 54083.3290));
+    result.x -= 0.5f;
+    result.y -= 0.5f;
+    result.z -= 0.5f;
+    result = normalize(result);
+    return result;
+}
+
+float perlinInterp(float v1, float v2, float t) {
+    float weight = 6.0f * t * t * t * t * t
+                    - 15.0f * t * t * t * t
+                    + 10.0f * t * t * t;
+    return v1 + weight * (v2 - v1);
+}
+
+float perlin(float3 pos) {
+    float3 min = float3(floor(pos.x), floor(pos.y), floor(pos.z));
+    float3 grad = randGrad(min);
+    float3 dist = pos - min;
+    float3 unitLocation = dist;
+    
+    float w000 = dot(grad, dist);
+    
+    grad = randGrad(float3(min.x + 1.0f, min.y, min.z));
+    dist.x -= 1.0f;
+    float w100 = dot(grad, dist);
+    
+    grad = randGrad(float3(min.x, min.y + 1.0f, min.z));
+    dist.x += 1.0f;
+    dist.y -= 1.0f;
+    float w010 = dot(grad, dist);
+    
+    grad = randGrad(float3(min.x, min.y, min.z + 1.0f));
+    dist.y += 1.0f;
+    dist.z -= 1.0f;
+    float w001 = dot(grad, dist);
+    
+    grad = randGrad(float3(min.x + 1.0f, min.y + 1.0f, min.z));
+    dist.z += 1.0f;
+    dist.x -= 1.0f;
+    dist.y -= 1.0f;
+    float w110 = dot(grad, dist);
+    
+    grad = randGrad(float3(min.x, min.y + 1.0f, min.z + 1.0f));
+    dist.x += 1.0f;
+    dist.z -= 1.0f;
+    float w011 = dot(grad, dist);
+    
+    grad = randGrad(float3(min.x + 1.0f, min.y, min.z + 1.0f));
+    dist.x -= 1.0f;
+    dist.y += 1.0f;
+    float w101 = dot(grad, dist);
+    
+    grad = randGrad(float3(min.x + 1.0f, min.y + 1.0f, min.z + 1.0f));
+    dist.y -= 1.0f;
+    float w111 = dot(grad, dist);
+    
+    float x00 = perlinInterp(w000, w100, unitLocation.x);
+    float x01 = perlinInterp(w001, w101, unitLocation.x);
+    float x10 = perlinInterp(w010, w110, unitLocation.x);
+    float x11 = perlinInterp(w011, w111, unitLocation.x);
+    
+    float y0 = perlinInterp(x00, x10, unitLocation.y);
+    float y1 = perlinInterp(x01, x11, unitLocation.y);
+
+    return (perlinInterp(y0, y1, unitLocation.z) + 1.f) / 2.f;
+}
+
+uint8_t inPerlinTerrain(thread float3 pos) {
+    float threshold = 0.4f;
+    float3 sample = pos / 8.0f;
+    return (perlin(sample) < threshold) ? 1 : 0;
+}
+
