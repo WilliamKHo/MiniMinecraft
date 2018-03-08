@@ -22,7 +22,7 @@ class MetalView: MTKView {
     
     required init(coder: NSCoder) {
         super.init(coder: coder)
-        self.preferredFramesPerSecond = 60
+//        self.preferredFramesPerSecond = 60
         device = MTLCreateSystemDefaultDevice()
         RenderManager.sharedInstance.initManager(device!, view: self as MTKView)
         commandQueue = device?.makeCommandQueue()

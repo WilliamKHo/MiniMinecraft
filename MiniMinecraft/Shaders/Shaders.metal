@@ -56,11 +56,12 @@ kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
     //if (inSinWeightedTerrain(output) > 0) valid = 0.0f;
     //if (inCheckeredTerrain(output) > 0) valid = 0.0f;
     //if (inSphereTerrain(output) > 0) valid = 0.0f;
-    if (inPerlinTerrain(output) > 0) valid = 0.0f;
+    //if (inPerlinTerrain(output) > 0) valid = 0.0f;
+    if (inFrameTerrain(output) > 0) valid = 0.0f;
     uint8_t cubeMarchKey = (valid > 0) ? 8 : 15; // Need to revise face making table
-    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(1.0f, 0.0f, 0.0f)) * 4);
-    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(0.0f, 1.0f, 0.0f)) * 2);
-    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(0.0f, 0.0f, 1.0f)));
+    cubeMarchKey = cubeMarchKey^(inFrameTerrain(output + float3(1.0f, 0.0f, 0.0f)) * 4);
+    cubeMarchKey = cubeMarchKey^(inFrameTerrain(output + float3(0.0f, 1.0f, 0.0f)) * 2);
+    cubeMarchKey = cubeMarchKey^(inFrameTerrain(output + float3(0.0f, 0.0f, 1.0f)));
     
     float3 voxelValues = cubeMarchTable[cubeMarchKey];
     

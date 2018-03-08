@@ -107,3 +107,19 @@ uint8_t inPerlinTerrain(thread float3 pos) {
     return (perlin(sample) < threshold) ? 1 : 0;
 }
 
+uint8_t inFrameTerrain(thread float3 pos) {
+//    float3 test = (pos + float3(8.f, 8.f, 8.f)) / 16.0f;
+//    test = float3(floor(test.x) * 16.f, floor(test.y) * 16.f, floor(test.z) * 16.f);
+//    int count = 0;
+//    count += (abs(pos.x - test.x) < 2.f) ? 1 : 0;
+//    count += (abs(pos.y - test.y) < 2.f) ? 1 : 0;
+//    count += (abs(pos.z - test.z) < 2.f) ? 1 : 0;
+    float radius = 2.5f;
+    float3 center = float3((floor(pos.x / 16.0f)) * 16.0f + 8.f,
+                           (floor(pos.y / 16.0f)) * 16.0f + 8.f,
+                           (floor(pos.z / 16.0f)) * 16.0f + 8.f);
+    return (length(pos - center) < radius) ? 1 : 0;
+
+    //return count == 2 ? 1 : 0;
+}
+

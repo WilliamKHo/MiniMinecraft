@@ -137,8 +137,8 @@ class Camera {
     func update() {
         let dt : Float = 1.0 / 60.0
         velocity += dt * acceleration
-        if (length(velocity) > 600.0){
-            velocity = normalize(velocity) * 600
+        if (length(velocity) > 100.0){
+            velocity = normalize(velocity) * 100
         }
         if (length(acceleration) < 0.5) {
             velocity *= 0.9
@@ -200,6 +200,12 @@ class Camera {
         case kVK_ANSI_D:
             acceleration = float3(0.0, 0.0, 0.0)
             
+        case kVK_ANSI_Q:
+            acceleration = float3(0.0, 0.0, 0.0)
+            
+        case kVK_ANSI_Z:
+            acceleration = float3(0.0, 0.0, 0.0)
+            
         case 123:
             rotAcceleration = float3(0.0, 0.0, 0.0)
             
@@ -225,13 +231,19 @@ class Camera {
             acceleration += 250 * self.forward
             
         case kVK_ANSI_A:
-            acceleration -= 250 * self.right
+            acceleration -= 150 * self.right
             
         case kVK_ANSI_S:
             acceleration -= 250 * self.forward
             
         case kVK_ANSI_D:
-            acceleration += 250 * self.right
+            acceleration += 150 * self.right
+            
+        case kVK_ANSI_Q:
+            acceleration += 150 * self.up
+        
+        case kVK_ANSI_Z:
+            acceleration -= 150 * self.up
             
         case 123:
             rotAcceleration.y = 50
