@@ -114,7 +114,7 @@ public class TerrainManager {
         let chunkDimension = self.terrainState.chunkDimension
         //var chunkList = [vector_float3]()
         commandEncoder?.setVertexBuffer(controlPointsIndicesBuffer, offset: 0, index: 2)
-        for i in 0..<20 { //self.terrainState.inflightChunksCount {
+        for i in 0..<self.terrainState.inflightChunksCount {
             commandEncoder?.setVertexBuffer(self.terrainState.chunk(at: i).terrainBuffer, offset: 0, index: 0)
             commandEncoder?.setTessellationFactorBuffer(tessellationBuffer, offset: 0, instanceStride: 0)
             commandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: chunkDimension * chunkDimension * chunkDimension * 6, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)

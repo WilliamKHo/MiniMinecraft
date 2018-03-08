@@ -35,6 +35,11 @@ class TerrainState {
     }
     
     func containsChunk( chunks : inout [Int32 : [Int32 : [Int32 : Float]]], chunk : simd_int3) -> Bool {
+//        if let xLayer = chunks[chunk.x] {
+//            if let yLayer = xLayer[chunk.y] {
+//                if let _ = yLayer[chunk.z] { return true } else { return false }
+//            } else { return false }
+//        } else { return false }
         if let xLayer = chunks[chunk.x] {
             if let yLayer = xLayer[chunk.y] {
                 if let _ = yLayer[chunk.z] { return true } else { return false }
@@ -57,7 +62,10 @@ class TerrainState {
                 for z in -1...1 {
                     if !(x == 0 && y == 0 && z == 0) {
                         let pos = simd_int3(chunk.x+Int32(x), chunk.y+Int32(y), chunk.z+Int32(z))
-                        if !containsChunk(chunks: &traversed, chunk: pos) { queue.append(pos) }
+                        if !containsChunk(chunks: &traversed, chunk: pos) {
+                            queue.append(pos)
+                            addChunk(chunks: &traversed, chunk: pos)
+                        }
                     }
                 }
             }
@@ -119,7 +127,6 @@ class TerrainState {
                 if queue.isEmpty { break //This should never happen, we're BFSing into an infinite space
                 } else {
                     chunk = queue.removeFirst()
-                    addChunk(chunks: &traversed, chunk: chunk)
                     if inCameraView(chunk : chunk, camera : camera, planes : planes) {
                         addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed)
                         chunks.append(chunkIntToWorld(chunkId: chunk, camera: camera))
