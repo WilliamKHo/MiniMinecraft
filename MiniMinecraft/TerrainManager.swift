@@ -26,6 +26,8 @@ public class TerrainManager {
     
     var updateBuffers = true
     
+    private var time : Float = 0.0
+    
     init(device: MTLDevice, library: MTLLibrary, inflightChunksCount: Int) {
         self.device = device
         self.library = library
@@ -84,6 +86,7 @@ public class TerrainManager {
     
     func generateTerrain(commandBuffer : MTLCommandBuffer?, camera : Camera) {
         if !updateBuffers { return }
+        self.time += 1.0 / 60.0
         let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
         let chunkDimension = self.terrainState.chunkDimension
         
@@ -102,6 +105,7 @@ public class TerrainManager {
             computeCommandEncoder?.setBytes(startPos, length: MemoryLayout<vector_float3>.size, index: 0)
             computeCommandEncoder?.setBuffer(buffer, offset: 0, index: 1)
             computeCommandEncoder?.setBuffer(tessBuffer, offset: 0, index: 3)
+            computeCommandEncoder?.setBytes([self.time], length: MemoryLayout<Float>.size, index: 4)
             computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         }
         computeCommandEncoder?.endEncoding()

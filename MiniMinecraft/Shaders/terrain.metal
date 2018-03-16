@@ -41,6 +41,20 @@ float3 randGrad(float3 n) {
     return result;
 }
 
+float3 randGrad4(float4 n) {
+    float3 result = float3(fract(sin(dot(float3(n), float3(12.9898, -56.31985, 4.1414))) * 43758.5453),
+                           fract(cos(dot(float3(n), float3(-32.53920, -324.32515, 89.3203))) * 21044.2185),
+                           fract(sin(dot(float3(n), float3(39.9315028, 1.32593, -304.3285))) * 54083.3290)) +
+                    float3(fract(sin(n.a * 21.13240) * 2134.214104),
+                           fract(sin(n.a * 1221.214) * 41.218421),
+                           fract(sin(n.a * -218.1208) * -218491.219023));
+    result.x -= 1.f;
+    result.y -= 1.f;
+    result.z -= 1.f;
+    result = normalize(result);
+    return result;
+}
+
 float perlinInterp(float v1, float v2, float t) {
     float weight = 6.0f * t * t * t * t * t
                     - 15.0f * t * t * t * t
@@ -105,6 +119,66 @@ uint8_t inPerlinTerrain(thread float3 pos) {
     float threshold = 0.4f;
     float3 sample = pos / 8.0f;
     return (perlin(sample) < threshold) ? 1 : 0;
+}
+
+float perlin4(float4 pos) {
+    float3 min = float3(floor(pos.x), floor(pos.y), floor(pos.z));
+    float3 grad = randGrad4(float4(min.x, min.y, min.z, pos.a));
+    float3 dist = float3(pos) - min;
+    float3 unitLocation = dist;
+    
+    float w000 = dot(grad, dist);
+    
+    grad = randGrad4(float4(min.x + 1.0f, min.y, min.z, pos.a));
+    dist.x -= 1.0f;
+    float w100 = dot(grad, dist);
+    
+    grad = randGrad4(float4(min.x, min.y + 1.0f, min.z, pos.a));
+    dist.x += 1.0f;
+    dist.y -= 1.0f;
+    float w010 = dot(grad, dist);
+    
+    grad = randGrad4(float4(min.x, min.y, min.z + 1.0f, pos.a));
+    dist.y += 1.0f;
+    dist.z -= 1.0f;
+    float w001 = dot(grad, dist);
+    
+    grad = randGrad4(float4(min.x + 1.0f, min.y + 1.0f, min.z, pos.a));
+    dist.z += 1.0f;
+    dist.x -= 1.0f;
+    dist.y -= 1.0f;
+    float w110 = dot(grad, dist);
+    
+    grad = randGrad4(float4(min.x, min.y + 1.0f, min.z + 1.0f, pos.a));
+    dist.x += 1.0f;
+    dist.z -= 1.0f;
+    float w011 = dot(grad, dist);
+    
+    grad = randGrad4(float4(min.x + 1.0f, min.y, min.z + 1.0f, pos.a));
+    dist.x -= 1.0f;
+    dist.y += 1.0f;
+    float w101 = dot(grad, dist);
+    
+    grad = randGrad4(float4(min.x + 1.0f, min.y + 1.0f, min.z + 1.0f, pos.a));
+    dist.y -= 1.0f;
+    float w111 = dot(grad, dist);
+    
+    float x00 = perlinInterp(w000, w100, unitLocation.x);
+    float x01 = perlinInterp(w001, w101, unitLocation.x);
+    float x10 = perlinInterp(w010, w110, unitLocation.x);
+    float x11 = perlinInterp(w011, w111, unitLocation.x);
+    
+    float y0 = perlinInterp(x00, x10, unitLocation.y);
+    float y1 = perlinInterp(x01, x11, unitLocation.y);
+    
+    return (perlinInterp(y0, y1, unitLocation.z) + 1.f) / 2.f;
+}
+
+uint8_t inPerlin4Terrain(thread float4 pos) {
+    float threshold = 0.4f;
+    float sample1 = perlin4(float4(pos.x, pos.y, pos.z, floor(pos.w) * 8.f) / 8.0f);
+    float sample2 = perlin4(float4(pos.x, pos.y, pos.z, (floor(pos.w) + 1.f) * 8.f) / 8.0f);
+    return (sample1 + fract(pos.w) * (sample2 - sample1) < threshold) ? 1 : 0;
 }
 
 uint8_t inFrameTerrain(thread float3 pos) {

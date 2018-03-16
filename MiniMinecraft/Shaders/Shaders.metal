@@ -44,6 +44,7 @@ kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
                                       device float4* voxels [[buffer(1)]],
                                       device float3* cubeMarchTable [[buffer(2)]],
                                       device MTLQuadTessellationFactorsHalf* factors [[ buffer(3) ]],
+                                      constant float& time [[ buffer(4) ]],
                                       uint pid [[ thread_position_in_grid ]]) {
     if (pid >= CHUNKDIM * CHUNKDIM * CHUNKDIM) return;
     uint voxelId = pid * 3;
@@ -53,16 +54,17 @@ kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
     uint x = pid - y * CHUNKDIM - z * CHUNKDIM * CHUNKDIM;
     
     float3 output = float3(x, y, z) + startPos;
+    float4 test = float4(output.x, output.y, output.z, time);
     float valid = 1.0f;
     //if (inSinWeightedTerrain(output) > 0) valid = 0.0f;
     //if (inCheckeredTerrain(output) > 0) valid = 0.0f;
 //    if (inSphereTerrain(output) > 0) valid = 0.0f;
-    if (inPerlinTerrain(output) > 0) valid = 0.0f;
+    if (inPerlin4Terrain(test) > 0) valid = 0.0f;
     //if (inFrameTerrain(output) > 0) valid = 0.0f;
     uint8_t cubeMarchKey = (valid > 0) ? 0 : 15; // Need to revise face making table
-    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(1.0f, 0.0f, 0.0f)) * 4);
-    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(0.0f, 1.0f, 0.0f)) * 2);
-    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(0.0f, 0.0f, 1.0f)));
+    cubeMarchKey = cubeMarchKey^(inPerlin4Terrain(test + float4(1.0f, 0.0f, 0.0f, 0.0f)) * 4);
+    cubeMarchKey = cubeMarchKey^(inPerlin4Terrain(test + float4(0.0f, 1.0f, 0.0f, 0.0f)) * 2);
+    cubeMarchKey = cubeMarchKey^(inPerlin4Terrain(test + float4(0.0f, 0.0f, 1.0f, 0.0f)));
     
     float3 voxelValues = cubeMarchTable[cubeMarchKey];
     
