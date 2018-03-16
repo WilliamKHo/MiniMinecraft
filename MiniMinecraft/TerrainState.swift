@@ -26,7 +26,7 @@ class TerrainState {
     init(device: MTLDevice, inflightChunksCount: Int) {
         self.inflightChunksCount = inflightChunksCount
         self.chunks = [TerrainChunk]()
-        let bufferLength = chunkDimension * chunkDimension * chunkDimension * 6 * 4; //chunk dimensions * floats4 per voxel
+        let bufferLength = chunkDimension * chunkDimension * chunkDimension * 3 * 4; //chunk dimensions * floats4 per voxel
         for _ in 0..<inflightChunksCount {
             chunks.append(TerrainChunk(
                 startPosition: vector_float3(0.0, 0.0, 0.0), //unused so far

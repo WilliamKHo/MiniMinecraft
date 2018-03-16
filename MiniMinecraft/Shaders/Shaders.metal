@@ -45,7 +45,7 @@ kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
                                       device float3* cubeMarchTable [[buffer(2)]],
                                       uint pid [[ thread_position_in_grid ]]) {
     if (pid >= CHUNKDIM * CHUNKDIM * CHUNKDIM) return;
-    uint voxelId = pid * 6;
+    uint voxelId = pid * 3;
     
     uint z = (uint) floor(pid / (float)(CHUNKDIM * CHUNKDIM));
     uint y = (uint) floor((pid - (z * CHUNKDIM * CHUNKDIM)) / (float) CHUNKDIM);
@@ -68,9 +68,6 @@ kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
     voxels[voxelId] = float4(output, voxelValues.x);
     voxels[voxelId+1] = float4(output, voxelValues.y);
     voxels[voxelId+2] = float4(output, voxelValues.z);
-    voxels[voxelId+3] = float4(output, -1.0f);
-    voxels[voxelId+4] = float4(output, -1.0f);
-    voxels[voxelId+5] = float4(output, -1.0f);
 }
 
 
