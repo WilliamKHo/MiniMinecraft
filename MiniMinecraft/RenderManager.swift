@@ -183,6 +183,8 @@ public class RenderManager {
     func keyUpEvent(_ event : NSEvent) {
         if (event.keyCode == kVK_ANSI_F) {
             terrainManager.toggleFreeze()
+        } else if (event.keyCode == kVK_ANSI_T) {
+            terrainManager.toggleTime()
         }
         camera.keyUpEvent(event)
     }

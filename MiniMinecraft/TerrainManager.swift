@@ -25,6 +25,7 @@ public class TerrainManager {
     var voxelValuesBuffer : MTLBuffer!
     
     var updateBuffers = true
+    var updateTime = false
     
     private var time : Float = 0.0
     
@@ -86,7 +87,7 @@ public class TerrainManager {
     
     func generateTerrain(commandBuffer : MTLCommandBuffer?, camera : Camera) {
         if !updateBuffers { return }
-        self.time += 1.0 / 60.0
+        if updateTime{ self.time += 1.0 / 60.0 }
         let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
         let chunkDimension = self.terrainState.chunkDimension
         
@@ -125,5 +126,9 @@ public class TerrainManager {
     
     func toggleFreeze() {
         updateBuffers = !updateBuffers
+    }
+    
+    func toggleTime() {
+        updateTime = !updateTime
     }
 }
