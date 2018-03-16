@@ -83,7 +83,7 @@ public class RenderManager {
         renderCommandEncoder?.setRenderPipelineState(rps!)
         renderCommandEncoder?.setVertexBuffer(graphicsBuffer, offset: 0, index: 1)
         //renderCommandEncoder?.setTriangleFillMode(.lines)
-        //renderCommandEncoder?.setCullMode(.back)
+        renderCommandEncoder?.setCullMode(.back)
         renderCommandEncoder?.setDepthStencilState(depthStencilState)
 
         terrainManager.drawTerrain(renderCommandEncoder, tessellationBuffer: tessellationFactorsBuffer)
