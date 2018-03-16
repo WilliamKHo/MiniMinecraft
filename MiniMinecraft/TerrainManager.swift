@@ -98,8 +98,10 @@ public class TerrainManager {
         for i in 0..<self.terrainState.inflightChunksCount {
             let startPos: [vector_float3] = [chunks[i]]
             let buffer = self.terrainState.chunk(at: i).terrainBuffer
+            let tessBuffer = self.terrainState.chunk(at: i).tessellationFactorBuffer
             computeCommandEncoder?.setBytes(startPos, length: MemoryLayout<vector_float3>.size, index: 0)
             computeCommandEncoder?.setBuffer(buffer, offset: 0, index: 1)
+            computeCommandEncoder?.setBuffer(tessBuffer, offset: 0, index: 3)
             computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         }
         computeCommandEncoder?.endEncoding()
@@ -109,11 +111,11 @@ public class TerrainManager {
         let chunkDimension = self.terrainState.chunkDimension
         //var chunkList = [vector_float3]()
         commandEncoder?.setVertexBuffer(controlPointsIndicesBuffer, offset: 0, index: 2)
-        for i in 0..<1{//}<self.terrainState.inflightChunksCount {
+        for i in 0..<self.terrainState.inflightChunksCount {
             commandEncoder?.setVertexBuffer(self.terrainState.chunk(at: i).terrainBuffer, offset: 0, index: 0)
-            commandEncoder?.setTessellationFactorBuffer(tessellationBuffer, offset: 0, instanceStride: 0)
+            commandEncoder?.setTessellationFactorBuffer(self.terrainState.chunk(at: i).tessellationFactorBuffer, offset: 0, instanceStride: 0)
             // TODO : change this line
-            commandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: chunkDimension * chunkDimension * chunkDimension * 6, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
+            commandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: chunkDimension * chunkDimension * chunkDimension * 3, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
         }
     }
     

@@ -12,6 +12,7 @@ import Metal
 struct TerrainChunk {
     var startPosition : vector_float3!
     var terrainBuffer : MTLBuffer!
+    var tessellationFactorBuffer: MTLBuffer!
     
     func distance(camera : Camera) -> Float {
         return 0.0
@@ -26,11 +27,14 @@ class TerrainState {
     init(device: MTLDevice, inflightChunksCount: Int) {
         self.inflightChunksCount = inflightChunksCount
         self.chunks = [TerrainChunk]()
-        let bufferLength = chunkDimension * chunkDimension * chunkDimension * 3 * 4; //chunk dimensions * floats4 per voxel
+        let numVoxels = chunkDimension * chunkDimension * chunkDimension
+        let floatsPerVoxel = 12; //3 faces * 4 floats
+        let uIntsPerVoxel = 18; //3 faces * 6 tessellation factors
         for _ in 0..<inflightChunksCount {
             chunks.append(TerrainChunk(
                 startPosition: vector_float3(0.0, 0.0, 0.0), //unused so far
-                terrainBuffer: device.makeBuffer(length: MemoryLayout<Float32>.stride * bufferLength, options: [])))
+                terrainBuffer: device.makeBuffer(length: MemoryLayout<Float32>.stride * numVoxels * floatsPerVoxel, options: []),
+                tessellationFactorBuffer: device.makeBuffer(length: numVoxels * uIntsPerVoxel * MemoryLayout<UInt16>.stride, options: [])))
         }
     }
     

@@ -154,7 +154,7 @@ public class RenderManager {
         computeCommandEncoder?.setBytes(insideFactor, length: MemoryLayout<Float>.size, index: 1)
         let threadExecutionWidth = ps_tessellation.threadExecutionWidth
         let threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
-        let threadgroupsPerGrid = MTLSize(width: ((16 * 16 * 16 * 6) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
+        let threadgroupsPerGrid = MTLSize(width: ((16 * 16 * 16 * 3) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
         computeCommandEncoder?.setBuffer(tessellationFactorsBuffer, offset: 0, index: 2)
         computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         computeCommandEncoder?.endEncoding()
@@ -165,7 +165,7 @@ public class RenderManager {
     }
     
     func setUpBuffers() {
-        tessellationFactorsBuffer = device!.makeBuffer(length: 16 * 16 * 16 * 3 * 6 * 2 * MemoryLayout<UInt16>.stride, options: [])
+        tessellationFactorsBuffer = device!.makeBuffer(length: 16 * 16 * 16 * 3 * 6 * MemoryLayout<UInt16>.stride, options: [])
         graphicsBuffer = device!.makeBuffer(length: MemoryLayout<Uniforms>.stride, options: [])
     }
     

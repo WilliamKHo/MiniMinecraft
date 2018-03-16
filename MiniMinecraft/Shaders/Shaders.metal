@@ -43,6 +43,7 @@ fragment float4 fragment_func(Vertex vert [[stage_in]]) {
 kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
                                       device float4* voxels [[buffer(1)]],
                                       device float3* cubeMarchTable [[buffer(2)]],
+                                      device MTLQuadTessellationFactorsHalf* factors [[ buffer(3) ]],
                                       uint pid [[ thread_position_in_grid ]]) {
     if (pid >= CHUNKDIM * CHUNKDIM * CHUNKDIM) return;
     uint voxelId = pid * 3;
@@ -68,6 +69,40 @@ kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
     voxels[voxelId] = float4(output, voxelValues.x);
     voxels[voxelId+1] = float4(output, voxelValues.y);
     voxels[voxelId+2] = float4(output, voxelValues.z);
+    
+    // Tessellation
+    
+    MTLQuadTessellationFactorsHalf factorX = factors[voxelId];
+    float xT = ((cubeMarchKey & 4) > 0) ? 1.f : 0.f;
+    factorX.edgeTessellationFactor[0] = xT;
+    factorX.edgeTessellationFactor[1] = xT;
+    factorX.edgeTessellationFactor[2] = xT;
+    factorX.edgeTessellationFactor[3] = xT;
+    factorX.insideTessellationFactor[0] = xT;
+    factorX.insideTessellationFactor[1] = xT;
+    factors[voxelId] = factorX;
+    
+    MTLQuadTessellationFactorsHalf factorY = factors[voxelId + 1];
+    float yT = ((cubeMarchKey & 2) > 0) ? 1.f : 0.f;
+    factorY.edgeTessellationFactor[0] = yT;
+    factorY.edgeTessellationFactor[1] = yT;
+    factorY.edgeTessellationFactor[2] = yT;
+    factorY.edgeTessellationFactor[3] = yT;
+    factorY.insideTessellationFactor[0] = yT;
+    factorY.insideTessellationFactor[1] = yT;
+    factors[voxelId + 1] = factorY;
+
+    
+    MTLQuadTessellationFactorsHalf factorZ = factors[voxelId + 2];
+    float zT = ((cubeMarchKey & 1) > 0) ? 1.f : 0.f;
+    factorZ.edgeTessellationFactor[0] = zT;
+    factorZ.edgeTessellationFactor[1] = zT;
+    factorZ.edgeTessellationFactor[2] = zT;
+    factorZ.edgeTessellationFactor[3] = zT;
+    factorZ.insideTessellationFactor[0] = zT;
+    factorZ.insideTessellationFactor[1] = zT;
+    factors[voxelId + 2] = factorZ;
+
 }
 
 
