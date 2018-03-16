@@ -117,7 +117,7 @@ public class RenderManager {
         renderPipelineDescriptor.isTessellationFactorScaleEnabled = false
         renderPipelineDescriptor.tessellationFactorFormat = .half
         renderPipelineDescriptor.tessellationControlPointIndexType = .none
-        renderPipelineDescriptor.tessellationFactorStepFunction = .constant
+        renderPipelineDescriptor.tessellationFactorStepFunction = .perPatch
         renderPipelineDescriptor.tessellationOutputWindingOrder = .clockwise
         renderPipelineDescriptor.tessellationPartitionMode = .fractionalEven
         renderPipelineDescriptor.maxTessellationFactor = 64;
@@ -165,7 +165,7 @@ public class RenderManager {
     }
     
     func setUpBuffers() {
-        tessellationFactorsBuffer = device!.makeBuffer(length: 1024, options: MTLResourceOptions.storageModePrivate)
+        tessellationFactorsBuffer = device!.makeBuffer(length: 16 * 16 * 16 * 3 * 6 * 2 * MemoryLayout<UInt16>.stride, options: [])
         graphicsBuffer = device!.makeBuffer(length: MemoryLayout<Uniforms>.stride, options: [])
     }
     

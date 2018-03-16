@@ -96,11 +96,6 @@ public class TerrainManager {
         let threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
         let threadgroupsPerGrid = MTLSize(width: ((chunkDimension * chunkDimension * chunkDimension) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
         for i in 0..<self.terrainState.inflightChunksCount {
-            var pos = chunks[i]
-            print("%f, %f, %f", pos.x, pos.y, pos.z)
-        }
-
-        for i in 0..<self.terrainState.inflightChunksCount {
             let startPos: [vector_float3] = [chunks[i]]
             let buffer = self.terrainState.chunk(at: i).terrainBuffer
             computeCommandEncoder?.setBytes(startPos, length: MemoryLayout<vector_float3>.size, index: 0)
@@ -114,9 +109,10 @@ public class TerrainManager {
         let chunkDimension = self.terrainState.chunkDimension
         //var chunkList = [vector_float3]()
         commandEncoder?.setVertexBuffer(controlPointsIndicesBuffer, offset: 0, index: 2)
-        for i in 0..<self.terrainState.inflightChunksCount {
+        for i in 0..<1{//}<self.terrainState.inflightChunksCount {
             commandEncoder?.setVertexBuffer(self.terrainState.chunk(at: i).terrainBuffer, offset: 0, index: 0)
             commandEncoder?.setTessellationFactorBuffer(tessellationBuffer, offset: 0, instanceStride: 0)
+            // TODO : change this line
             commandEncoder?.drawPatches(numberOfPatchControlPoints: 1, patchStart: 0, patchCount: chunkDimension * chunkDimension * chunkDimension * 6, patchIndexBuffer: nil, patchIndexBufferOffset: 0, instanceCount: 1, baseInstance: 0)
         }
     }

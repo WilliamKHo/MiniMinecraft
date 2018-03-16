@@ -39,6 +39,13 @@ kernel void tessellation_kernel_triangle(constant float& edge_factor [[ buffer(0
                                          uint pid [[ thread_position_in_grid ]])
 {
     // Simple passthrough operation
+    if (pid % 2 == 0) {
+        factors[pid].edgeTessellationFactor[0] = 0.f;
+        factors[pid].edgeTessellationFactor[1] = 0.f;
+        factors[pid].edgeTessellationFactor[2] = 0.f;
+        factors[pid].insideTessellationFactor = 0.f;
+        return;
+    }
     factors[pid].edgeTessellationFactor[0] = edge_factor;
     factors[pid].edgeTessellationFactor[1] = edge_factor;
     factors[pid].edgeTessellationFactor[2] = edge_factor;
@@ -49,10 +56,19 @@ kernel void tessellation_kernel_triangle(constant float& edge_factor [[ buffer(0
 kernel void tessellation_kernel_quad(constant float& edge_factor [[ buffer(0) ]],
                                      constant float& inside_factor [[ buffer(1) ]],
                                      device MTLQuadTessellationFactorsHalf* factors [[ buffer(2) ]],
+                                     //device ControlPoint* control_points [[ buffer(3) ]],
                                      uint pid [[ thread_position_in_grid ]])
 {
     // Simple passthrough operation
     // More sophisticated compute kernels might determine the tessellation factors based on the state of the scene (e.g. camera distance)
+//    if ((pid+4) % 6 != 0) {
+//        factors[pid].edgeTessellationFactor[0] = 0.f;
+//        factors[pid].edgeTessellationFactor[1] = 0.f;
+//        factors[pid].edgeTessellationFactor[2] = 0.f;
+//        factors[pid].insideTessellationFactor[0] = 0.f;
+//        factors[pid].insideTessellationFactor[1] = 0.f;
+//        return;
+//    }
     factors[pid].edgeTessellationFactor[0] = edge_factor;
     factors[pid].edgeTessellationFactor[1] = edge_factor;
     factors[pid].edgeTessellationFactor[2] = edge_factor;
