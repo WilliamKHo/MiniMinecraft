@@ -52,7 +52,7 @@ public class RenderManager {
         
         self.camera = Camera(
             fovy : 45,
-            aspect : 1,
+            aspect : Float(view.frame.size.width / view.frame.size.height),
             farClip : 1000,
             nearClip : 0.01,
             pos : [0.0, 12.0, 30.0],
@@ -61,7 +61,7 @@ public class RenderManager {
             up : [0.0, 1.0, 0.0]
         )
         
-        self.terrainManager = TerrainManager(device: device, library: library!, inflightChunksCount: 75)
+        self.terrainManager = TerrainManager(device: device, library: library!, inflightChunksCount: 100)
         
         registerGraphicsShaders()
         buildDepthTexture()
