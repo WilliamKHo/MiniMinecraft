@@ -26,11 +26,13 @@ class MetalView: MTKView {
         device = MTLCreateSystemDefaultDevice()
         RenderManager.sharedInstance.initManager(device!, view: self as MTKView)
         commandQueue = device?.makeCommandQueue()
+        self.capManager = MTLCaptureManager.shared()
+//        self.capManager.startCapture(commandQueue: commandQueue)
         let commandBuffer = commandQueue.makeCommandBuffer()
         RenderManager.sharedInstance.buildTessellationFactorsBuffer(commandBuffer: commandBuffer)
         RenderManager.sharedInstance.generateTerrain(commandBuffer: commandBuffer)
         commandBuffer?.commit()
-        self.capManager = MTLCaptureManager.shared()
+//        self.capManager.stopCapture()
         self.capScope = self.capManager.makeCaptureScope(device: device!)
         self.capScope.label = "draw capture scope"
     }
