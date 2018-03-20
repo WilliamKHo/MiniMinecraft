@@ -88,14 +88,14 @@ public class TerrainManager {
         let chunkDimension = self.terrainState.chunkDimension
         
         var chunks = [vector_float3]()
-        self.terrainState.computeChunksToRender(chunks: &chunks, eye: vector_float3(0.0), count: self.terrainState.inflightChunksCount, camera: camera)
+        var numChunks = self.terrainState.computeChunksToRender(chunks: &chunks, eye: vector_float3(0.0), count: self.terrainState.inflightChunksCount, camera: camera)
     
         computeCommandEncoder?.setComputePipelineState(ps_computeControlPoints!)
         computeCommandEncoder?.setBuffer(voxelValuesBuffer, offset: 0, index: 2)
         let threadExecutionWidth = ps_computeControlPoints.threadExecutionWidth;
         let threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
         let threadgroupsPerGrid = MTLSize(width: ((chunkDimension * chunkDimension * chunkDimension) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
-        for i in 0..<self.terrainState.inflightChunksCount {
+        for i in 0..<numChunks {
             let startPos: [vector_float3] = [chunks[i]]
             let buffer = self.terrainState.chunk(at: i).terrainBuffer
             let tessBuffer = self.terrainState.chunk(at: i).tessellationFactorBuffer

@@ -11,8 +11,8 @@
 using namespace metal;
 
 uint8_t inSinWeightedTerrain(thread float3 pos) {
-    float heightx = (sin((pos.x / 4.0f) * M_PI)) * 2.0f + 8.0f;
-    float heightz = (sin((pos.z / 4.0f) * M_PI)) * 2.0f + 8.0f;
+    float heightx = (sin((pos.x / 16.f) * M_PI)) * 10.0f + 8.0f;
+    float heightz = (sin((pos.z / 16.f) * M_PI)) * 10.0f + 8.0f;
     float height = min(heightx, heightz);
     return (pos.y < height) ? 1 : 0;
 }
@@ -116,4 +116,9 @@ uint8_t inFrameTerrain(thread float3 pos) {
     count += (abs(pos.z - test.z) < 1.f) ? 1 : 0;
     return count == 2 ? 1 : 0;
 }
+
+uint8_t inSinPerlinTerrain(thread float3 pos) {
+    return inSinWeightedTerrain(pos)  == 1 && inPerlinTerrain(pos) == 0;
+}
+
 

@@ -114,8 +114,9 @@ class TerrainState {
 //        if abs(dot(chunkVector, camera.forward)) > 0.7 { return true } else { return false }
     }
     
-    func computeChunksToRender( chunks : inout [vector_float3], eye : vector_float3, count : Int, camera : Camera) {
+    func computeChunksToRender( chunks : inout [vector_float3], eye : vector_float3, count : Int, camera : Camera) -> Int {
         // Queue for traversal and table for recording traversed
+        var chunksToRender = 1
         var traversed : [Int32 : [Int32 : [Int32 : Float]]] = [0 : [0 : [0 : 0.0]]] // Chunk currently inside of
         var planes = [float4]()
         camera.extractPlanes(planes: &planes)
@@ -131,14 +132,17 @@ class TerrainState {
                 if queue.isEmpty { break //This should never happen, we're BFSing into an infinite space
                 } else {
                     chunk = queue.removeFirst()
-                    if inCameraView(chunk : chunk, camera : camera, planes : planes) {
+                    if inCameraView(chunk : chunk, camera : camera, planes : planes) &&
+                        (chunk.x * chunk.x + chunk.y * chunk.y + chunk.z * chunk.z < 36){
                         addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed)
                         chunks.append(chunkIntToWorld(chunkId: chunk, camera: camera))
                         validChunkFound = true
+                        chunksToRender += 1
                     }
                 }
             }
         }
+        return chunksToRender
     }
     
     func chunk(at : Int) -> TerrainChunk {

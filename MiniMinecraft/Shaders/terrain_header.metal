@@ -21,4 +21,6 @@ uint8_t inPerlinTerrain(thread float3 pos);
 
 uint8_t inFrameTerrain(thread float3 pos);
 
+uint8_t inSinPerlinTerrain(thread float3 pos);
+
 
