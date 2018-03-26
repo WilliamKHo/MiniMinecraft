@@ -26,6 +26,7 @@
 		0BAA4C69204E1B2100AAAC4A /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAA4C66204E1B2000AAAC4A /* Metal.framework */; };
 		0BAA4C6A204E1B2100AAAC4A /* MetalPerformanceShaders.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAA4C67204E1B2000AAAC4A /* MetalPerformanceShaders.framework */; };
 		0BAA4C6C204F576900AAAC4A /* MathUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA4C6B204F576900AAAC4A /* MathUtils.swift */; };
+		0BCC3B3F20697BDA007B345A /* TerrainTables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCC3B3E20697BDA007B345A /* TerrainTables.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +52,7 @@
 		0BAA4C66204E1B2000AAAC4A /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		0BAA4C67204E1B2000AAAC4A /* MetalPerformanceShaders.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalPerformanceShaders.framework; path = System/Library/Frameworks/MetalPerformanceShaders.framework; sourceTree = SDKROOT; };
 		0BAA4C6B204F576900AAAC4A /* MathUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathUtils.swift; sourceTree = "<group>"; };
+		0BCC3B3E20697BDA007B345A /* TerrainTables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerrainTables.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 				0B3A583720435C1E003CD13B /* simd+ext.swift */,
 				0B3A58392043A475003CD13B /* TerrainState.swift */,
 				0BAA4C6B204F576900AAAC4A /* MathUtils.swift */,
+				0BCC3B3E20697BDA007B345A /* TerrainTables.swift */,
 			);
 			path = MiniMinecraft;
 			sourceTree = "<group>";
@@ -199,6 +202,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B3A583820435C1E003CD13B /* simd+ext.swift in Sources */,
+				0BCC3B3F20697BDA007B345A /* TerrainTables.swift in Sources */,
 				0B0CC9ED200C0211003ADD36 /* Shaders.metal in Sources */,
 				0B3A583420432EC2003CD13B /* RenderManager.swift in Sources */,
 				0B489BD3203E3B6400BDDBC2 /* BufferProvider.swift in Sources */,

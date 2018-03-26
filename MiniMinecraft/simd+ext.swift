@@ -4,6 +4,11 @@
 //  Created by Kaz Yoshikawa on 11/6/15.
 //
 //
+
+/*
+ * Obtained from: https://gist.github.com/codelynx/908fd30c93e40ea6408b
+ */
+
 import Foundation
 import simd
 import GLKit
