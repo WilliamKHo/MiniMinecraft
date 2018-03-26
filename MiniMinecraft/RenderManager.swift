@@ -96,7 +96,7 @@ public class RenderManager {
         do { try ps_tessellation = device!.makeComputePipelineState(function: kern_tessellation) }
         catch { fatalError("tessellation_quad computePipelineState failed") }
         
-        vert_func = library?.makeFunction(name: "tessellation_vertex_quad")
+        vert_func = library?.makeFunction(name: "tessellation_vertex_triangle")
         frag_func = library?.makeFunction(name: "tessellation_fragment")
         
         // Setup Vertex Descriptor

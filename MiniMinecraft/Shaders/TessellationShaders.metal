@@ -78,10 +78,12 @@ kernel void tessellation_kernel_quad(constant float& edge_factor [[ buffer(0) ]]
 }
 
 // Triangle post-tessellation vertex function
-[[patch(triangle, 3)]]
+[[patch(triangle, 1)]]
 vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn [[stage_in]],
                                                   constant Uniforms &uniforms [[buffer(1)]],
-                                                  float3 patch_coord [[ position_in_patch ]])
+                                                  constant float3 *corners[[buffer(2)]],
+                                                  float3 patch_coord [[ position_in_patch ]],
+                                                  uint vid [[ patch_id ]])
 {
     // Barycentric coordinates
     float u = patch_coord.x;
@@ -92,14 +94,28 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn [[stage_in]],
     float4x4 modMatrix = uniforms.modelMatrix;
     float4x4 viewProjection = uniforms.viewProjectionMatrix;
     
-    // Convert to cartesian coordinates
-    float x = u * patchIn.control_points[0].position.x + v * patchIn.control_points[1].position.x + w * patchIn.control_points[2].position.x;
-    float y = u * patchIn.control_points[0].position.y + v * patchIn.control_points[1].position.y + w * patchIn.control_points[2].position.y;
+    float4 controlPoint = patchIn.control_points[0].position;
+    FunctionOutIn vertexOut;
+    
+    float myFloat = controlPoint.a;
+    int cornerIdx = (int) myFloat;
+    if(cornerIdx < 0) {
+        vertexOut.position = float4(0.0f);
+        return vertexOut;
+    }
+    
+    cornerIdx *= 2;
+    
+    float3 offset = cross(corners[cornerIdx], corners[cornerIdx+1]);
+    if ((cornerIdx / 2) % 2 != 0) offset = -offset;
+    
+    // Linear interpolation
+    float3 preTransformPosition = controlPoint.xyz + u * corners[cornerIdx] + v * corners[cornerIdx + 1] + 0.5f * offset;
     
     // Output
-    FunctionOutIn vertexOut;
-    vertexOut.position = viewProjection * modMatrix * float4(x, y, 0.0, 1.0);
-    vertexOut.color = half4(u, v, w, 1.0);
+    vertexOut.position = viewProjection * modMatrix * float4(preTransformPosition, 1.0);
+    vertexOut.color = half4(u + 0.5, v + 0.5, 1.0-(v + 1.0), 1.0);
+    vertexOut.normal = cross(corners[cornerIdx], corners[cornerIdx + 1]);
     return vertexOut;
 }
 

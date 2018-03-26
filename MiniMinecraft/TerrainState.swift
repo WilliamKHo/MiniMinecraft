@@ -29,7 +29,7 @@ class TerrainState {
         self.chunks = [TerrainChunk]()
         let numVoxels = chunkDimension * chunkDimension * chunkDimension
         let floatsPerVoxel = 12; //3 faces * 4 floats
-        let uIntsPerVoxel = 18; //3 faces * 6 tessellation factors
+        let uIntsPerVoxel = 12; //3 faces * 6 tessellation factors
         for _ in 0..<inflightChunksCount {
             chunks.append(TerrainChunk(
                 startPosition: vector_float3(0.0, 0.0, 0.0), //unused so far

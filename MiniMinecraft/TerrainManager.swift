@@ -24,6 +24,8 @@ public class TerrainManager {
     var controlPointsIndicesBuffer : MTLBuffer!
     var voxelValuesBuffer : MTLBuffer!
     
+    var triangleTableBuffer : MTLBuffer!
+    
     var updateBuffers = true
     
     init(device: MTLDevice, library: MTLLibrary, inflightChunksCount: Int) {
@@ -35,7 +37,7 @@ public class TerrainManager {
     }
     
     func buildComputePipeline() {
-        kern_computeControlPoints = library.makeFunction(name: "kern_computeControlPoints")
+        kern_computeControlPoints = library.makeFunction(name: "kern_computeTriangleControlPoints")
         do { try ps_computeControlPoints = device.makeComputePipelineState(function: kern_computeControlPoints) }
         catch { fatalError("compute control points computePipelineState failed") }
     }
@@ -80,6 +82,8 @@ public class TerrainManager {
             float3(0.0, 4.0, 2.0),    //1111
         ]
         voxelValuesBuffer = device.makeBuffer(bytes: voxelValues, length: MemoryLayout<float3>.stride * 16, options: [])
+        
+        triangleTableBuffer = device.makeBuffer(bytes: TRIANGLES, length: MemoryLayout<Int32>.stride * 15 * 256, options: [])
     }
     
     func generateTerrain(commandBuffer : MTLCommandBuffer?, camera : Camera) {
