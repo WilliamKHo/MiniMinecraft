@@ -83,6 +83,7 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
                                                   constant Uniforms &uniforms               [[ buffer(1) ]],
                                                   constant int *triangle_lookup_table       [[ buffer(2) ]],
                                                   constant float3 *corner_positions         [[ buffer(3) ]],
+//                                                  constant float4 startPos                  [[ buffer(4) ]],
                                                   float3 patch_coord                        [[ position_in_patch ]],
                                                   uint vid                                  [[ patch_id ]])
 {
@@ -121,7 +122,7 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
     
     
     // Interpolate between the 3 vertex positions to define current vertex position at it's pre-transformed position
-    float3 preTransformPosition = u * v2 + v * v1 + w * v0 + controlPoint.xyz;
+    float3 preTransformPosition = (u * v2 + v * v1 + w * v0) + controlPoint.xyz;
     
     // Output
     vertexOut.position = viewProjection * modMatrix * float4(preTransformPosition, 1.0);

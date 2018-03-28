@@ -10,7 +10,7 @@ import simd
 import Metal
 
 struct TerrainChunk {
-    var startPosition : vector_float3!
+    var startPosition : vector_float4!
     var terrainBuffer : MTLBuffer!
     var tessellationFactorBuffer: MTLBuffer!
     
@@ -28,11 +28,11 @@ class TerrainState {
         self.inflightChunksCount = inflightChunksCount
         self.chunks = [TerrainChunk]()
         let numVoxels = chunkDimension * chunkDimension * chunkDimension
-        let floatsPerVoxel = 12; //3 faces * 4 floats
-        let uIntsPerVoxel = 12; //3 faces * 6 tessellation factors
+        let floatsPerVoxel = 20; //3 faces * 4 floats
+        let uIntsPerVoxel = 20; //3 faces * 4 tessellation factors
         for _ in 0..<inflightChunksCount {
             chunks.append(TerrainChunk(
-                startPosition: vector_float3(0.0, 0.0, 0.0), //unused so far
+                startPosition: vector_float4(0.0, 0.0, 0.0, 0.0), //unused so far
                 terrainBuffer: device.makeBuffer(length: MemoryLayout<Float32>.stride * numVoxels * floatsPerVoxel, options: []),
                 tessellationFactorBuffer: device.makeBuffer(length: numVoxels * uIntsPerVoxel * MemoryLayout<UInt16>.stride, options: [])))
         }
