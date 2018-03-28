@@ -25,6 +25,7 @@ public class TerrainManager {
     var voxelValuesBuffer : MTLBuffer!
     
     var triangleTableBuffer : MTLBuffer!
+    var edgeCornersBuffer : MTLBuffer!
     
     var updateBuffers = true
     
@@ -84,6 +85,7 @@ public class TerrainManager {
         voxelValuesBuffer = device.makeBuffer(bytes: voxelValues, length: MemoryLayout<float3>.stride * 16, options: [])
         
         triangleTableBuffer = device.makeBuffer(bytes: TRIANGLES, length: MemoryLayout<Int32>.stride * 15 * 256, options: [])
+        edgeCornersBuffer = device.makeBuffer(bytes: CORNER_POSITIONS, length: MemoryLayout<float3>.stride * 24, options: [])
     }
     
     func generateTerrain(commandBuffer : MTLCommandBuffer?, camera : Camera) {
@@ -95,7 +97,7 @@ public class TerrainManager {
         var numChunks = self.terrainState.computeChunksToRender(chunks: &chunks, eye: vector_float3(0.0), count: self.terrainState.inflightChunksCount, camera: camera)
     
         computeCommandEncoder?.setComputePipelineState(ps_computeControlPoints!)
-        computeCommandEncoder?.setBuffer(voxelValuesBuffer, offset: 0, index: 2)
+        computeCommandEncoder?.setBuffer(triangleTableBuffer, offset: 0, index: 2)
         let threadExecutionWidth = ps_computeControlPoints.threadExecutionWidth;
         let threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
         let threadgroupsPerGrid = MTLSize(width: ((chunkDimension * chunkDimension * chunkDimension) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
@@ -114,7 +116,8 @@ public class TerrainManager {
     func drawTerrain(_ commandEncoder : MTLRenderCommandEncoder?, tessellationBuffer: MTLBuffer!) {
         let chunkDimension = self.terrainState.chunkDimension
         //var chunkList = [vector_float3]()
-        commandEncoder?.setVertexBuffer(controlPointsIndicesBuffer, offset: 0, index: 2)
+        commandEncoder?.setVertexBuffer(triangleTableBuffer, offset: 0, index: 2)
+        commandEncoder?.setVertexBuffer(edgeCornersBuffer, offset: 0, index: 3)
         for i in 0..<self.terrainState.inflightChunksCount {
             commandEncoder?.setVertexBuffer(self.terrainState.chunk(at: i).terrainBuffer, offset: 0, index: 0)
             commandEncoder?.setTessellationFactorBuffer(self.terrainState.chunk(at: i).tessellationFactorBuffer, offset: 0, instanceStride: 0)

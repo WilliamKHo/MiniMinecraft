@@ -108,10 +108,10 @@ kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
 
 // Voxel grid to control points shader
 kernel void kern_computeTriangleControlPoints(constant float3& startPos [[buffer(0)]],
-                                      device float4* voxels [[buffer(1)]],
-                                      device float3* cubeMarchTable [[buffer(2)]],
-                                      device MTLTriangleTessellationFactorsHalf* factors [[ buffer(3) ]],
-                                      uint pid [[ thread_position_in_grid ]]) {
+                                              device float4* control_points [[buffer(1)]],
+                                              constant int *triangle_lookup_table [[buffer(2)]],
+                                              device MTLTriangleTessellationFactorsHalf* factors [[ buffer(3) ]],
+                                              uint pid [[ thread_position_in_grid ]]) {
     if (pid >= CHUNKDIM * CHUNKDIM * CHUNKDIM) return;
     uint voxelId = pid * 3;
     
@@ -120,49 +120,60 @@ kernel void kern_computeTriangleControlPoints(constant float3& startPos [[buffer
     uint x = pid - y * CHUNKDIM - z * CHUNKDIM * CHUNKDIM;
     
     float3 output = float3(x, y, z) + startPos;
-    float valid = 1.0f;
+    //float valid = 1.0f;
     //    if (inSinWeightedTerrain(output) > 0) valid = 0.0f;
     //if (inCheckeredTerrain(output) > 0) valid = 0.0f;
     //    if (inSphereTerrain(output) > 0) valid = 0.0f;
-    if (inPerlinTerrain(output) > 0) valid = 0.0f;
+    //if (inPerlinTerrain(output) > 0) valid = 0.0f;
     //    if (inFrameTerrain(output) > 0) valid = 0.0f;
     //    if (inSinPerlinTerrain(output) > 0) valid = 0.0f;
     
-    uint8_t cubeMarchKey = (valid > 0) ? 0 : 15; // Need to revise face making table
-    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(1.0f, 0.0f, 0.0f)) * 4);
-    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(0.0f, 1.0f, 0.0f)) * 2);
-    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(0.0f, 0.0f, 1.0f)));
+    uint8_t caseKey = inPerlinTerrain(output);
+    caseKey = caseKey^(inPerlinTerrain(output + float3(0.0f, 1.0f, 0.0f)) * 2);
+    caseKey = caseKey^(inPerlinTerrain(output + float3(0.0f, 1.0f, 1.0f)) * 4);
+    caseKey = caseKey^(inPerlinTerrain(output + float3(0.0f, 0.0f, 1.0f)) * 8);
+    caseKey = caseKey^(inPerlinTerrain(output + float3(1.0f, 0.0f, 0.0f)) * 16);
+    caseKey = caseKey^(inPerlinTerrain(output + float3(1.0f, 1.0f, 0.0f)) * 32);
+    caseKey = caseKey^(inPerlinTerrain(output + float3(1.0f, 1.0f, 1.0f)) * 64);
+    caseKey = caseKey^(inPerlinTerrain(output + float3(1.0f, 0.0f, 1.0f)) * 128);
     
-    float3 voxelValues = cubeMarchTable[cubeMarchKey];
+    // We now have a caseKey in the interval 0...255
     
-    voxels[voxelId] = float4(output, voxelValues.x);
-    voxels[voxelId+1] = float4(output, voxelValues.y);
-    voxels[voxelId+2] = float4(output, voxelValues.z);
-    
-    // Tessellation
-    
-    MTLTriangleTessellationFactorsHalf factorX = factors[voxelId];
-    float xT = ((cubeMarchKey & 4) > 0) ? 1.f : 0.f;
-    factorX.edgeTessellationFactor[0] = xT;
-    factorX.edgeTessellationFactor[1] = xT;
-    factorX.edgeTessellationFactor[2] = xT;
-    factorX.insideTessellationFactor = xT;
-    factors[voxelId] = factorX;
-    
-    MTLTriangleTessellationFactorsHalf factorY = factors[voxelId + 1];
-    float yT = ((cubeMarchKey & 2) > 0) ? 1.f : 0.f;
-    factorY.edgeTessellationFactor[0] = yT;
-    factorY.edgeTessellationFactor[1] = yT;
-    factorY.edgeTessellationFactor[2] = yT;
-    factorY.insideTessellationFactor = yT;
-    factors[voxelId + 1] = factorY;
+    // for 5 possible triangles,
+    //       set control_points[triangleId].w to the triangleFirstVertexId
+    //       check to see if triangle_lookup_table[triangleFirstVertexId] is greater than -1
+    //       set the tessellatinofactors to 1.f or 0.f depending on that
     
     
-    MTLTriangleTessellationFactorsHalf factorZ = factors[voxelId + 2];
-    float zT = ((cubeMarchKey & 1) > 0) ? 1.f : 0.f;
-    factorZ.edgeTessellationFactor[0] = zT;
-    factorZ.edgeTessellationFactor[1] = zT;
-    factorZ.edgeTessellationFactor[2] = zT;
-    factorZ.insideTessellationFactor = zT;
-    factors[voxelId + 2] = factorZ;
+    int triangleFirstVertexId = 15 * (int) caseKey;
+    int triangleId = voxelId;
+    
+    control_points[triangleId] = float4(output, (float) triangleFirstVertexId);
+    MTLTriangleTessellationFactorsHalf tessFactors;
+    float factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
+    tessFactors.edgeTessellationFactor[0] = factor;
+    tessFactors.edgeTessellationFactor[1] = factor;
+    tessFactors.edgeTessellationFactor[2] = factor;
+    tessFactors.insideTessellationFactor = factor;
+    factors[triangleId] = tessFactors;
+    
+    triangleFirstVertexId += 3;
+    triangleId += 1;
+    control_points[triangleId] = float4(output, (float) triangleFirstVertexId);
+    factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
+    tessFactors.edgeTessellationFactor[0] = factor;
+    tessFactors.edgeTessellationFactor[1] = factor;
+    tessFactors.edgeTessellationFactor[2] = factor;
+    tessFactors.insideTessellationFactor = factor;
+    factors[triangleId] = tessFactors;
+    
+    triangleFirstVertexId += 3;
+    triangleId += 1;
+    control_points[triangleId] = float4(output, (float) triangleFirstVertexId);
+    factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
+    tessFactors.edgeTessellationFactor[0] = factor;
+    tessFactors.edgeTessellationFactor[1] = factor;
+    tessFactors.edgeTessellationFactor[2] = factor;
+    tessFactors.insideTessellationFactor = factor;
+    factors[triangleId] = tessFactors;
 }

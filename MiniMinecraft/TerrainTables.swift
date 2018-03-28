@@ -5,10 +5,14 @@
 //  Created by William Ho on 3/26/18.
 //  Copyright © 2018 William Ho. All rights reserved.
 //
-// Table used with permission from https://pastebin.com/DQ4Xjn7t
 
 import Foundation
+import simd
 
+// Every 15 ints defines the 5 triangles outputed for each of 256 cases
+// Every 3 ints defines the 3 edges along which the vertices of a triangle lie.
+// Indexing scheme: every 15 is a case, every 3 is a triangle, every 1 is a vertex
+// Table adapted with permission from https://pastebin.com/DQ4Xjn7t
 let TRIANGLES : [Int32] = [
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -266,4 +270,21 @@ let TRIANGLES : [Int32] = [
     0, 9, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
+]
+
+// Maps egde indices to two positions to interpolate
+// Index scheme: 2*edgeId and 2*edgeId+1
+let CORNER_POSITIONS : [float3] = [
+    float3(0, 0, 0), float3(0, 1, 0), // edge 0
+    float3(0, 1, 0), float3(0, 1, 1), // edge 1
+    float3(0, 1, 1), float3(0, 0, 1), // edge 2
+    float3(0, 0, 1), float3(0, 0, 0), // edge 3
+    float3(1, 0, 0), float3(1, 1, 0), // edge 4
+    float3(1, 1, 0), float3(1, 1, 1), // edge 5
+    float3(1, 1, 1), float3(1, 0, 1), // edge 6
+    float3(1, 0, 1), float3(1, 0, 0), // edge 7
+    float3(0, 0, 0), float3(1, 0, 0), // edge 8
+    float3(0, 1, 0), float3(1, 1, 0), // edge 9
+    float3(0, 1, 1), float3(1, 1, 1), // edge 10
+    float3(0, 0, 1), float3(1, 0, 1)  // edge 11
 ]
