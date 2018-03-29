@@ -21,9 +21,6 @@ public class TerrainManager {
     var device : MTLDevice!
     var library : MTLLibrary!
     
-    var controlPointsIndicesBuffer : MTLBuffer!
-    var voxelValuesBuffer : MTLBuffer!
-    
     var triangleTableBuffer : MTLBuffer!
     var edgeCornersBuffer : MTLBuffer!
     
@@ -48,42 +45,6 @@ public class TerrainManager {
     }
     
     func setUpLookupTables() {
-        let controlPointIndices: [float3] = [
-            float3(0.0, 0.0, -1.0), // +x
-            float3(0.0, 1.0, 0.0),
-            float3(0.0, 0.0, 1.0), // -x
-            float3(0.0, 1.0, 0.0),
-            float3(1.0, 0.0, 0.0), // +z
-            float3(0.0, 1.0, 0.0),
-            float3(-1.0, 0.0, 0.0), // -z
-            float3(0.0, 1.0, 0.0),
-            float3(0.0, 0.0, 1.0), // +y
-            float3(1.0, 0.0, 0.0),
-            float3(1.0, 0.0, 0.0), // -y
-            float3(0.0, 0.0, 1.0)
-        ]
-        controlPointsIndicesBuffer = device.makeBuffer(bytes: controlPointIndices, length: MemoryLayout<float3>.stride * 12, options: [])
-        
-        let voxelValues: [float3] = [
-            float3(-1.0, -1.0, -1.0), //0000
-            float3(-1.0, -1.0, 3.0),  //0001
-            float3(-1.0, 5.0, -1.0),  //0010
-            float3(-1.0, 5.0, 3.0),   //0011
-            float3(1.0, -1.0, -1.0),  //0100
-            float3(1.0, -1.0, 3.0),   //0101
-            float3(1.0, 5.0, -1.0),   //0110
-            float3(1.0, 5.0, 3.0),    //0111
-            float3(-1.0, -1.0, -1.0), //1000
-            float3(-1.0, -1.0, 2.0),  //1001
-            float3(-1.0, 4.0, -1.0),  //1010
-            float3(-1.0, 4.0, 2.0),   //1011
-            float3(0.0, -1.0, -1.0),  //1100
-            float3(0.0, -1.0, 2.0),   //1101
-            float3(0.0, 4.0, -1.0),   //1110
-            float3(0.0, 4.0, 2.0),    //1111
-        ]
-        voxelValuesBuffer = device.makeBuffer(bytes: voxelValues, length: MemoryLayout<float3>.stride * 16, options: [])
-        
         triangleTableBuffer = device.makeBuffer(bytes: TRIANGLES, length: MemoryLayout<Int32>.stride * 15 * 256, options: [])
         edgeCornersBuffer = device.makeBuffer(bytes: CORNER_POSITIONS, length: MemoryLayout<float3>.stride * 24, options: [])
     }
@@ -115,7 +76,6 @@ public class TerrainManager {
     
     func drawTerrain(_ commandEncoder : MTLRenderCommandEncoder?, tessellationBuffer: MTLBuffer!) {
         let chunkDimension = self.terrainState.chunkDimension
-        //var chunkList = [vector_float3]()
         commandEncoder?.setVertexBuffer(triangleTableBuffer, offset: 0, index: 2)
         commandEncoder?.setVertexBuffer(edgeCornersBuffer, offset: 0, index: 3)
         for i in 0..<self.terrainState.inflightChunksCount {

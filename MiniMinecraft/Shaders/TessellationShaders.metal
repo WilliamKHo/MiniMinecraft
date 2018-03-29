@@ -83,7 +83,6 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
                                                   constant Uniforms &uniforms               [[ buffer(1) ]],
                                                   constant int *triangle_lookup_table       [[ buffer(2) ]],
                                                   constant float3 *corner_positions         [[ buffer(3) ]],
-//                                                  constant float4 startPos                  [[ buffer(4) ]],
                                                   float3 patch_coord                        [[ position_in_patch ]],
                                                   uint vid                                  [[ patch_id ]])
 {
@@ -101,6 +100,8 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
     
     float myFloat = controlPoint.a;
     int firstVertexId = (int) myFloat; // Index in lookup table of first vertex Id
+    float LOD = fract(myFloat) / .1f;
+    LOD = powr(2.f, LOD);
     
     int edge0 = triangle_lookup_table[firstVertexId];
     int edge1 = triangle_lookup_table[firstVertexId+1];
@@ -108,16 +109,16 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
     
     // Convert 3 vertex edges to vertex positions
     // TODO: Revise hard-coded 0.5f interpolation
-    float3 c0 = corner_positions[2*edge0];
-    float3 c1 = corner_positions[2*edge0+1];
+    float3 c0 = corner_positions[2*edge0] * LOD;
+    float3 c1 = corner_positions[2*edge0+1] * LOD;
     float3 v0 = c0 + 0.5f * (c1 - c0);
     
-    c0 = corner_positions[2*edge1];
-    c1 = corner_positions[2*edge1+1];
+    c0 = corner_positions[2*edge1] * LOD;
+    c1 = corner_positions[2*edge1+1] * LOD;
     float3 v1 = c0 + 0.5f * (c1 - c0);
     
-    c0 = corner_positions[2*edge2];
-    c1 = corner_positions[2*edge2+1];
+    c0 = corner_positions[2*edge2] * LOD;
+    c1 = corner_positions[2*edge2+1] * LOD;
     float3 v2 = c0 + 0.5f * (c1 - c0);
     
     
@@ -127,7 +128,7 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
     // Output
     vertexOut.position = viewProjection * modMatrix * float4(preTransformPosition, 1.0);
     vertexOut.color = half4(u + 0.5, v + 0.5, 1.0-(v + 1.0), 1.0);
-    vertexOut.normal = normalize(cross(v2 - v1, v0 - v1));
+    vertexOut.normal = normalize(cross(v0 - v1, v2 - v1));
     return vertexOut;
 }
 
@@ -175,6 +176,6 @@ vertex FunctionOutIn tessellation_vertex_quad(PatchIn patchIn [[stage_in]],
 // Common fragment function
 fragment half4 tessellation_fragment(FunctionOutIn fragmentIn [[stage_in]])
 {
-    
-    return fragmentIn.color;
+    float lambertTerm = max(min(dot(fragmentIn.normal, normalize(float3(1.f, 1.f, 1.f))), 1.f), 0.2f);
+    return lambertTerm * fragmentIn.color;
 }
