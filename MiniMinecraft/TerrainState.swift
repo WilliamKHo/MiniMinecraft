@@ -61,18 +61,91 @@ class TerrainState {
     }
     
     func addNeighbors( queue : inout [simd_int3], chunk : simd_int3, traversed : inout [Int32 : [Int32 : [Int32 : Float]]]) {
+        // Assume that the given chunk is already of the form ((0, pow2), (0, pow2))
+        // everytime we add neighbors, we're going up a LOD?
+        // Calculate the LOD,
+        // In each dimension, you can calculate if you are jumping to a lower, same, or higher level of detail.
+        // Knowing this information, it is trivial to compute where the neighbor lies
+        
+        // Calculate LOD of current chunk
+        let dimensionScale = containingChunkDimensionScale(float3(Float(chunk.x) + 0.5, Float(chunk.y) + 0.5, Float(chunk.z) + 0.5))
+        let chunkCenter : float3 = float3(Float(chunk.x) + dimensionScale / 2.0, Float(chunk.y) + dimensionScale / 2.0, Float(chunk.z) + dimensionScale / 2.0)
+        let testDistance = dimensionScale / 2.0 + 0.5
         for x in -1...1 {
             for y in -1...1 {
                 for z in -1...1 {
                     if !(x == 0 && y == 0 && z == 0) {
-                        let pos = simd_int3(chunk.x+Int32(x), chunk.y+Int32(y), chunk.z+Int32(z))
-                        if !containsChunk(chunks: &traversed, chunk: pos) {
-                            queue.append(pos)
-                            addChunk(chunks: &traversed, chunk: pos)
+                        let testPos : float3 = chunkCenter + float3(Float(x) * testDistance, Float(y) * testDistance, Float(z) * testDistance)
+                        let testPosDimensionScale = containingChunkDimensionScale(testPos)
+                        if testPosDimensionScale < dimensionScale {
+                            addPossibleLowLODNeighbors(testPos: testPos, queue: &queue, traversed: &traversed)
+                        } else {
+                            let pos = computeContainingChunk(testPos)
+                            if !containsChunk(chunks: &traversed, chunk: pos) {
+                                queue.append(pos)
+                                addChunk(chunks: &traversed, chunk: pos)
+                            }
                         }
+                        
                     }
                 }
             }
+        }
+    }
+    
+    func containingChunkDimensionScale( _ chunkFloatId : float3) -> Float {
+        let absFloatId : float3 = abs(chunkFloatId)
+        let LOD = fmaxf(floorf(fmaxf(fmaxf(absFloatId.x, absFloatId.y), absFloatId.z)), 1.0)
+        return powf(2.0, floorf(log2(LOD)))
+    }
+    
+    func computeContainingChunk( _ pos : float3) -> simd_int3 {
+        let dimensionScale = containingChunkDimensionScale(pos)
+        var chunkFloatId = floor(pos / dimensionScale) * dimensionScale
+        return int3(Int32(chunkFloatId.x), Int32(chunkFloatId.y), Int32(chunkFloatId.z))
+    }
+    
+    func addPossibleLowLODNeighbors( testPos : float3, queue : inout [simd_int3], traversed : inout [Int32 : [Int32 : [Int32 : Float]]]) {
+        let posXTest = testPos + float3(0.25, 0.0, 0.0)
+        var pos = computeContainingChunk(posXTest)
+        if !containsChunk(chunks: &traversed, chunk: pos) {
+            queue.append(pos)
+            addChunk(chunks: &traversed, chunk: pos)
+        }
+        
+        let negXTest = testPos - float3(0.25, 0.0, 0.0)
+        pos = computeContainingChunk(negXTest)
+        if !containsChunk(chunks: &traversed, chunk: pos) {
+            queue.append(pos)
+            addChunk(chunks: &traversed, chunk: pos)
+        }
+        
+        let posYTest = testPos + float3(0.0, 0.25, 0.0)
+        pos = computeContainingChunk(posYTest)
+        if !containsChunk(chunks: &traversed, chunk: pos) {
+            queue.append(pos)
+            addChunk(chunks: &traversed, chunk: pos)
+        }
+        
+        let negYTest = testPos - float3(0.0, 0.25, 0.0)
+        pos = computeContainingChunk(negYTest)
+        if !containsChunk(chunks: &traversed, chunk: pos) {
+            queue.append(pos)
+            addChunk(chunks: &traversed, chunk: pos)
+        }
+        
+        let posZTest = testPos + float3(0.0, 0.0, 0.25)
+        pos = computeContainingChunk(posZTest)
+        if !containsChunk(chunks: &traversed, chunk: pos) {
+            queue.append(pos)
+            addChunk(chunks: &traversed, chunk: pos)
+        }
+        
+        let negZTest = testPos - float3(0.0, 0.0, 0.25)
+        pos = computeContainingChunk(negZTest)
+        if !containsChunk(chunks: &traversed, chunk: pos) {
+            queue.append(pos)
+            addChunk(chunks: &traversed, chunk: pos)
         }
     }
     
