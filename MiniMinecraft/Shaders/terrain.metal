@@ -11,9 +11,13 @@
 using namespace metal;
 
 uint8_t inSinWeightedTerrain(thread float3 pos) {
-    float heightx = (sin((pos.x / 16.f) * M_PI)) * 10.0f + 8.0f;
-    float heightz = (sin((pos.z / 16.f) * M_PI)) * 10.0f + 8.0f;
-    float height = min(heightx, heightz);
+    float heightx = (sin((pos.x / 160.f) * M_PI)) * 15.0f + 8.0f;
+    float heightz = (sin((pos.z / 120.f) * M_PI)) * 20.0f + 8.0f;
+    
+    heightx += (sin((pos.x / 850.f) * M_PI)) * 50.0f;
+    heightz += (sin((pos.z / 740.f) * M_PI)) * 80.0f;
+    
+    float height = heightx + heightz;
     return (pos.y < height) ? 1 : 0;
 }
 
@@ -103,7 +107,7 @@ float perlin(float3 pos) {
 
 uint8_t inPerlinTerrain(thread float3 pos) {
     float threshold = 0.4f;
-    float3 sample = pos / 8.0f;
+    float3 sample = pos / 64.0f;
     return (perlin(sample) < threshold) ? 1 : 0;
 }
 
@@ -119,6 +123,18 @@ uint8_t inFrameTerrain(thread float3 pos) {
 
 uint8_t inSinPerlinTerrain(thread float3 pos) {
     return inSinWeightedTerrain(pos)  == 1 && inPerlinTerrain(pos) == 0;
+}
+
+uint8_t inPerlinPlanetTerrain(thread float3 pos) {
+    float3 planet = float3(0.f, -300.f, 0.f);
+    float3 planetNormal = normalize(pos - planet);
+    float heightx = (sin((planetNormal.x / 4.f) * M_PI)) * 160.0f + 8.0f;
+    float heightz = (sin((planetNormal.z / 2.f) * M_PI)) * 300.0f + 8.0f;
+    float heighty = (cos((planetNormal.y / 1.5f) * M_PI)) * 200.f + 8.f;
+    float height = heightx + heighty + heightz;
+    uint8_t inPlanet = (abs(length(pos - float3(0.f, -500.f, 0.f))) < height) ? 1 : 0;
+    
+    return inPlanet && inPerlinTerrain(pos) == 0;
 }
 
 

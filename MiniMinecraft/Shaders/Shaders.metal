@@ -119,7 +119,8 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     uint y = (uint) floor((pid - (z * CHUNKDIM * CHUNKDIM)) / (float) CHUNKDIM);
     uint x = pid - y * CHUNKDIM - z * CHUNKDIM * CHUNKDIM;
     
-    float3 output = float3(x, y, z) + startPos.xyz;
+    float scale = startPos.w;
+    float3 output = float3(x, y, z) * scale + startPos.xyz;
     //float valid = 1.0f;
     //    if (inSinWeightedTerrain(output) > 0) valid = 0.0f;
     //if (inCheckeredTerrain(output) > 0) valid = 0.0f;
@@ -129,13 +130,13 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     //    if (inSinPerlinTerrain(output) > 0) valid = 0.0f;
     
     uint8_t caseKey = inSinPerlinTerrain(output);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(0.0f, 1.0f, 0.0f)) * 2);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(0.0f, 1.0f, 1.0f)) * 4);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(0.0f, 0.0f, 1.0f)) * 8);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(1.0f, 0.0f, 0.0f)) * 16);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(1.0f, 1.0f, 0.0f)) * 32);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(1.0f, 1.0f, 1.0f)) * 64);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(1.0f, 0.0f, 1.0f)) * 128);
+    caseKey = caseKey^(inSinPerlinTerrain(output + float3(0.0f, scale, 0.0f)) * 2);
+    caseKey = caseKey^(inSinPerlinTerrain(output + float3(0.0f, scale, scale)) * 4);
+    caseKey = caseKey^(inSinPerlinTerrain(output + float3(0.0f, 0.0f, scale)) * 8);
+    caseKey = caseKey^(inSinPerlinTerrain(output + float3(scale, 0.0f, 0.0f)) * 16);
+    caseKey = caseKey^(inSinPerlinTerrain(output + float3(scale, scale, 0.0f)) * 32);
+    caseKey = caseKey^(inSinPerlinTerrain(output + float3(scale, scale, scale)) * 64);
+    caseKey = caseKey^(inSinPerlinTerrain(output + float3(scale, 0.0f, scale)) * 128);
     
     // We now have a caseKey in the interval 0...255
     
@@ -147,9 +148,10 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     
     int triangleFirstVertexId = 15 * (int) caseKey;
     int triangleId = voxelId;
+    scale = log2(scale) / 10.0f;
     
     // Unwrapped loop
-    control_points[triangleId] = float4(output, (float) triangleFirstVertexId);
+    control_points[triangleId] = float4(output, (float) triangleFirstVertexId + scale);
     MTLTriangleTessellationFactorsHalf tessFactors;
     float factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
     tessFactors.edgeTessellationFactor[0] = factor;
@@ -160,7 +162,7 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     
     triangleFirstVertexId += 3;
     triangleId += 1;
-    control_points[triangleId] = float4(output, (float) triangleFirstVertexId);
+    control_points[triangleId] = float4(output, (float) triangleFirstVertexId + scale);
     factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
     tessFactors.edgeTessellationFactor[0] = factor;
     tessFactors.edgeTessellationFactor[1] = factor;
@@ -170,7 +172,7 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     
     triangleFirstVertexId += 3;
     triangleId += 1;
-    control_points[triangleId] = float4(output, (float) triangleFirstVertexId);
+    control_points[triangleId] = float4(output, (float) triangleFirstVertexId + scale);
     factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
     tessFactors.edgeTessellationFactor[0] = factor;
     tessFactors.edgeTessellationFactor[1] = factor;
@@ -180,7 +182,7 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     
     triangleFirstVertexId += 3;
     triangleId += 1;
-    control_points[triangleId] = float4(output, (float) triangleFirstVertexId);
+    control_points[triangleId] = float4(output, (float) triangleFirstVertexId + scale);
     factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
     tessFactors.edgeTessellationFactor[0] = factor;
     tessFactors.edgeTessellationFactor[1] = factor;
@@ -190,7 +192,7 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     
     triangleFirstVertexId += 3;
     triangleId += 1;
-    control_points[triangleId] = float4(output, (float) triangleFirstVertexId);
+    control_points[triangleId] = float4(output, (float) triangleFirstVertexId + scale);
     factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
     tessFactors.edgeTessellationFactor[0] = factor;
     tessFactors.edgeTessellationFactor[1] = factor;

@@ -126,9 +126,12 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
     float3 preTransformPosition = (u * v2 + v * v1 + w * v0) + controlPoint.xyz;
     
     // Output
+    float3 normal = normalize(cross(v0 - v1, v2 - v1));
     vertexOut.position = viewProjection * modMatrix * float4(preTransformPosition, 1.0);
-    vertexOut.color = half4(u + 0.5, v + 0.5, 1.0-(v + 1.0), 1.0);
-    vertexOut.normal = normalize(cross(v0 - v1, v2 - v1));
+//    vertexOut.color = half4(u + 0.5, v + 0.5, 1.0-(v + 1.0), 1.0);
+
+    vertexOut.color = half4(half(normal.x / 2.f + .5f), half(normal.y / 2.f + .5f), half(normal.z / 4.f + .5f), 1.0);
+    vertexOut.normal = normal;
     return vertexOut;
 }
 
@@ -167,8 +170,9 @@ vertex FunctionOutIn tessellation_vertex_quad(PatchIn patchIn [[stage_in]],
     float3 preTransformPosition = controlPoint.xyz + u * corners[cornerIdx] + v * corners[cornerIdx + 1] + 0.5f * offset;
     
     // Output
+    float3 normal = cross(corners[cornerIdx], corners[cornerIdx + 1]);
     vertexOut.position = viewProjection * modMatrix * float4(preTransformPosition, 1.0);
-    vertexOut.color = half4(u + 0.5, v + 0.5, 1.0-(v + 1.0), 1.0);
+    vertexOut.color = half4(1.0, 1.0, 1.0, 1.0);
     vertexOut.normal = cross(corners[cornerIdx], corners[cornerIdx + 1]);
     return vertexOut;
 }

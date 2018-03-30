@@ -149,14 +149,15 @@ class TerrainState {
         }
     }
     
-    func chunkIntToWorld(chunkId : simd_int4, camera : Camera) -> float3 {
+    func chunkIntToWorld(chunkId : simd_int4, camera : Camera) -> float4 {
         let chunkDim = Int32(chunkDimension)
         var chunkWorld = float3(Float(chunkId.x * chunkDim), Float(chunkId.y * chunkDim), Float(chunkId.z * chunkDim))
         chunkWorld += camera.pos
         chunkWorld.x = floorf(chunkWorld.x / Float(chunkDimension)) * Float(chunkDimension)
         chunkWorld.y = floorf(chunkWorld.y / Float(chunkDimension)) * Float(chunkDimension)
         chunkWorld.z = floorf(chunkWorld.z / Float(chunkDimension)) * Float(chunkDimension)
-        return chunkWorld
+        let chunkWorld4 = float4(chunkWorld.x, chunkWorld.y, chunkWorld.z, Float(chunkId.w))
+        return chunkWorld4
     }
     
     func inCameraView(chunk : simd_int4, camera : Camera, planes : [float4]) -> Bool {
@@ -187,7 +188,7 @@ class TerrainState {
 //        if abs(dot(chunkVector, camera.forward)) > 0.7 { return true } else { return false }
     }
     
-    func computeChunksToRender( chunks : inout [vector_float3], eye : vector_float3, count : Int, camera : Camera) -> Int {
+    func computeChunksToRender( chunks : inout [vector_float4], eye : vector_float3, count : Int, camera : Camera) -> Int {
         // Queue for traversal and table for recording traversed
         var chunksToRender = 1
         var traversed : [Int32 : [Int32 : [Int32 : Float]]] = [0 : [0 : [0 : 0.0]]] // Chunk currently inside of

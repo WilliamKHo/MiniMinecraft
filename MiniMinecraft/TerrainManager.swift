@@ -54,7 +54,7 @@ public class TerrainManager {
         let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
         let chunkDimension = self.terrainState.chunkDimension
         
-        var chunks = [vector_float3]()
+        var chunks = [vector_float4]()
         let numChunks = self.terrainState.computeChunksToRender(chunks: &chunks, eye: vector_float3(0.0), count: self.terrainState.inflightChunksCount, camera: camera)
     
         computeCommandEncoder?.setComputePipelineState(ps_computeControlPoints!)
@@ -67,7 +67,7 @@ public class TerrainManager {
             print(pos.x, pos.y, pos.z)
         }
         for i in 0..<numChunks {
-            let startPos: [vector_float4] = [float4(chunks[i].x, chunks[i].y, chunks[i].z, 1.0)]
+            let startPos: [vector_float4] = [chunks[i]]
             let buffer = self.terrainState.chunk(at: i).terrainBuffer
             let tessBuffer = self.terrainState.chunk(at: i).tessellationFactorBuffer
             computeCommandEncoder?.setBytes(startPos, length: MemoryLayout<vector_float4>.size, index: 0)
