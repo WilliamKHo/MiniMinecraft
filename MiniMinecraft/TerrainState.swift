@@ -205,8 +205,7 @@ class TerrainState {
                 if queue.isEmpty { break //This should never happen, we're BFSing into an infinite space
                 } else {
                     chunk = queue.removeFirst()
-                    if inCameraView(chunk : chunk, camera : camera, planes : planes) &&
-                        (chunk.x * chunk.x + chunk.y * chunk.y + chunk.z * chunk.z < 36){
+                    if inCameraView(chunk : chunk, camera : camera, planes : planes) {
                         addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed)
                         // debug
                         print(chunk.x, chunk.y, chunk.z)
