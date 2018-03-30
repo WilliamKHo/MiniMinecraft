@@ -38,7 +38,7 @@ class TerrainState {
         }
     }
     
-    func containsChunk( chunks : inout [Int32 : [Int32 : [Int32 : Float]]], chunk : simd_int3) -> Bool {
+    func containsChunk( chunks : inout [Int32 : [Int32 : [Int32 : Float]]], chunk : simd_int4) -> Bool {
 //        if let xLayer = chunks[chunk.x] {
 //            if let yLayer = xLayer[chunk.y] {
 //                if let _ = yLayer[chunk.z] { return true } else { return false }
@@ -51,7 +51,7 @@ class TerrainState {
         } else { return false }
     }
     
-    func addChunk( chunks : inout [Int32 : [Int32 : [Int32 : Float]]], chunk : simd_int3) {
+    func addChunk( chunks : inout [Int32 : [Int32 : [Int32 : Float]]], chunk : simd_int4) {
         if let xLayer = chunks[chunk.x] {
             if let yLayer = xLayer[chunk.y] {
                 if let _ = yLayer[chunk.z] { chunks[chunk.x]![chunk.y]![chunk.z] = 0.0 //This should also never happen
@@ -60,7 +60,7 @@ class TerrainState {
         } else { chunks[chunk.x] = [chunk.y : [chunk.z : 0.0]] }
     }
     
-    func addNeighbors( queue : inout [simd_int3], chunk : simd_int3, traversed : inout [Int32 : [Int32 : [Int32 : Float]]]) {
+    func addNeighbors( queue : inout [simd_int4], chunk : simd_int4, traversed : inout [Int32 : [Int32 : [Int32 : Float]]]) {
         // Assume that the given chunk is already of the form ((0, pow2), (0, pow2))
         // everytime we add neighbors, we're going up a LOD?
         // Calculate the LOD,
@@ -99,13 +99,13 @@ class TerrainState {
         return powf(2.0, floorf(log2(LOD)))
     }
     
-    func computeContainingChunk( _ pos : float3) -> simd_int3 {
+    func computeContainingChunk( _ pos : float3) -> simd_int4 {
         let dimensionScale = containingChunkDimensionScale(pos)
         var chunkFloatId = floor(pos / dimensionScale) * dimensionScale
-        return int3(Int32(chunkFloatId.x), Int32(chunkFloatId.y), Int32(chunkFloatId.z))
+        return int4(Int32(chunkFloatId.x), Int32(chunkFloatId.y), Int32(chunkFloatId.z), Int32(dimensionScale))
     }
     
-    func addPossibleLowLODNeighbors( testPos : float3, queue : inout [simd_int3], traversed : inout [Int32 : [Int32 : [Int32 : Float]]]) {
+    func addPossibleLowLODNeighbors( testPos : float3, queue : inout [simd_int4], traversed : inout [Int32 : [Int32 : [Int32 : Float]]]) {
         let posXTest = testPos + float3(0.25, 0.0, 0.0)
         var pos = computeContainingChunk(posXTest)
         if !containsChunk(chunks: &traversed, chunk: pos) {
@@ -149,7 +149,7 @@ class TerrainState {
         }
     }
     
-    func chunkIntToWorld(chunkId : int3, camera : Camera) -> float3 {
+    func chunkIntToWorld(chunkId : simd_int4, camera : Camera) -> float3 {
         let chunkDim = Int32(chunkDimension)
         var chunkWorld = float3(Float(chunkId.x * chunkDim), Float(chunkId.y * chunkDim), Float(chunkId.z * chunkDim))
         chunkWorld += camera.pos
@@ -159,7 +159,7 @@ class TerrainState {
         return chunkWorld
     }
     
-    func inCameraView(chunk : simd_int3, camera : Camera, planes : [float4]) -> Bool {
+    func inCameraView(chunk : simd_int4, camera : Camera, planes : [float4]) -> Bool {
         let chunkDim = Int32(chunkDimension)
         var chunkWorld = float3(Float(chunk.x * chunkDim), Float(chunk.y * chunkDim), Float(chunk.z * chunkDim))
         chunkWorld += camera.pos
@@ -171,9 +171,9 @@ class TerrainState {
             for x in 0...1 {
                 for y in 0...1 {
                     for z in 0...1 {
-                        let corner = chunkWorld + float3(Float(Int32(x) * chunkDim),
-                                                         Float(Int32(y) * chunkDim),
-                                                         Float(Int32(z) * chunkDim))
+                        let corner = chunkWorld + float3(Float(Int32(x) * chunkDim * chunk.w),
+                                                         Float(Int32(y) * chunkDim * chunk.w),
+                                                         Float(Int32(z) * chunkDim * chunk.w))
                         if pointPlaneDistance(plane: plane, point: corner) > 0.0 {
                             possible = true
                         }
@@ -193,13 +193,13 @@ class TerrainState {
         var traversed : [Int32 : [Int32 : [Int32 : Float]]] = [0 : [0 : [0 : 0.0]]] // Chunk currently inside of
         var planes = [float4]()
         camera.extractPlanes(planes: &planes)
-        var queue = [simd_int3]()
-        addNeighbors(queue: &queue, chunk: int3(0, 0, 0), traversed: &traversed)
-        chunks.append(chunkIntToWorld(chunkId: int3(0, 0, 0), camera: camera))
+        var queue = [simd_int4]()
+        addNeighbors(queue: &queue, chunk: int4(0, 0, 0, 1), traversed: &traversed)
+        chunks.append(chunkIntToWorld(chunkId: int4(0, 0, 0, 1), camera: camera))
         for _ in 0..<count-1 {
             // Dequeue until we see something valid
             var validChunkFound = false
-            var chunk : simd_int3
+            var chunk : simd_int4
             while !validChunkFound {
                 // Add everything we see to traversed
                 if queue.isEmpty { break //This should never happen, we're BFSing into an infinite space
