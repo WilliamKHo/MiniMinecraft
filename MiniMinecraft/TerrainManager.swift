@@ -63,6 +63,10 @@ public class TerrainManager {
         let threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
         let threadgroupsPerGrid = MTLSize(width: ((chunkDimension * chunkDimension * chunkDimension) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
         for i in 0..<numChunks {
+            var pos = chunks[i]
+            print(pos.x, pos.y, pos.z)
+        }
+        for i in 0..<numChunks {
             let startPos: [vector_float4] = [float4(chunks[i].x, chunks[i].y, chunks[i].z, 1.0)]
             let buffer = self.terrainState.chunk(at: i).terrainBuffer
             let tessBuffer = self.terrainState.chunk(at: i).tessellationFactorBuffer

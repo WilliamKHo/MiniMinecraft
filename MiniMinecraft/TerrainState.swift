@@ -208,6 +208,8 @@ class TerrainState {
                     if inCameraView(chunk : chunk, camera : camera, planes : planes) &&
                         (chunk.x * chunk.x + chunk.y * chunk.y + chunk.z * chunk.z < 36){
                         addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed)
+                        // debug
+                        print(chunk.x, chunk.y, chunk.z)
                         chunks.append(chunkIntToWorld(chunkId: chunk, camera: camera))
                         validChunkFound = true
                         chunksToRender += 1
