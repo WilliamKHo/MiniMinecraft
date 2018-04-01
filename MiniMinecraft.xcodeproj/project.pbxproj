@@ -27,6 +27,7 @@
 		0BAA4C6A204E1B2100AAAC4A /* MetalPerformanceShaders.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAA4C67204E1B2000AAAC4A /* MetalPerformanceShaders.framework */; };
 		0BAA4C6C204F576900AAAC4A /* MathUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA4C6B204F576900AAAC4A /* MathUtils.swift */; };
 		0BCC3B3F20697BDA007B345A /* TerrainTables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCC3B3E20697BDA007B345A /* TerrainTables.swift */; };
+		0BCC3B47207191EC007B345A /* data_types.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0BCC3B46207191EC007B345A /* data_types.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +54,7 @@
 		0BAA4C67204E1B2000AAAC4A /* MetalPerformanceShaders.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalPerformanceShaders.framework; path = System/Library/Frameworks/MetalPerformanceShaders.framework; sourceTree = SDKROOT; };
 		0BAA4C6B204F576900AAAC4A /* MathUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathUtils.swift; sourceTree = "<group>"; };
 		0BCC3B3E20697BDA007B345A /* TerrainTables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerrainTables.swift; sourceTree = "<group>"; };
+		0BCC3B46207191EC007B345A /* data_types.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = data_types.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +118,7 @@
 				0B798965201D1F980060855A /* TessellationShaders.metal */,
 				0B53A279202C0C5D00164119 /* terrain_header.metal */,
 				0B53A27B202C0C6800164119 /* terrain.metal */,
+				0BCC3B46207191EC007B345A /* data_types.metal */,
 			);
 			path = Shaders;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 				0B0CC9D7200BEAB0003ADD36 /* AppDelegate.swift in Sources */,
 				0B53A27A202C0C5D00164119 /* terrain_header.metal in Sources */,
 				0B3A583A2043A475003CD13B /* TerrainState.swift in Sources */,
+				0BCC3B47207191EC007B345A /* data_types.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,12 +8,8 @@
 
 #include <metal_stdlib>
 #include "terrain_header.metal"
+#include "data_types.metal"
 using namespace metal;
-
-// Control Point struct
-struct ControlPoint {
-    float4 position [[attribute(0)]];
-};
 
 // Patch struct
 struct PatchIn {
