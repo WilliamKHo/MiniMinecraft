@@ -10,6 +10,7 @@
 
 #include <metal_stdlib>
 #include "terrain_header.metal"
+#include "data_types.metal"
 using namespace metal;
 
 struct Vertex {
@@ -108,11 +109,12 @@ kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
 
 // Voxel grid to control points shader
 kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer(0)]],
-                                              device float4* control_points [[buffer(1)]],
+                                              device ControlPoint* control_points [[buffer(1)]],
                                               constant int *triangle_lookup_table [[buffer(2)]],
                                               device MTLTriangleTessellationFactorsHalf* factors [[ buffer(3) ]],
                                               uint pid [[ thread_position_in_grid ]]) {
     if (pid >= CHUNKDIM * CHUNKDIM * CHUNKDIM) return;
+    float densities[8];
     uint voxelId = pid * 5;
     
     uint z = (uint) floor(pid / (float)(CHUNKDIM * CHUNKDIM));
@@ -129,74 +131,44 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     //    if (inFrameTerrain(output) > 0) valid = 0.0f;
     //    if (inSinPerlinTerrain(output) > 0) valid = 0.0f;
     
-    uint8_t caseKey = (inSphereTerrain(output) > 0.f) ? 1 : 0;
-    caseKey = caseKey^((inSphereTerrain(output + float3(0.0f, scale, 0.0f)) > 0.f) ? 2 : 0);
-    caseKey = caseKey^((inSphereTerrain(output + float3(0.0f, scale, scale)) > 0.f) ? 4 : 0);
-    caseKey = caseKey^((inSphereTerrain(output + float3(0.0f, 0.0f, scale)) > 0.f) ? 8 : 0);
-    caseKey = caseKey^((inSphereTerrain(output + float3(scale, 0.0f, 0.0f)) > 0.f) ? 16 : 0);
-    caseKey = caseKey^((inSphereTerrain(output + float3(scale, scale, 0.0f)) > 0.f) ? 32 : 0);
-    caseKey = caseKey^((inSphereTerrain(output + float3(scale, scale, scale)) > 0.f) ? 64 : 0);
-    caseKey = caseKey^((inSphereTerrain(output + float3(scale, 0.0f, scale)) > 0.f) ? 128 : 0);
+    densities[0] = inSphereTerrain(output);
+    densities[1] = inSphereTerrain(output + float3(0.0f, scale, 0.0f));
+    densities[2] = inSphereTerrain(output + float3(0.0f, scale, scale));
+    densities[3] = inSphereTerrain(output + float3(0.0f, 0.0f, scale));
+    densities[4] = inSphereTerrain(output + float3(scale, 0.0f, 0.0f));
+    densities[5] = inSphereTerrain(output + float3(scale, scale, 0.0f));
+    densities[6] = inSphereTerrain(output + float3(scale, scale, scale));
+    densities[7] = inSphereTerrain(output + float3(scale, 0.0f, scale));
+    
+    uint8_t caseKey = (densities[0] > 0.f) ? 1 : 0;
+    caseKey = caseKey^((densities[1] > 0.f) ? 2 : 0);
+    caseKey = caseKey^((densities[2] > 0.f) ? 4 : 0);
+    caseKey = caseKey^((densities[3] > 0.f) ? 8 : 0);
+    caseKey = caseKey^((densities[4] > 0.f) ? 16 : 0);
+    caseKey = caseKey^((densities[5] > 0.f) ? 32 : 0);
+    caseKey = caseKey^((densities[6] > 0.f) ? 64 : 0);
+    caseKey = caseKey^((densities[7] > 0.f) ? 128 : 0);
     
     // We now have a caseKey in the interval 0...255
     
-    // for 5 possible triangles,
-    //       set control_points[triangleId].w to the triangleFirstVertexId
-    //       check to see if triangle_lookup_table[triangleFirstVertexId] is greater than -1
-    //       set the tessellatinofactors to 1.f or 0.f depending on that
-    
+    // Populate our control_point data with the necessary information to construct the triangle
     
     int triangleFirstVertexId = 15 * (int) caseKey;
     int triangleId = voxelId;
     scale = log2(scale) / 10.0f;
+    float factor;
     
-    // Unwrapped loop
-    control_points[triangleId] = float4(output, (float) triangleFirstVertexId + scale);
-    MTLTriangleTessellationFactorsHalf tessFactors;
-    float factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
-    tessFactors.edgeTessellationFactor[0] = factor;
-    tessFactors.edgeTessellationFactor[1] = factor;
-    tessFactors.edgeTessellationFactor[2] = factor;
-    tessFactors.insideTessellationFactor = factor;
-    factors[triangleId] = tessFactors;
-    
-    triangleFirstVertexId += 3;
-    triangleId += 1;
-    control_points[triangleId] = float4(output, (float) triangleFirstVertexId + scale);
-    factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
-    tessFactors.edgeTessellationFactor[0] = factor;
-    tessFactors.edgeTessellationFactor[1] = factor;
-    tessFactors.edgeTessellationFactor[2] = factor;
-    tessFactors.insideTessellationFactor = factor;
-    factors[triangleId] = tessFactors;
-    
-    triangleFirstVertexId += 3;
-    triangleId += 1;
-    control_points[triangleId] = float4(output, (float) triangleFirstVertexId + scale);
-    factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
-    tessFactors.edgeTessellationFactor[0] = factor;
-    tessFactors.edgeTessellationFactor[1] = factor;
-    tessFactors.edgeTessellationFactor[2] = factor;
-    tessFactors.insideTessellationFactor = factor;
-    factors[triangleId] = tessFactors;
-    
-    triangleFirstVertexId += 3;
-    triangleId += 1;
-    control_points[triangleId] = float4(output, (float) triangleFirstVertexId + scale);
-    factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
-    tessFactors.edgeTessellationFactor[0] = factor;
-    tessFactors.edgeTessellationFactor[1] = factor;
-    tessFactors.edgeTessellationFactor[2] = factor;
-    tessFactors.insideTessellationFactor = factor;
-    factors[triangleId] = tessFactors;
-    
-    triangleFirstVertexId += 3;
-    triangleId += 1;
-    control_points[triangleId] = float4(output, (float) triangleFirstVertexId + scale);
-    factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
-    tessFactors.edgeTessellationFactor[0] = factor;
-    tessFactors.edgeTessellationFactor[1] = factor;
-    tessFactors.edgeTessellationFactor[2] = factor;
-    tessFactors.insideTessellationFactor = factor;
-    factors[triangleId] = tessFactors;
+    for (int i = 0; i < 5; i++) {
+        control_points[triangleId].position = float4(output, (float) triangleFirstVertexId + scale);
+        MTLTriangleTessellationFactorsHalf tessFactors;
+        factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
+        tessFactors.edgeTessellationFactor[0] = factor;
+        tessFactors.edgeTessellationFactor[1] = factor;
+        tessFactors.edgeTessellationFactor[2] = factor;
+        tessFactors.insideTessellationFactor = factor;
+        factors[triangleId] = tessFactors;
+        
+        triangleFirstVertexId += 3;
+        triangleId += 1;
+    }
 }
