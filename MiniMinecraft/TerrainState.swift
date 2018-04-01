@@ -22,6 +22,7 @@ struct TerrainChunk {
 class TerrainState {
     private var chunks : [TerrainChunk]
     public let chunkDimension = 16
+    public let lowestUnitDistance : Float = 1.0
     var inflightChunksCount : Int
     
     init(device: MTLDevice, inflightChunksCount: Int) {
@@ -68,9 +69,11 @@ class TerrainState {
         // Knowing this information, it is trivial to compute where the neighbor lies
         
         // Calculate LOD of current chunk
-        let dimensionScale = containingChunkDimensionScale(float3(Float(chunk.x) + 0.5, Float(chunk.y) + 0.5, Float(chunk.z) + 0.5))
+        let dimensionScale = containingChunkDimensionScale(float3(Float(chunk.x) + lowestUnitDistance / 2.0,
+                                                                  Float(chunk.y) + lowestUnitDistance / 2.0,
+                                                                  Float(chunk.z) + lowestUnitDistance / 2.0))
         let chunkCenter : float3 = float3(Float(chunk.x) + dimensionScale / 2.0, Float(chunk.y) + dimensionScale / 2.0, Float(chunk.z) + dimensionScale / 2.0)
-        let testDistance = dimensionScale / 2.0 + 0.5
+        let testDistance = dimensionScale / 2.0 + lowestUnitDistance / 2.0
         for x in -1...1 {
             for y in -1...1 {
                 for z in -1...1 {
@@ -106,42 +109,42 @@ class TerrainState {
     }
     
     func addPossibleLowLODNeighbors( testPos : float3, queue : inout [simd_int4], traversed : inout [Int32 : [Int32 : [Int32 : Float]]]) {
-        let posXTest = testPos + float3(0.25, 0.0, 0.0)
+        let posXTest = testPos + float3(lowestUnitDistance / 4.0, 0.0, 0.0)
         var pos = computeContainingChunk(posXTest)
         if !containsChunk(chunks: &traversed, chunk: pos) {
             queue.append(pos)
             addChunk(chunks: &traversed, chunk: pos)
         }
         
-        let negXTest = testPos - float3(0.25, 0.0, 0.0)
+        let negXTest = testPos - float3(lowestUnitDistance / 4.0, 0.0, 0.0)
         pos = computeContainingChunk(negXTest)
         if !containsChunk(chunks: &traversed, chunk: pos) {
             queue.append(pos)
             addChunk(chunks: &traversed, chunk: pos)
         }
         
-        let posYTest = testPos + float3(0.0, 0.25, 0.0)
+        let posYTest = testPos + float3(0.0, lowestUnitDistance / 4.0, 0.0)
         pos = computeContainingChunk(posYTest)
         if !containsChunk(chunks: &traversed, chunk: pos) {
             queue.append(pos)
             addChunk(chunks: &traversed, chunk: pos)
         }
         
-        let negYTest = testPos - float3(0.0, 0.25, 0.0)
+        let negYTest = testPos - float3(0.0, lowestUnitDistance / 4.0, 0.0)
         pos = computeContainingChunk(negYTest)
         if !containsChunk(chunks: &traversed, chunk: pos) {
             queue.append(pos)
             addChunk(chunks: &traversed, chunk: pos)
         }
         
-        let posZTest = testPos + float3(0.0, 0.0, 0.25)
+        let posZTest = testPos + float3(0.0, 0.0, lowestUnitDistance / 4.0)
         pos = computeContainingChunk(posZTest)
         if !containsChunk(chunks: &traversed, chunk: pos) {
             queue.append(pos)
             addChunk(chunks: &traversed, chunk: pos)
         }
         
-        let negZTest = testPos - float3(0.0, 0.0, 0.25)
+        let negZTest = testPos - float3(0.0, 0.0, lowestUnitDistance / 4.0)
         pos = computeContainingChunk(negZTest)
         if !containsChunk(chunks: &traversed, chunk: pos) {
             queue.append(pos)
@@ -150,12 +153,12 @@ class TerrainState {
     }
     
     func chunkIntToWorld(chunkId : simd_int4, camera : Camera) -> float4 {
-        let chunkDim = Int32(chunkDimension)
-        var chunkWorld = float3(Float(chunkId.x * chunkDim), Float(chunkId.y * chunkDim), Float(chunkId.z * chunkDim))
+        let chunkLength = Int32(Float(chunkDimension) / lowestUnitDistance)
+        var chunkWorld = float3(Float(chunkId.x * chunkLength), Float(chunkId.y * chunkLength), Float(chunkId.z * chunkLength))
         chunkWorld += camera.pos
-        chunkWorld.x = floorf(chunkWorld.x / Float(chunkDimension)) * Float(chunkDimension)
-        chunkWorld.y = floorf(chunkWorld.y / Float(chunkDimension)) * Float(chunkDimension)
-        chunkWorld.z = floorf(chunkWorld.z / Float(chunkDimension)) * Float(chunkDimension)
+        chunkWorld.x = floorf(chunkWorld.x / Float(chunkLength)) * Float(chunkLength)
+        chunkWorld.y = floorf(chunkWorld.y / Float(chunkLength)) * Float(chunkLength)
+        chunkWorld.z = floorf(chunkWorld.z / Float(chunkLength)) * Float(chunkLength)
         let chunkWorld4 = float4(chunkWorld.x, chunkWorld.y, chunkWorld.z, Float(chunkId.w))
         return chunkWorld4
     }
@@ -209,7 +212,7 @@ class TerrainState {
                     if inCameraView(chunk : chunk, camera : camera, planes : planes) {
                         addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed)
                         // debug
-                        print(chunk.x, chunk.y, chunk.z)
+                        print(chunk.x, chunk.y, chunk.z, chunk.w)
                         chunks.append(chunkIntToWorld(chunkId: chunk, camera: camera))
                         validChunkFound = true
                         chunksToRender += 1

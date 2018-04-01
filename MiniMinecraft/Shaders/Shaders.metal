@@ -62,9 +62,9 @@ kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
 //    if (inSinPerlinTerrain(output) > 0) valid = 0.0f;
 
     uint8_t cubeMarchKey = (valid > 0) ? 0 : 15; // Need to revise face making table
-    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(1.0f, 0.0f, 0.0f)) * 4);
-    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(0.0f, 1.0f, 0.0f)) * 2);
-    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(0.0f, 0.0f, 1.0f)));
+//    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(1.0f, 0.0f, 0.0f)) * 4);
+//    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(0.0f, 1.0f, 0.0f)) * 2);
+//    cubeMarchKey = cubeMarchKey^(inPerlinTerrain(output + float3(0.0f, 0.0f, 1.0f)));
     
     float3 voxelValues = cubeMarchTable[cubeMarchKey];
     
@@ -129,14 +129,14 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     //    if (inFrameTerrain(output) > 0) valid = 0.0f;
     //    if (inSinPerlinTerrain(output) > 0) valid = 0.0f;
     
-    uint8_t caseKey = inSinPerlinTerrain(output);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(0.0f, scale, 0.0f)) * 2);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(0.0f, scale, scale)) * 4);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(0.0f, 0.0f, scale)) * 8);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(scale, 0.0f, 0.0f)) * 16);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(scale, scale, 0.0f)) * 32);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(scale, scale, scale)) * 64);
-    caseKey = caseKey^(inSinPerlinTerrain(output + float3(scale, 0.0f, scale)) * 128);
+    uint8_t caseKey = (inSphereTerrain(output) > 0.f) ? 1 : 0;
+    caseKey = caseKey^((inSphereTerrain(output + float3(0.0f, scale, 0.0f)) > 0.f) ? 2 : 0);
+    caseKey = caseKey^((inSphereTerrain(output + float3(0.0f, scale, scale)) > 0.f) ? 4 : 0);
+    caseKey = caseKey^((inSphereTerrain(output + float3(0.0f, 0.0f, scale)) > 0.f) ? 8 : 0);
+    caseKey = caseKey^((inSphereTerrain(output + float3(scale, 0.0f, 0.0f)) > 0.f) ? 16 : 0);
+    caseKey = caseKey^((inSphereTerrain(output + float3(scale, scale, 0.0f)) > 0.f) ? 32 : 0);
+    caseKey = caseKey^((inSphereTerrain(output + float3(scale, scale, scale)) > 0.f) ? 64 : 0);
+    caseKey = caseKey^((inSphereTerrain(output + float3(scale, 0.0f, scale)) > 0.f) ? 128 : 0);
     
     // We now have a caseKey in the interval 0...255
     

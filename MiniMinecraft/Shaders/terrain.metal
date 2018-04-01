@@ -10,15 +10,15 @@
 
 using namespace metal;
 
-uint8_t inSinWeightedTerrain(thread float3 pos) {
-    float heightx = (sin((pos.x / 160.f) * M_PI)) * 15.0f + 8.0f;
-    float heightz = (sin((pos.z / 120.f) * M_PI)) * 20.0f + 8.0f;
+float inSinWeightedTerrain(thread float3 pos) {
+    float heightx = (sin((pos.x / 16.f) * M_PI)) * 8.0f + 8.0f;
+    float heightz = (sin((pos.z / 16.f) * M_PI)) * 8.0f + 8.0f;
     
-    heightx += (sin((pos.x / 850.f) * M_PI)) * 50.0f;
-    heightz += (sin((pos.z / 740.f) * M_PI)) * 80.0f;
+//    heightx += (sin((pos.x / 850.f) * M_PI)) * 50.0f;
+//    heightz += (sin((pos.z / 740.f) * M_PI)) * 80.0f;
     
     float height = heightx + heightz;
-    return (pos.y < height) ? 1 : 0;
+    return height - pos.y;
 }
 
 uint8_t inCheckeredTerrain(thread float3 pos) {
@@ -26,12 +26,12 @@ uint8_t inCheckeredTerrain(thread float3 pos) {
     return (result > 0) ? 0 : 1;
 }
 
-uint8_t inSphereTerrain(thread float3 pos) {
+float inSphereTerrain(thread float3 pos) {
     float radius = 2.5f;
     float3 center = float3((floor(pos.x / 16.0f)) * 16.0f + 8.f,
                            (floor(pos.y / 16.0f)) * 16.0f + 8.f,
                            (floor(pos.z / 16.0f)) * 16.0f + 8.f);
-    return (length(pos - center) < radius) ? 1 : 0;
+    return radius - length(pos - center);
 }
 
 float3 randGrad(float3 n) {
@@ -105,10 +105,9 @@ float perlin(float3 pos) {
     return (perlinInterp(y0, y1, unitLocation.z) + 1.f) / 2.f;
 }
 
-uint8_t inPerlinTerrain(thread float3 pos) {
-    float threshold = 0.4f;
+float inPerlinTerrain(thread float3 pos) {
     float3 sample = pos / 64.0f;
-    return (perlin(sample) < threshold) ? 1 : 0;
+    return perlin(sample) - 0.5f;
 }
 
 uint8_t inFrameTerrain(thread float3 pos) {

@@ -7,6 +7,7 @@
 //
 
 #include <metal_stdlib>
+#include "terrain_header.metal"
 using namespace metal;
 
 // Control Point struct
@@ -92,8 +93,7 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
     float w = patch_coord.z;
     
     //camera matrices
-    float4x4 modMatrix = uniforms.modelMatrix;
-    float4x4 viewProjection = uniforms.viewProjectionMatrix;
+    float4x4 modViewProjMatrix = uniforms.viewProjectionMatrix * uniforms.modelMatrix;
     
     float4 controlPoint = patchIn.control_points[0].position;
     FunctionOutIn vertexOut;
@@ -109,28 +109,37 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
     
     // Convert 3 vertex edges to vertex positions
     // TODO: Revise hard-coded 0.5f interpolation
-    float3 c0 = corner_positions[2*edge0] * LOD;
-    float3 c1 = corner_positions[2*edge0+1] * LOD;
-    float3 v0 = c0 + 0.5f * (c1 - c0);
+    float3 c0 = corner_positions[2*edge0] * LOD + controlPoint.xyz;
+    float3 c1 = corner_positions[2*edge0+1] * LOD + controlPoint.xyz;
+    float t0 = abs(inSphereTerrain(c0));
+    float t1 = abs(inSphereTerrain(c1));
+    t0 =  t0 / (t0 + t1);
+    float3 v0 = c0 + t0 * (c1 - c0);
     
-    c0 = corner_positions[2*edge1] * LOD;
-    c1 = corner_positions[2*edge1+1] * LOD;
-    float3 v1 = c0 + 0.5f * (c1 - c0);
+    c0 = corner_positions[2*edge1] * LOD + controlPoint.xyz;
+    c1 = corner_positions[2*edge1+1] * LOD + controlPoint.xyz;
+    t0 = abs(inSphereTerrain(c0));
+    t1 = abs(inSphereTerrain(c1));
+    t0 =  t0 / (t0 + t1);
+    float3 v1 = c0 + t0 * (c1 - c0);
     
-    c0 = corner_positions[2*edge2] * LOD;
-    c1 = corner_positions[2*edge2+1] * LOD;
-    float3 v2 = c0 + 0.5f * (c1 - c0);
+    c0 = corner_positions[2*edge2] * LOD + controlPoint.xyz;
+    c1 = corner_positions[2*edge2+1] * LOD + controlPoint.xyz;
+    t0 = abs(inSphereTerrain(c0));
+    t1 = abs(inSphereTerrain(c1));
+    t0 =  t0 / (t0 + t1);
+    float3 v2 = c0 + t0 * (c1 - c0);
     
     
     // Interpolate between the 3 vertex positions to define current vertex position at it's pre-transformed position
-    float3 preTransformPosition = (u * v2 + v * v1 + w * v0) + controlPoint.xyz;
+    float3 preTransformPosition = (u * v2 + v * v1 + w * v0);
     
     // Output
     float3 normal = normalize(cross(v0 - v1, v2 - v1));
-    vertexOut.position = viewProjection * modMatrix * float4(preTransformPosition, 1.0);
+    vertexOut.position = modViewProjMatrix * float4(preTransformPosition, 1.0);
 //    vertexOut.color = half4(u + 0.5, v + 0.5, 1.0-(v + 1.0), 1.0);
 
-    vertexOut.color = half4(half(normal.x / 2.f + .5f), half(normal.y / 2.f + .5f), half(normal.z / 4.f + .5f), 1.0);
+    vertexOut.color = half4(0.3, 0.3, 0.6, 1.0);
     vertexOut.normal = normal;
     return vertexOut;
 }
@@ -170,7 +179,6 @@ vertex FunctionOutIn tessellation_vertex_quad(PatchIn patchIn [[stage_in]],
     float3 preTransformPosition = controlPoint.xyz + u * corners[cornerIdx] + v * corners[cornerIdx + 1] + 0.5f * offset;
     
     // Output
-    float3 normal = cross(corners[cornerIdx], corners[cornerIdx + 1]);
     vertexOut.position = viewProjection * modMatrix * float4(preTransformPosition, 1.0);
     vertexOut.color = half4(1.0, 1.0, 1.0, 1.0);
     vertexOut.normal = cross(corners[cornerIdx], corners[cornerIdx + 1]);
