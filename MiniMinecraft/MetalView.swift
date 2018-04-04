@@ -29,7 +29,7 @@ class MetalView: MTKView {
         self.capManager = MTLCaptureManager.shared()
 //        self.capManager.startCapture(commandQueue: commandQueue)
         let commandBuffer = commandQueue.makeCommandBuffer()
-        RenderManager.sharedInstance.buildTessellationFactorsBuffer(commandBuffer: commandBuffer)
+        //RenderManager.sharedInstance.buildTessellationFactorsBuffer(commandBuffer: commandBuffer)
         RenderManager.sharedInstance.generateTerrain(commandBuffer: commandBuffer)
         commandBuffer?.commit()
 //        self.capManager.stopCapture()

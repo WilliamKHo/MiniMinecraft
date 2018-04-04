@@ -107,6 +107,16 @@ kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
     factors[voxelId + 2] = factorZ;
 }
 
+int2 calculateVerticesOfEdge(int e) {
+    int a = (e > 7) ? e - 8 : e;
+    int b = (e > 7) ? a + 4 : ((e == 3 || e == 7) ? a - 3 : a + 1);
+    return int2(a, b);
+}
+
+float interpolateWeight(float a, float b) {
+    return abs(a) / (abs(a) + abs(b));
+}
+
 // Voxel grid to control points shader
 kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer(0)]],
                                               device ControlPoint* control_points [[buffer(1)]],
@@ -131,14 +141,14 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     //    if (inFrameTerrain(output) > 0) valid = 0.0f;
     //    if (inSinPerlinTerrain(output) > 0) valid = 0.0f;
     
-    densities[0] = inSphereTerrain(output);
-    densities[1] = inSphereTerrain(output + float3(0.0f, scale, 0.0f));
-    densities[2] = inSphereTerrain(output + float3(0.0f, scale, scale));
-    densities[3] = inSphereTerrain(output + float3(0.0f, 0.0f, scale));
-    densities[4] = inSphereTerrain(output + float3(scale, 0.0f, 0.0f));
-    densities[5] = inSphereTerrain(output + float3(scale, scale, 0.0f));
-    densities[6] = inSphereTerrain(output + float3(scale, scale, scale));
-    densities[7] = inSphereTerrain(output + float3(scale, 0.0f, scale));
+    densities[0] = inSinPerlinTerrain(output);
+    densities[1] = inSinPerlinTerrain(output + float3(0.0f, scale, 0.0f));
+    densities[2] = inSinPerlinTerrain(output + float3(0.0f, scale, scale));
+    densities[3] = inSinPerlinTerrain(output + float3(0.0f, 0.0f, scale));
+    densities[4] = inSinPerlinTerrain(output + float3(scale, 0.0f, 0.0f));
+    densities[5] = inSinPerlinTerrain(output + float3(scale, scale, 0.0f));
+    densities[6] = inSinPerlinTerrain(output + float3(scale, scale, scale));
+    densities[7] = inSinPerlinTerrain(output + float3(scale, 0.0f, scale));
     
     uint8_t caseKey = (densities[0] > 0.f) ? 1 : 0;
     caseKey = caseKey^((densities[1] > 0.f) ? 2 : 0);
@@ -153,15 +163,33 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     
     // Populate our control_point data with the necessary information to construct the triangle
     
+    ControlPoint cp;
     int triangleFirstVertexId = 15 * (int) caseKey;
+    int3 triangleVoxelEdges;
     int triangleId = voxelId;
-    scale = log2(scale) / 10.0f;
     float factor;
+    int2 vertexIndices;
+    float4 weights;
     
     for (int i = 0; i < 5; i++) {
-        control_points[triangleId].position = float4(output, (float) triangleFirstVertexId + scale);
+        cp.position = float4(output, (float) triangleFirstVertexId);
         MTLTriangleTessellationFactorsHalf tessFactors;
-        factor = (triangle_lookup_table[triangleFirstVertexId] < 0) ? 0.f : 1.f;
+        triangleVoxelEdges = int3(triangle_lookup_table[triangleFirstVertexId], triangle_lookup_table[triangleFirstVertexId+1], triangle_lookup_table[triangleFirstVertexId+2]);
+        factor = triangleVoxelEdges.x < 0 ? 0.f : 1.f;
+        
+        // Calculate weights of vertices
+        vertexIndices = calculateVerticesOfEdge(triangleVoxelEdges.x);
+        weights.x = interpolateWeight(densities[vertexIndices.x], densities[vertexIndices.y]);
+        
+        vertexIndices = calculateVerticesOfEdge(triangleVoxelEdges.y);
+        weights.y = interpolateWeight(densities[vertexIndices.x], densities[vertexIndices.y]);
+        
+        vertexIndices = calculateVerticesOfEdge(triangleVoxelEdges.z);
+        weights.z = interpolateWeight(densities[vertexIndices.x], densities[vertexIndices.y]);
+        weights.a = scale;
+        cp.weights = weights;
+        
+        control_points[triangleId] = cp;
         tessFactors.edgeTessellationFactor[0] = factor;
         tessFactors.edgeTessellationFactor[1] = factor;
         tessFactors.edgeTessellationFactor[2] = factor;

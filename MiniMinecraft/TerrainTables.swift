@@ -272,7 +272,7 @@ let TRIANGLES : [Int32] = [
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
 ]
 
-// Maps egde indices to two positions to interpolate
+// Maps edge indices to two positions to interpolate
 // Index scheme: 2*edgeId and 2*edgeId+1
 let CORNER_POSITIONS : [float3] = [
     float3(0, 0, 0), float3(0, 1, 0), // edge 0

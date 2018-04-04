@@ -92,9 +92,9 @@ public class RenderManager {
     }
     
     func registerGraphicsShaders() {
-        kern_tessellation = library?.makeFunction(name: "tessellation_kernel_quad")
-        do { try ps_tessellation = device!.makeComputePipelineState(function: kern_tessellation) }
-        catch { fatalError("tessellation_quad computePipelineState failed") }
+//        kern_tessellation = library?.makeFunction(name: "tessellation_kernel_quad")
+//        do { try ps_tessellation = device!.makeComputePipelineState(function: kern_tessellation) }
+//        catch { fatalError("tessellation_quad computePipelineState failed") }
         
         vert_func = library?.makeFunction(name: "tessellation_vertex_triangle")
         frag_func = library?.makeFunction(name: "tessellation_fragment")
@@ -104,9 +104,12 @@ public class RenderManager {
         vertexDescriptor.attributes[0].format = .float4;
         vertexDescriptor.attributes[0].offset = 0;
         vertexDescriptor.attributes[0].bufferIndex = 0;
+        vertexDescriptor.attributes[1].format = .float4;
+        vertexDescriptor.attributes[1].offset = 4 * MemoryLayout<Float>.stride;
+        vertexDescriptor.attributes[1].bufferIndex = 0;
         vertexDescriptor.layouts[0].stepFunction = .perPatchControlPoint;
         vertexDescriptor.layouts[0].stepRate = 1;
-        vertexDescriptor.layouts[0].stride = 4*MemoryLayout<Float>.size;
+        vertexDescriptor.layouts[0].stride = 8 * MemoryLayout<Float>.stride;
         
         // Setup Render Pipeline
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
@@ -144,21 +147,21 @@ public class RenderManager {
         depthStencilState = device?.makeDepthStencilState(descriptor : depthStencilDescriptor)
     }
     
-    func buildTessellationFactorsBuffer(commandBuffer : MTLCommandBuffer?) {
-        // Tessellation
-        let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
-        computeCommandEncoder?.setComputePipelineState(ps_tessellation!)
-        let edgeFactor: [Float] = [1.0]
-        let insideFactor: [Float] = [1.0]
-        computeCommandEncoder?.setBytes(edgeFactor, length: MemoryLayout<Float>.size, index: 0)
-        computeCommandEncoder?.setBytes(insideFactor, length: MemoryLayout<Float>.size, index: 1)
-        let threadExecutionWidth = ps_tessellation.threadExecutionWidth
-        let threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
-        let threadgroupsPerGrid = MTLSize(width: ((16 * 16 * 16 * 3) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
-        computeCommandEncoder?.setBuffer(tessellationFactorsBuffer, offset: 0, index: 2)
-        computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
-        computeCommandEncoder?.endEncoding()
-    }
+//    func buildTessellationFactorsBuffer(commandBuffer : MTLCommandBuffer?) {
+//        // Tessellation
+//        let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
+//        computeCommandEncoder?.setComputePipelineState(ps_tessellation!)
+//        let edgeFactor: [Float] = [1.0]
+//        let insideFactor: [Float] = [1.0]
+//        computeCommandEncoder?.setBytes(edgeFactor, length: MemoryLayout<Float>.size, index: 0)
+//        computeCommandEncoder?.setBytes(insideFactor, length: MemoryLayout<Float>.size, index: 1)
+//        let threadExecutionWidth = ps_tessellation.threadExecutionWidth
+//        let threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
+//        let threadgroupsPerGrid = MTLSize(width: ((16 * 16 * 16 * 3) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
+//        computeCommandEncoder?.setBuffer(tessellationFactorsBuffer, offset: 0, index: 2)
+//        computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+//        computeCommandEncoder?.endEncoding()
+//    }
     
     func generateTerrain(commandBuffer : MTLCommandBuffer?) {
         self.terrainManager.generateTerrain(commandBuffer: commandBuffer, camera: camera)

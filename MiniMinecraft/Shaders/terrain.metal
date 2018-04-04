@@ -18,7 +18,7 @@ float inSinWeightedTerrain(thread float3 pos) {
 //    heightz += (sin((pos.z / 740.f) * M_PI)) * 80.0f;
     
     float height = heightx + heightz;
-    return height - pos.y;
+    return max(min(height - pos.y, 0.5f), -0.5f);
 }
 
 uint8_t inCheckeredTerrain(thread float3 pos) {
@@ -120,8 +120,8 @@ uint8_t inFrameTerrain(thread float3 pos) {
     return count == 2 ? 1 : 0;
 }
 
-uint8_t inSinPerlinTerrain(thread float3 pos) {
-    return inSinWeightedTerrain(pos)  == 1 && inPerlinTerrain(pos) == 0;
+float inSinPerlinTerrain(thread float3 pos) {
+    return inSinWeightedTerrain(pos) - 3 * max(inPerlinTerrain(pos), 0.f) ;
 }
 
 uint8_t inPerlinPlanetTerrain(thread float3 pos) {

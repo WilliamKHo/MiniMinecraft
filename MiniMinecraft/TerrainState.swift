@@ -29,7 +29,7 @@ class TerrainState {
         self.inflightChunksCount = inflightChunksCount
         self.chunks = [TerrainChunk]()
         let numVoxels = chunkDimension * chunkDimension * chunkDimension
-        let floatsPerVoxel = 20; //3 faces * 4 floats
+        let floatsPerVoxel = 40; //5 faces * 8 floats
         let uIntsPerVoxel = 20; //3 faces * 4 tessellation factors
         for _ in 0..<inflightChunksCount {
             chunks.append(TerrainChunk(
@@ -40,11 +40,6 @@ class TerrainState {
     }
     
     func containsChunk( chunks : inout [Int32 : [Int32 : [Int32 : Float]]], chunk : simd_int4) -> Bool {
-//        if let xLayer = chunks[chunk.x] {
-//            if let yLayer = xLayer[chunk.y] {
-//                if let _ = yLayer[chunk.z] { return true } else { return false }
-//            } else { return false }
-//        } else { return false }
         if let xLayer = chunks[chunk.x] {
             if let yLayer = xLayer[chunk.y] {
                 if let _ = yLayer[chunk.z] { return true } else { return false }

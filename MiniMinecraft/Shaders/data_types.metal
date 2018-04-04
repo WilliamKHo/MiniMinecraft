@@ -11,6 +11,11 @@ using namespace metal;
 
 struct ControlPoint {
     float4 position [[attribute(0)]];
+    float4 weights  [[attribute(1)]];
 };
 
+// Patch struct
+struct PatchIn {
+    patch_control_point<ControlPoint> control_points;
+};
 
