@@ -180,7 +180,7 @@ class TerrainState {
     }
     
     func distanceToCamera(_ s : vector_float4, camera: Camera) -> Float {
-        return distance_squared(float3(s.x, s.y, s.z), camera.pos)
+        return distance_squared(float3(s.x, s.y, s.z), camera.pos) + (s.w / 10.0)
     }
     
     // Populates chunks with chunk render data and returns the number of chunks to render

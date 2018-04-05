@@ -105,23 +105,23 @@ float perlin(float3 pos) {
     return (perlinInterp(y0, y1, unitLocation.z) + 1.f) / 2.f;
 }
 
-float inPerlinTerrain(thread float3 pos) {
+float inPerlin3DTerrain(thread float3 pos) {
     float3 sample = pos / 64.0f;
     return perlin(sample) - 0.5f;
 }
 
-uint8_t inFrameTerrain(thread float3 pos) {
+float inFrameTerrain(thread float3 pos) {
     float3 test = (pos + float3(8.f, 8.f, 8.f)) / 16.0f;
     test = float3(floor(test.x) * 16.f, floor(test.y) * 16.f, floor(test.z) * 16.f);
-    int count = 0;
-    count += (abs(pos.x - test.x) < 1.f) ? 1 : 0;
-    count += (abs(pos.y - test.y) < 1.f) ? 1 : 0;
-    count += (abs(pos.z - test.z) < 1.f) ? 1 : 0;
-    return count == 2 ? 1 : 0;
+    float sumDist = 0.f;
+    sumDist += abs(pos.x - test.x);
+    sumDist += abs(pos.y - test.y);
+    sumDist += abs(pos.z - test.z);
+    return 1.f - sumDist;
 }
 
 float inSinPerlinTerrain(thread float3 pos) {
-    return inSinWeightedTerrain(pos) - 3 * max(inPerlinTerrain(pos), 0.f) ;
+    return inSinWeightedTerrain(pos) - 3 * max(inPerlin3DTerrain(pos), 0.f) ;
 }
 
 uint8_t inPerlinPlanetTerrain(thread float3 pos) {
@@ -133,7 +133,7 @@ uint8_t inPerlinPlanetTerrain(thread float3 pos) {
     float height = heightx + heighty + heightz;
     uint8_t inPlanet = (abs(length(pos - float3(0.f, -500.f, 0.f))) < height) ? 1 : 0;
     
-    return inPlanet && inPerlinTerrain(pos) == 0;
+    return inPlanet && inPerlin3DTerrain(pos) == 0;
 }
 
 

@@ -17,9 +17,11 @@ uint8_t inCheckeredTerrain(thread float3 pos);
 
 float inSphereTerrain(thread float3 pos);
 
-float inPerlinTerrain(thread float3 pos);
+float inPerlin3DTerrain(thread float3 pos);
 
-uint8_t inFrameTerrain(thread float3 pos);
+float inPerlin2DTerrain(thread float3 pos);
+
+float inFrameTerrain(thread float3 pos);
 
 float inSinPerlinTerrain(thread float3 pos);
 
