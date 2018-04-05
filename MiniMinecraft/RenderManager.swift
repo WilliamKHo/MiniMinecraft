@@ -61,7 +61,7 @@ public class RenderManager {
             up : [0.0, 1.0, 0.0]
         )
         
-        self.terrainManager = TerrainManager(device: device, library: library!, inflightChunksCount: 125)
+        self.terrainManager = TerrainManager(device: device, library: library!, inflightChunksCount: 150)
         
         registerGraphicsShaders()
         buildDepthTexture()

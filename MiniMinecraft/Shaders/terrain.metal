@@ -7,6 +7,7 @@
 //
 
 #include "terrain_header.metal"
+#include "signed_distance_functions_header.metal"
 
 using namespace metal;
 
@@ -32,6 +33,10 @@ float inSphereTerrain(thread float3 pos) {
                            (floor(pos.y / 16.0f)) * 16.0f + 8.f,
                            (floor(pos.z / 16.0f)) * 16.0f + 8.f);
     return radius - length(pos - center);
+}
+
+float randNumber(float3 n) {
+    return fract(sin(dot(n, float3(12.9898, -56.31985, 4.1414))) * 43758.5453);
 }
 
 float3 randGrad(float3 n) {
@@ -107,7 +112,7 @@ float perlin(float3 pos) {
 
 float inPerlin3DTerrain(thread float3 pos) {
     float3 sample = pos / 64.0f;
-    return perlin(sample) - 0.5f;
+    return perlin(sample) - 0.4f;
 }
 
 float inFrameTerrain(thread float3 pos) {
@@ -134,6 +139,76 @@ uint8_t inPerlinPlanetTerrain(thread float3 pos) {
     uint8_t inPlanet = (abs(length(pos - float3(0.f, -500.f, 0.f))) < height) ? 1 : 0;
     
     return inPlanet && inPerlin3DTerrain(pos) == 0;
+}
+
+float noise(float a, float b, float c) {
+    //get fractional part of x and y
+    float fractA = fract(a);
+    float fractB = fract(b);
+    float fractC = fract(c);
+    
+    //wrap around
+    float a1 = floor(a);
+    float b1 = floor(b);
+    float c1 = floor(c);
+    
+    //smooth the noise with bilinear interpolation
+    float value = 0.0;
+    value += fractA     * fractB     * fractC     * randNumber(float3(c1, b1, a1));
+    value += fractA     * (1 - fractB) * fractC     * randNumber(float3(c1, b + 1, a1));
+    value += (1 - fractA) * fractB     * fractC     * randNumber(float3(c1, b1, a1 + 1));
+    value += (1 - fractA) * (1 - fractB) * fractC     * randNumber(float3(c1, b1 + 1, a1 + 1));
+    
+    value += fractA     * fractB     * (1 - fractC) * randNumber(float3(c1 + 1, b1, a1));
+    value += fractA     * (1 - fractB) * (1 - fractC) * randNumber(float3(c1 + 1, b1 + 1, a1));
+    value += (1 - fractA) * fractB     * (1 - fractC) * randNumber(float3(c1 + 1, b1, a1 + 1));
+    value += (1 - fractA) * (1 - fractB) * (1 - fractC) * randNumber(float3(c1 + 1, b1 + 1, a1 + 1));
+    
+    return value;
+}
+
+float turbulence(float a, float b) {
+    float value = 0.0;
+    float size = 32.f;
+    
+    value += noise(a / size, b / size, 1.f / size) * size;
+    size /= 2.0;
+    value += noise(a / size, b / size, 1.f / size) * size;
+    size /= 2.0;
+    value += noise(a / size, b / size, 1.f / size) * size;
+    size /= 2.0;
+    value += noise(a / size, b / size, 1.f / size) * size;
+    size /= 2.0;
+    value += noise(a / size, b / size, 1.f / size) * size;
+    size /= 2.0;
+    value += noise(a / size, b / size, 1.f / size) * size;
+    
+    return(128.0 * value / 32.f);
+}
+
+float inMarble2DTerrain(thread float3 pos) {
+    
+    // layer 1 of marble
+    float xPeriod = 50.f;
+    float zPeriod = 70.f;
+    float turbPower = 25.f;
+    float3 sample = float3(pos.x / 64.f, 1.f, pos.z / 64.f);
+    float xzValue = pos.x / xPeriod + pos.z / zPeriod + turbPower * perlin(sample);
+    float sineValue = 5.f * sin(xzValue);
+    
+    // layer 2
+    xPeriod = 300.f;
+    zPeriod = 300.f;
+    turbPower = 200.f;
+    sample = sample / 64.f;
+    xzValue = pos.x / xPeriod + pos.z / zPeriod + turbPower * perlin(sample);
+    sineValue += 50.f * sin(xzValue);
+
+    return min(max(sineValue - pos.y, -.5f), .5f);
+}
+
+float inMarblePerlinTerrain(thread float3 pos) {
+    return inMarble2DTerrain(pos) - 3 * max(inPerlin3DTerrain(pos), 0.f) + 4 * max(sdSphere(pos, float3(10.f, 100.f, 10.f), 40.f), 0.f);
 }
 
 

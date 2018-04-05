@@ -27,3 +27,6 @@ float inSinPerlinTerrain(thread float3 pos);
 
 uint8_t inPerlinPlanetTerrain(thread float3 pos);
 
+float inMarble2DTerrain(thread float3 pos);
+
+float inMarblePerlinTerrain(thread float3 pos);

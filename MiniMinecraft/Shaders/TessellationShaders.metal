@@ -123,7 +123,9 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
     float3 normal = normalize(cross(v0 - v1, v2 - v1));
     vertexOut.position = modViewProjMatrix * float4(preTransformPosition, 1.0);
 //    vertexOut.color = half4(u + 0.5, v + 0.5, 1.0-(v + 1.0), 1.0);
-    vertexOut.color = myColor;
+//    vertexOut.color = myColor;
+    vertexOut.color = half4(0.6, 0.6, 0.6, 1.0);
+
     vertexOut.normal = normal;
     return vertexOut;
 }
