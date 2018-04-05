@@ -54,26 +54,29 @@ public class TerrainManager {
         let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
         let chunkDimension = self.terrainState.chunkDimension
         
-        var chunks = [vector_float4]()
-        let numChunks = self.terrainState.computeChunksToRender(chunks: &chunks, eye: vector_float3(0.0), count: self.terrainState.inflightChunksCount, camera: camera)
+        let numChunks = self.terrainState.computeChunksToRender(eye: vector_float3(0.0), count: self.terrainState.inflightChunksCount, camera: camera)
     
         computeCommandEncoder?.setComputePipelineState(ps_computeControlPoints!)
         computeCommandEncoder?.setBuffer(triangleTableBuffer, offset: 0, index: 2)
         let threadExecutionWidth = ps_computeControlPoints.threadExecutionWidth;
         let threadsPerThreadgroup = MTLSize(width: threadExecutionWidth, height: 1, depth: 1)
         let threadgroupsPerGrid = MTLSize(width: ((chunkDimension * chunkDimension * chunkDimension) + threadExecutionWidth - 1) / threadExecutionWidth, height: 1, depth: 1)
+//        for i in 0..<numChunks {
+//            var pos = chunks[i]
+//            print(pos.x, pos.y, pos.z)
+//        }
         for i in 0..<numChunks {
-            var pos = chunks[i]
-            print(pos.x, pos.y, pos.z)
-        }
-        for i in 0..<numChunks {
-            let startPos: [vector_float4] = [chunks[i]]
-            let buffer = self.terrainState.chunk(at: i).terrainBuffer
-            let tessBuffer = self.terrainState.chunk(at: i).tessellationFactorBuffer
-            computeCommandEncoder?.setBytes(startPos, length: MemoryLayout<vector_float4>.size, index: 0)
-            computeCommandEncoder?.setBuffer(buffer, offset: 0, index: 1)
-            computeCommandEncoder?.setBuffer(tessBuffer, offset: 0, index: 3)
-            computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+            let chunk = self.terrainState.chunk(at: i)
+            if !chunk.rendered {
+                let startPos: [vector_float4] = [self.terrainState.chunk(at: i).startPosition]
+                let buffer = self.terrainState.chunk(at: i).terrainBuffer
+                let tessBuffer = self.terrainState.chunk(at: i).tessellationFactorBuffer
+                computeCommandEncoder?.setBytes(startPos, length: MemoryLayout<vector_float4>.size, index: 0)
+                computeCommandEncoder?.setBuffer(buffer, offset: 0, index: 1)
+                computeCommandEncoder?.setBuffer(tessBuffer, offset: 0, index: 3)
+                computeCommandEncoder?.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+                self.terrainState.setChunkRendered(at: i)
+            }
         }
         computeCommandEncoder?.endEncoding()
     }
