@@ -51,11 +51,12 @@ public class TerrainManager {
     
     func generateTerrain(commandBuffer : MTLCommandBuffer?, camera : Camera) {
         if !updateBuffers { return }
+        let numChunks = self.terrainState.computeChunksToRender(eye: vector_float3(0.0), count: self.terrainState.inflightChunksCount, camera: camera)
+        print(numChunks)
+        if numChunks == 0 { return }
         let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
         let chunkDimension = self.terrainState.chunkDimension
         
-        let numChunks = self.terrainState.computeChunksToRender(eye: vector_float3(0.0), count: self.terrainState.inflightChunksCount, camera: camera)
-    
         computeCommandEncoder?.setComputePipelineState(ps_computeControlPoints!)
         computeCommandEncoder?.setBuffer(triangleTableBuffer, offset: 0, index: 2)
         let threadExecutionWidth = ps_computeControlPoints.threadExecutionWidth;
@@ -65,7 +66,7 @@ public class TerrainManager {
 //            var pos = chunks[i]
 //            print(pos.x, pos.y, pos.z)
 //        }
-        for i in 0..<numChunks {
+        for i in 0..<self.terrainState.inflightChunksCount {
             let chunk = self.terrainState.chunk(at: i)
             if !chunk.rendered {
                 let startPos: [vector_float4] = [self.terrainState.chunk(at: i).startPosition]

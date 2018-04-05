@@ -14,10 +14,7 @@ struct TerrainChunk {
     var terrainBuffer : MTLBuffer!
     var tessellationFactorBuffer: MTLBuffer!
     var rendered : Bool!
-    
-    func distance(camera : Camera) -> Float {
-        return 0.0
-    }
+    var use : Bool!
 }
 
 class TerrainState {
@@ -37,7 +34,8 @@ class TerrainState {
                 startPosition: vector_float4(0.0, 0.0, 0.0, 0.0), //unused so far
                 terrainBuffer: device.makeBuffer(length: MemoryLayout<Float32>.stride * numVoxels * floatsPerVoxel, options: []),
                 tessellationFactorBuffer: device.makeBuffer(length: numVoxels * uIntsPerVoxel * MemoryLayout<UInt16>.stride, options: []),
-                rendered: false))
+                rendered: false,
+                use: false))
         }
     }
     
@@ -181,14 +179,13 @@ class TerrainState {
 //        if abs(dot(chunkVector, camera.forward)) > 0.7 { return true } else { return false }
     }
     
-    func distanceToCamera(_ : TerrainChunk, camera: Camera) -> Float {
-        return 0.0
+    func distanceToCamera(_ s : vector_float4, camera: Camera) -> Float {
+        return distance_squared(float3(s.x, s.y, s.z), camera.pos)
     }
     
     // Populates chunks with chunk render data and returns the number of chunks to render
     func computeChunksToRender(eye : vector_float3, count : Int, camera : Camera) -> Int {
         // Queue for traversal and table for recording traversed
-        var chunksToRender = 1
         var traversed : [Int32 : [Int32 : [Int32 : Float]]] = [0 : [0 : [0 : 0.0]]] // Chunk currently inside of
         var planes = [float4]()
         camera.extractPlanes(planes: &planes)
@@ -208,31 +205,66 @@ class TerrainState {
                     if inCameraView(chunk : chunk, camera : camera, planes : planes) {
                         addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed)
                         // debug
-                        print(chunk.x, chunk.y, chunk.z, chunk.w)
+//                        print(chunk.x, chunk.y, chunk.z, chunk.w)
                         chunkInfoList.append(chunkIntToWorld(chunkId: chunk, camera: camera))
                         validChunkFound = true
-                        chunksToRender += 1
                     }
                 }
             }
         }
         
-        self.chunks = self.chunks.sorted(by: { distanceToCamera($0, camera: camera) < distanceToCamera($1, camera: camera) })
-        var LRUIndex = self.chunks.count - 1
-        for i in 0..<chunkInfoList.count {
-            // if not in old chunk list
-            var containsChunk = false
-            for j in 0..<self.chunks.count {
-                if distance_squared(self.chunks[j].startPosition, chunkInfoList[i]) < 0.1 {
-                    containsChunk = true
-                }
+        
+        // Sort chunks by distance from camera
+        self.chunks = self.chunks.sorted(by: { distanceToCamera($0.startPosition, camera: camera) < distanceToCamera($1.startPosition, camera: camera) })
+        chunkInfoList = chunkInfoList.sorted(by:{ distanceToCamera($0, camera: camera) < distanceToCamera($1, camera: camera) })
+        
+        // Set up flags. No new chunks have been found and no old chunks should be reused
+        var chunkInfoSeen : [Bool] = Array(repeating : false, count : chunkInfoList.count)
+        for i in 0..<self.chunks.count {
+            self.chunks[i].use = false
+        }
+        
+        // Sorted list intersection code
+        var a = 0; var b = 0
+        while (a < self.chunks.count && b < chunkInfoList.count) {
+            let dista = distanceToCamera(self.chunks[a].startPosition, camera: camera)
+            let distb = distanceToCamera(chunkInfoList[b], camera: camera)
+            if dista - distb < -0.01{
+                a += 1
+            } else if distb - dista  < -0.01{
+                b += 1
+            } else {
+                // Chunks that belong in the intersection of old and new
+                // Can be used in the next frame and have been identified as "seen"
+                self.chunks[a].use = true
+                chunkInfoSeen[b] = true
+                a += 1
+                b += 1
             }
-            // kick out one of the chunks
-            if !containsChunk {
-                self.chunks[LRUIndex].startPosition = chunkInfoList[i]
-                self.chunks[LRUIndex].rendered = false
-                LRUIndex -= 1
-                break
+        }
+        
+        // We now deal with those new chunks that have not already been generated
+        // LP - lowest priority given to farthest chunks
+        var LPIndex = self.chunks.count - 1
+        var chunksToRender = 0
+        for i in 0..<chunkInfoList.count {
+            if !chunkInfoSeen[i] {
+                chunksToRender += 1
+                // Find the last available chunk
+                while self.chunks[LPIndex].use {
+                    LPIndex -= 1
+                    if LPIndex < 0 {
+                        break
+                    }
+                }
+                if LPIndex < 0 {
+                    print("Error in LP calculation")
+                    break
+                }
+                // Mark this chunk as in use and ready to be rendered
+                self.chunks[LPIndex].startPosition = chunkInfoList[i]
+                self.chunks[LPIndex].use = true
+                self.chunks[LPIndex].rendered = false
             }
         }
         return chunksToRender
