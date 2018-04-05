@@ -164,6 +164,7 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     // Populate our control_point data with the necessary information to construct the triangle
     
     ControlPoint cp;
+    MTLTriangleTessellationFactorsHalf tessFactors;
     int triangleFirstVertexId = 15 * (int) caseKey;
     int3 triangleVoxelEdges;
     int triangleId = voxelId;
@@ -173,7 +174,6 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     
     for (int i = 0; i < 5; i++) {
         cp.position = float4(output, (float) triangleFirstVertexId);
-        MTLTriangleTessellationFactorsHalf tessFactors;
         triangleVoxelEdges = int3(triangle_lookup_table[triangleFirstVertexId], triangle_lookup_table[triangleFirstVertexId+1], triangle_lookup_table[triangleFirstVertexId+2]);
         factor = triangleVoxelEdges.x < 0 ? 0.f : 1.f;
         
