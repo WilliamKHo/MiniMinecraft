@@ -6,10 +6,9 @@
 //  Copyright © 2018 William Ho. All rights reserved.
 //
 
-import Cocoa
 import Metal
 
-class BufferProvider: NSObject {
+class BufferProvider{
     let inflightBuffersCount : Int
     private var buffers : [MTLBuffer]
     private var availableBufferIndex : Int
