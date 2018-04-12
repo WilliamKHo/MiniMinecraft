@@ -6,12 +6,25 @@
 //  Copyright © 2018 William Ho. All rights reserved.
 //
 
-import Cocoa
+import Metal
+import MetalKit
 
-class ViewController: NSViewController {
+class ViewController: PlatformViewController {
+    
+    var metalView: MTKView?
+    var renderManager: RenderManager?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.metalView = self.view as? MTKView
+        self.metalView?.device = MTLCreateSystemDefaultDevice()
+        
+        if(metalView?.device == nil)
+        {
+            print("Metal Is Not Supported On This Device");
+            return;
+        }
 
         // Do any additional setup after loading the view.
     }

@@ -14,6 +14,20 @@
 		0B0CC9E9200BFE93003ADD36 /* simd_la.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9E8200BFE93003ADD36 /* simd_la.swift */; };
 		0B0CC9EB200BFEAB003ADD36 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9EA200BFEAB003ADD36 /* Camera.swift */; };
 		0B0CC9ED200C0211003ADD36 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9EC200C0211003ADD36 /* Shaders.metal */; };
+		0B3820B8207E702900B4D957 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820B7207E702900B4D957 /* AppDelegate.swift */; };
+		0B3820C2207E702900B4D957 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B3820C0207E702900B4D957 /* Main.storyboard */; };
+		0B3820C4207E702900B4D957 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B3820C3207E702900B4D957 /* Assets.xcassets */; };
+		0B3820C7207E702900B4D957 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B3820C5207E702900B4D957 /* LaunchScreen.storyboard */; };
+		0B3820CF207E719000B4D957 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820CE207E719000B4D957 /* GameViewController.swift */; };
+		0B3820D7207E723500B4D957 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820D6207E723500B4D957 /* AppDelegate.swift */; };
+		0B3820DD207E723500B4D957 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820DC207E723500B4D957 /* Shaders.metal */; };
+		0B3820E0207E723500B4D957 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B3820DF207E723500B4D957 /* Assets.xcassets */; };
+		0B3820E3207E723500B4D957 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B3820E1207E723500B4D957 /* Main.storyboard */; };
+		0B3820E9207E730B00B4D957 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820CC207E712B00B4D957 /* ViewController.swift */; };
+		0B3820EA207E730C00B4D957 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820CC207E712B00B4D957 /* ViewController.swift */; };
+		0B3820ED207E735E00B4D957 /* PlatformTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820EC207E735E00B4D957 /* PlatformTypes.swift */; };
+		0B3820EE207E782A00B4D957 /* PlatformTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820EC207E735E00B4D957 /* PlatformTypes.swift */; };
+		0B3820EF207E783100B4D957 /* PlatformTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820EC207E735E00B4D957 /* PlatformTypes.swift */; };
 		0B3A583420432EC2003CD13B /* RenderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3A583320432EC2003CD13B /* RenderManager.swift */; };
 		0B3A583620433CA4003CD13B /* TerrainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3A583520433CA4003CD13B /* TerrainManager.swift */; };
 		0B3A583820435C1E003CD13B /* simd+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3A583720435C1E003CD13B /* simd+ext.swift */; };
@@ -30,6 +44,7 @@
 		0BAA4C6C204F576900AAAC4A /* MathUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA4C6B204F576900AAAC4A /* MathUtils.swift */; };
 		0BCC3B3F20697BDA007B345A /* TerrainTables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCC3B3E20697BDA007B345A /* TerrainTables.swift */; };
 		0BCC3B47207191EC007B345A /* data_types.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0BCC3B46207191EC007B345A /* data_types.metal */; };
+		0BF30CB62080184100094C07 /* RenderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3A583320432EC2003CD13B /* RenderManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +58,23 @@
 		0B0CC9E8200BFE93003ADD36 /* simd_la.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = simd_la.swift; sourceTree = "<group>"; };
 		0B0CC9EA200BFEAB003ADD36 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		0B0CC9EC200C0211003ADD36 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		0B3820B5207E702900B4D957 /* Landscape-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Landscape-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0B3820B7207E702900B4D957 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		0B3820C1207E702900B4D957 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		0B3820C3207E702900B4D957 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0B3820C6207E702900B4D957 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		0B3820C8207E702900B4D957 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0B3820CC207E712B00B4D957 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		0B3820CE207E719000B4D957 /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		0B3820D4207E723500B4D957 /* Landscape-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Landscape-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0B3820D6207E723500B4D957 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		0B3820DC207E723500B4D957 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		0B3820DF207E723500B4D957 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0B3820E2207E723500B4D957 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		0B3820E4207E723500B4D957 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0B3820E5207E723500B4D957 /* Landscape_macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Landscape_macOS.entitlements; sourceTree = "<group>"; };
+		0B3820EC207E735E00B4D957 /* PlatformTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformTypes.swift; sourceTree = "<group>"; };
+		0B3820F0207E789F00B4D957 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
 		0B3A583320432EC2003CD13B /* RenderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderManager.swift; sourceTree = "<group>"; };
 		0B3A583520433CA4003CD13B /* TerrainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerrainManager.swift; sourceTree = "<group>"; };
 		0B3A583720435C1E003CD13B /* simd+ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "simd+ext.swift"; sourceTree = "<group>"; };
@@ -72,6 +104,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0B3820B2207E702900B4D957 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0B3820D1207E723500B4D957 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -79,6 +125,8 @@
 			isa = PBXGroup;
 			children = (
 				0B0CC9D5200BEAB0003ADD36 /* MiniMinecraft */,
+				0B3820B6207E702900B4D957 /* Landscape-iOS */,
+				0B3820D5207E723500B4D957 /* Landscape-macOS */,
 				0B0CC9D4200BEAB0003ADD36 /* Products */,
 				0BAA4C64204E1B1F00AAAC4A /* Frameworks */,
 			);
@@ -88,6 +136,8 @@
 			isa = PBXGroup;
 			children = (
 				0B0CC9D3200BEAB0003ADD36 /* MiniMinecraft.app */,
+				0B3820B5207E702900B4D957 /* Landscape-iOS.app */,
+				0B3820D4207E723500B4D957 /* Landscape-macOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,6 +145,8 @@
 		0B0CC9D5200BEAB0003ADD36 /* MiniMinecraft */ = {
 			isa = PBXGroup;
 			children = (
+				0B3820EC207E735E00B4D957 /* PlatformTypes.swift */,
+				0B3820CC207E712B00B4D957 /* ViewController.swift */,
 				0B489BD2203E3B6400BDDBC2 /* BufferProvider.swift */,
 				0B53A278202C0C2E00164119 /* Shaders */,
 				0B0CC9D6200BEAB0003ADD36 /* AppDelegate.swift */,
@@ -111,8 +163,35 @@
 				0B3A58392043A475003CD13B /* TerrainState.swift */,
 				0BAA4C6B204F576900AAAC4A /* MathUtils.swift */,
 				0BCC3B3E20697BDA007B345A /* TerrainTables.swift */,
+				0B3820F0207E789F00B4D957 /* ShaderTypes.h */,
 			);
 			path = MiniMinecraft;
+			sourceTree = "<group>";
+		};
+		0B3820B6207E702900B4D957 /* Landscape-iOS */ = {
+			isa = PBXGroup;
+			children = (
+				0B3820CE207E719000B4D957 /* GameViewController.swift */,
+				0B3820B7207E702900B4D957 /* AppDelegate.swift */,
+				0B3820C0207E702900B4D957 /* Main.storyboard */,
+				0B3820C3207E702900B4D957 /* Assets.xcassets */,
+				0B3820C5207E702900B4D957 /* LaunchScreen.storyboard */,
+				0B3820C8207E702900B4D957 /* Info.plist */,
+			);
+			path = "Landscape-iOS";
+			sourceTree = "<group>";
+		};
+		0B3820D5207E723500B4D957 /* Landscape-macOS */ = {
+			isa = PBXGroup;
+			children = (
+				0B3820D6207E723500B4D957 /* AppDelegate.swift */,
+				0B3820DC207E723500B4D957 /* Shaders.metal */,
+				0B3820DF207E723500B4D957 /* Assets.xcassets */,
+				0B3820E1207E723500B4D957 /* Main.storyboard */,
+				0B3820E4207E723500B4D957 /* Info.plist */,
+				0B3820E5207E723500B4D957 /* Landscape_macOS.entitlements */,
+			);
+			path = "Landscape-macOS";
 			sourceTree = "<group>";
 		};
 		0B53A278202C0C2E00164119 /* Shaders */ = {
@@ -159,6 +238,40 @@
 			productReference = 0B0CC9D3200BEAB0003ADD36 /* MiniMinecraft.app */;
 			productType = "com.apple.product-type.application";
 		};
+		0B3820B4207E702900B4D957 /* Landscape-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0B3820CB207E702900B4D957 /* Build configuration list for PBXNativeTarget "Landscape-iOS" */;
+			buildPhases = (
+				0B3820B1207E702900B4D957 /* Sources */,
+				0B3820B2207E702900B4D957 /* Frameworks */,
+				0B3820B3207E702900B4D957 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Landscape-iOS";
+			productName = "Landscape-iOS";
+			productReference = 0B3820B5207E702900B4D957 /* Landscape-iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		0B3820D3207E723500B4D957 /* Landscape-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0B3820E6207E723500B4D957 /* Build configuration list for PBXNativeTarget "Landscape-macOS" */;
+			buildPhases = (
+				0B3820D0207E723500B4D957 /* Sources */,
+				0B3820D1207E723500B4D957 /* Frameworks */,
+				0B3820D2207E723500B4D957 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Landscape-macOS";
+			productName = "Landscape-macOS";
+			productReference = 0B3820D4207E723500B4D957 /* Landscape-macOS.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -170,6 +283,14 @@
 				ORGANIZATIONNAME = "William Ho";
 				TargetAttributes = {
 					0B0CC9D2200BEAB0003ADD36 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					0B3820B4207E702900B4D957 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					0B3820D3207E723500B4D957 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
@@ -189,6 +310,8 @@
 			projectRoot = "";
 			targets = (
 				0B0CC9D2200BEAB0003ADD36 /* MiniMinecraft */,
+				0B3820B4207E702900B4D957 /* Landscape-iOS */,
+				0B3820D3207E723500B4D957 /* Landscape-macOS */,
 			);
 		};
 /* End PBXProject section */
@@ -200,6 +323,25 @@
 			files = (
 				0B0CC9DB200BEAB0003ADD36 /* Assets.xcassets in Resources */,
 				0B0CC9DE200BEAB0003ADD36 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0B3820B3207E702900B4D957 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0B3820C7207E702900B4D957 /* LaunchScreen.storyboard in Resources */,
+				0B3820C4207E702900B4D957 /* Assets.xcassets in Resources */,
+				0B3820C2207E702900B4D957 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0B3820D2207E723500B4D957 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0B3820E0207E723500B4D957 /* Assets.xcassets in Resources */,
+				0B3820E3207E723500B4D957 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +363,7 @@
 				0B0CC9E7200BFE15003ADD36 /* MetalView.swift in Sources */,
 				0B53A27C202C0C6800164119 /* terrain.metal in Sources */,
 				0B3A583620433CA4003CD13B /* TerrainManager.swift in Sources */,
+				0B3820EF207E783100B4D957 /* PlatformTypes.swift in Sources */,
 				0B0CC9EB200BFEAB003ADD36 /* Camera.swift in Sources */,
 				0B0CC9E9200BFE93003ADD36 /* simd_la.swift in Sources */,
 				0B443B442076E32200DA4921 /* signed_distance_functions_header.metal in Sources */,
@@ -231,6 +374,29 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0B3820B1207E702900B4D957 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0B3820ED207E735E00B4D957 /* PlatformTypes.swift in Sources */,
+				0B3820E9207E730B00B4D957 /* ViewController.swift in Sources */,
+				0B3820CF207E719000B4D957 /* GameViewController.swift in Sources */,
+				0B3820B8207E702900B4D957 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0B3820D0207E723500B4D957 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0B3820EA207E730C00B4D957 /* ViewController.swift in Sources */,
+				0B3820DD207E723500B4D957 /* Shaders.metal in Sources */,
+				0BF30CB62080184100094C07 /* RenderManager.swift in Sources */,
+				0B3820EE207E782A00B4D957 /* PlatformTypes.swift in Sources */,
+				0B3820D7207E723500B4D957 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
@@ -238,6 +404,30 @@
 			isa = PBXVariantGroup;
 			children = (
 				0B0CC9DD200BEAB0003ADD36 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		0B3820C0207E702900B4D957 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0B3820C1207E702900B4D957 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		0B3820C5207E702900B4D957 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0B3820C6207E702900B4D957 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		0B3820E1207E723500B4D957 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0B3820E2207E723500B4D957 /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -384,6 +574,79 @@
 			};
 			name = Release;
 		};
+		0B3820C9207E702900B4D957 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 638RKZ56ZV;
+				INFOPLIST_FILE = "Landscape-iOS/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "self.edu.Landscape-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = MiniMinecraft/ShaderTypes.h;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0B3820CA207E702900B4D957 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 638RKZ56ZV;
+				INFOPLIST_FILE = "Landscape-iOS/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "self.edu.Landscape-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = MiniMinecraft/ShaderTypes.h;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		0B3820E7207E723500B4D957 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Landscape-macOS/Landscape_macOS.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 638RKZ56ZV;
+				INFOPLIST_FILE = "Landscape-macOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "self.edu.Landscape-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = MiniMinecraft/ShaderTypes.h;
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		0B3820E8207E723500B4D957 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Landscape-macOS/Landscape_macOS.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 638RKZ56ZV;
+				INFOPLIST_FILE = "Landscape-macOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "self.edu.Landscape-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = MiniMinecraft/ShaderTypes.h;
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -401,6 +664,24 @@
 			buildConfigurations = (
 				0B0CC9E4200BEAB0003ADD36 /* Debug */,
 				0B0CC9E5200BEAB0003ADD36 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0B3820CB207E702900B4D957 /* Build configuration list for PBXNativeTarget "Landscape-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0B3820C9207E702900B4D957 /* Debug */,
+				0B3820CA207E702900B4D957 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0B3820E6207E723500B4D957 /* Build configuration list for PBXNativeTarget "Landscape-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0B3820E7207E723500B4D957 /* Debug */,
+				0B3820E8207E723500B4D957 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
