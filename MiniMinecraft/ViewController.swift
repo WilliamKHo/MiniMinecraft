@@ -13,11 +13,13 @@ class ViewController: PlatformViewController {
     
     var metalView: MTKView?
     var renderManager: RenderManager?
+    
+    var commandQueue: MTLCommandQueue?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.metalView = self.view as? MTKView
+        self.metalView = self.view as? MetalView
         self.metalView?.device = MTLCreateSystemDefaultDevice()
         
         if(metalView?.device == nil)
