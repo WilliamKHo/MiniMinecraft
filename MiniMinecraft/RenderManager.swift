@@ -192,4 +192,28 @@ public class RenderManager {
         }
     }
     
+    func resize() {
+        self.camera = Camera(
+            fovy : 60,
+            aspect : Float(view.frame.size.width / view.frame.size.height),
+            farClip : 8000,
+            nearClip : 0.01,
+            pos : [0.0, 12.0, 30.0],
+            forward : [0.0, 0.0, -1.0],
+            right : [1.0, 0.0, 0.0],
+            up : [0.0, 1.0, 0.0]
+        )
+        let depthStencilTextureDescriptor = MTLTextureDescriptor()
+        depthStencilTextureDescriptor.pixelFormat = .depth32Float
+        depthStencilTextureDescriptor.width = 2 * Int(self.view.bounds.size.width)
+        depthStencilTextureDescriptor.height = 2 * Int(self.view.bounds.size.height)
+        depthStencilTextureDescriptor.storageMode = .private
+        depthStencilTextureDescriptor.usage = .renderTarget
+        depthTexture = device!.makeTexture(descriptor: depthStencilTextureDescriptor)
+        
+        let depthStencilDescriptor = MTLDepthStencilDescriptor()
+        depthStencilDescriptor.depthCompareFunction = MTLCompareFunction(rawValue: 1)! // less case
+        depthStencilDescriptor.isDepthWriteEnabled = true
+        depthStencilState = device?.makeDepthStencilState(descriptor : depthStencilDescriptor)
+    }
 }

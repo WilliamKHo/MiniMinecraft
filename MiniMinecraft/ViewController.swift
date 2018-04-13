@@ -11,6 +11,8 @@ import MetalKit
 
 class ViewController: PlatformViewController {
     
+    @IBOutlet weak var buttonRotateRight: UIStackView!
+    @IBOutlet weak var rotateRightButton: UIStackView!
     var metalView: MTKView?
     var renderManager: RenderManager?
     
@@ -30,6 +32,14 @@ class ViewController: PlatformViewController {
 
         // Do any additional setup after loading the view.
     }
+    @IBAction func rotateRight(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camRotRight)
+    }
+    @IBAction func stopRotation(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camDecelerateRot)
+    }
+    
+    
 
 //    override var representedObject: Any? {
 //        didSet {

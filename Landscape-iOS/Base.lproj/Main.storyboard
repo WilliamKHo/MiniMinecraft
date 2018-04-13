@@ -17,9 +17,37 @@
                     <view key="view" contentMode="scaleToFill" id="3se-qz-xqx" customClass="MetalView" customModule="Landscape_iOS" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="ABS-c4-mSk">
+                                <rect key="frame" x="290" y="617" width="46" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hba-0a-7cb" colorLabel="IBBuiltInLabel-Red">
+                                        <rect key="frame" x="0.0" y="0.0" width="46" height="30"/>
+                                        <color key="backgroundColor" red="0.93399327259689768" green="0.95300459729964804" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <state key="normal" title="Button"/>
+                                        <connections>
+                                            <action selector="rotateRight:" destination="BV1-FR-VrT" eventType="touchDown" id="kQL-hg-QUE"/>
+                                            <action selector="stopRotation:" destination="BV1-FR-VrT" eventType="touchUpInside" id="rfZ-rZ-zdu"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="EbP-kk-n7l"/>
+                                    <constraint firstAttribute="width" constant="46" id="bMC-t9-EPu"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="rZh-zQ-HcR" firstAttribute="trailing" secondItem="ABS-c4-mSk" secondAttribute="trailing" constant="39" id="gGG-Hu-B1L"/>
+                            <constraint firstItem="rZh-zQ-HcR" firstAttribute="bottom" secondItem="ABS-c4-mSk" secondAttribute="bottom" constant="20" id="gRa-02-QlN"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="rZh-zQ-HcR"/>
                     </view>
+                    <connections>
+                        <outlet property="buttonRotateRight" destination="ABS-c4-mSk" id="4Go-Ta-5ZG"/>
+                        <outlet property="rotateRightButton" destination="Hba-0a-7cb" id="KHy-8i-X1t"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
