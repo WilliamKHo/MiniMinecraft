@@ -30,13 +30,16 @@ class ViewController: PlatformViewController {
 
         // Do any additional setup after loading the view.
     }
-
-//    override var representedObject: Any? {
-//        didSet {
-//        // Update the view, if already loaded.
+    
+//    override func becomeFirstResponder() -> Bool {
+//        return false
+//    }
+//
+//    override func keyDown(with event: NSEvent) {
+//        switch Int(event.keyCode) {
+//            case ASKI_
 //        }
 //    }
-
 
 }
 

@@ -58,4 +58,32 @@ class GameViewController: UIViewController {
     @IBAction func rotateDownUp(_ sender: Any) {
         RenderManager.sharedInstance.inputEvent(InputCode.camDecelerateRot)
     }
+    
+    @IBAction func decelerateMovement(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camDecelerate)
+    }
+    
+    @IBAction func buttonMoveUp(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camMoveUp)
+    }
+    
+    @IBAction func buttonMoveDown(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camMoveDown)
+    }
+    
+    @IBAction func buttonMoveForward(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camMoveForward)
+    }
+    
+    @IBAction func buttonMoveBackward(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camMoveBackward)
+    }
+    
+    @IBAction func buttonMoveLeft(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camMoveLeft)
+    }
+    
+    @IBAction func buttonMoveRight(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camMoveRight)
+    }
 }

@@ -193,16 +193,7 @@ public class RenderManager {
     }
     
     func resize() {
-        self.camera = Camera(
-            fovy : 60,
-            aspect : Float(view.frame.size.width / view.frame.size.height),
-            farClip : 8000,
-            nearClip : 0.01,
-            pos : [0.0, 12.0, 30.0],
-            forward : [0.0, 0.0, -1.0],
-            right : [1.0, 0.0, 0.0],
-            up : [0.0, 1.0, 0.0]
-        )
+        self.camera.aspect = Float(view.frame.size.width / view.frame.size.height)
         let depthStencilTextureDescriptor = MTLTextureDescriptor()
         depthStencilTextureDescriptor.pixelFormat = .depth32Float
         depthStencilTextureDescriptor.width = 2 * Int(self.view.bounds.size.width)
