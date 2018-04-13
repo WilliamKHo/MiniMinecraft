@@ -30,4 +30,32 @@ class GameViewController: UIViewController {
         
         // Do any additional setup after loading the view.
     }
+    @IBAction func rotateLeftDown(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camRotLeft)
+    }
+    @IBAction func rotateLeftUp(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camDecelerateRot)
+    }
+    
+    @IBAction func rotateRightDown(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camRotRight)
+    }
+    @IBAction func rotateRightUp(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camDecelerateRot)
+    }
+    
+    @IBAction func rotateUpUp(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camDecelerateRot)
+    }
+    @IBAction func rotateUpDown(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camRotDown)
+    }
+    
+    
+    @IBAction func rotateDownDown(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camRotUp)
+    }
+    @IBAction func rotateDownUp(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.camDecelerateRot)
+    }
 }
