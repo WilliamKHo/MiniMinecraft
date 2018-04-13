@@ -66,6 +66,7 @@
 		0B446D9F208034DF00709D4E /* InputCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B446D9E208034DF00709D4E /* InputCode.swift */; };
 		0B446DA0208034DF00709D4E /* InputCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B446D9E208034DF00709D4E /* InputCode.swift */; };
 		0B446DA120803CEA00709D4E /* InputCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B446D9E208034DF00709D4E /* InputCode.swift */; };
+		0B446DA3208059F500709D4E /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B446DA2208059F400709D4E /* GameViewController.swift */; };
 		0B489BD3203E3B6400BDDBC2 /* BufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B489BD2203E3B6400BDDBC2 /* BufferProvider.swift */; };
 		0B53A27A202C0C5D00164119 /* terrain_header.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B53A279202C0C5D00164119 /* terrain_header.metal */; };
 		0B53A27C202C0C6800164119 /* terrain.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B53A27B202C0C6800164119 /* terrain.metal */; };
@@ -112,6 +113,7 @@
 		0B443B412076E31000DA4921 /* signed_distance_functions.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = signed_distance_functions.metal; sourceTree = "<group>"; };
 		0B443B432076E32200DA4921 /* signed_distance_functions_header.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = signed_distance_functions_header.metal; sourceTree = "<group>"; };
 		0B446D9E208034DF00709D4E /* InputCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputCode.swift; sourceTree = "<group>"; };
+		0B446DA2208059F400709D4E /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		0B489BD2203E3B6400BDDBC2 /* BufferProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferProvider.swift; sourceTree = "<group>"; };
 		0B53A279202C0C5D00164119 /* terrain_header.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = terrain_header.metal; sourceTree = "<group>"; };
 		0B53A27B202C0C6800164119 /* terrain.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = terrain.metal; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 		0B3820B6207E702900B4D957 /* Landscape-iOS */ = {
 			isa = PBXGroup;
 			children = (
+				0B446DA2208059F400709D4E /* GameViewController.swift */,
 				0B3820B7207E702900B4D957 /* AppDelegate.swift */,
 				0B3820C0207E702900B4D957 /* Main.storyboard */,
 				0B3820C3207E702900B4D957 /* Assets.xcassets */,
@@ -416,6 +419,7 @@
 				0B446D9620802A0600709D4E /* simd_la.swift in Sources */,
 				0B446D9D20802A1500709D4E /* MathUtils.swift in Sources */,
 				0B446D94208029FF00709D4E /* signed_distance_functions_header.metal in Sources */,
+				0B446DA3208059F500709D4E /* GameViewController.swift in Sources */,
 				0B446D8E208029F200709D4E /* Shaders.metal in Sources */,
 				0B3820ED207E735E00B4D957 /* PlatformTypes.swift in Sources */,
 				0B446D93208029FD00709D4E /* signed_distance_functions.metal in Sources */,
