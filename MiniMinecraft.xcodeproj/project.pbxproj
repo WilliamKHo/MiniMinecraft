@@ -21,7 +21,6 @@
 		0B3820D7207E723500B4D957 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820D6207E723500B4D957 /* AppDelegate.swift */; };
 		0B3820E0207E723500B4D957 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B3820DF207E723500B4D957 /* Assets.xcassets */; };
 		0B3820E3207E723500B4D957 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B3820E1207E723500B4D957 /* Main.storyboard */; };
-		0B3820E9207E730B00B4D957 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820CC207E712B00B4D957 /* ViewController.swift */; };
 		0B3820EA207E730C00B4D957 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820CC207E712B00B4D957 /* ViewController.swift */; };
 		0B3820ED207E735E00B4D957 /* PlatformTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820EC207E735E00B4D957 /* PlatformTypes.swift */; };
 		0B3820EE207E782A00B4D957 /* PlatformTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3820EC207E735E00B4D957 /* PlatformTypes.swift */; };
@@ -179,7 +178,6 @@
 			isa = PBXGroup;
 			children = (
 				0B3820EC207E735E00B4D957 /* PlatformTypes.swift */,
-				0B3820CC207E712B00B4D957 /* ViewController.swift */,
 				0B489BD2203E3B6400BDDBC2 /* BufferProvider.swift */,
 				0B53A278202C0C2E00164119 /* Shaders */,
 				0B0CC9D6200BEAB0003ADD36 /* AppDelegate.swift */,
@@ -218,6 +216,7 @@
 		0B3820D5207E723500B4D957 /* Landscape-macOS */ = {
 			isa = PBXGroup;
 			children = (
+				0B3820CC207E712B00B4D957 /* ViewController.swift */,
 				0B3820D6207E723500B4D957 /* AppDelegate.swift */,
 				0B3820DF207E723500B4D957 /* Assets.xcassets */,
 				0B3820E1207E723500B4D957 /* Main.storyboard */,
@@ -423,7 +422,6 @@
 				0B446D8E208029F200709D4E /* Shaders.metal in Sources */,
 				0B3820ED207E735E00B4D957 /* PlatformTypes.swift in Sources */,
 				0B446D93208029FD00709D4E /* signed_distance_functions.metal in Sources */,
-				0B3820E9207E730B00B4D957 /* ViewController.swift in Sources */,
 				0B446D9C20802A1200709D4E /* TerrainTables.swift in Sources */,
 				0B446D9820802A0A00709D4E /* RenderManager.swift in Sources */,
 				0B446D9520802A0300709D4E /* MetalView.swift in Sources */,

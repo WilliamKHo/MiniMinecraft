@@ -35,14 +35,14 @@ float inSphereTerrain(thread float3 pos) {
     return radius - length(pos - center);
 }
 
-float randNumber(float3 n) {
+float randNumber(thread float3 n) {
     return fract(sin(dot(n, float3(12.9898, -56.31985, 4.1414))) * 43758.5453);
 }
 
-float3 randGrad(float3 n) {
-    float3 result = float3(fract(sin(dot(n, float3(12.9898, -56.31985, 4.1414))) * 43758.5453),
-                          fract(cos(dot(n, float3(-32.53920, -324.32515, 89.3203))) * 21044.2185),
-                          fract(sin(dot(n, float3(39.9315028, 1.32593, -304.3285))) * 54083.3290));
+float3 randGrad(thread float3 n) {
+    float3 result = float3(fract(sin(dot(n, float3(39.140, -56.339, 4.142)))),
+                          fract(cos(dot(n, float3(-32.539, -324.325, 89.33)))),
+                          fract(sin(dot(n, float3(39.15028, 1.323, -304.35)))));
     result.x -= 0.5f;
     result.y -= 0.5f;
     result.z -= 0.5f;
@@ -50,14 +50,14 @@ float3 randGrad(float3 n) {
     return result;
 }
 
-float perlinInterp(float v1, float v2, float t) {
+float perlinInterp(thread float v1, thread float v2, thread float t) {
     float weight = 6.0f * t * t * t * t * t
                     - 15.0f * t * t * t * t
                     + 10.0f * t * t * t;
     return v1 + weight * (v2 - v1);
 }
 
-float perlin(float3 pos) {
+float perlin(thread float3 pos) {
     float3 min = float3(floor(pos.x), floor(pos.y), floor(pos.z));
     float3 grad = randGrad(min);
     float3 dist = pos - min;
