@@ -9,18 +9,18 @@
 import Foundation
 
 #if os(iOS) || os(watchOS) || os(tvOS)
-    import Foundation
+    //import Foundation
     import UIKit
-    typealias PlatformView                  = UIView
-    typealias PlatformPoint                 = CGPoint
+    //typealias PlatformView                  = UIView
+    //typealias PlatformPoint                 = CGPoint
     typealias PlatformViewController        = UIViewController
 //    typealias PlatformPanGestureRecognizer  = UIPanGestureRecognizer
 //    typealias PlatformZoomGestureRecognizer = UIPinchGestureRecognizer
 #else
     import Cocoa
     import AppKit
-    typealias PlatformView                  = NSView
-    typealias PlatformPoint                 = NSPoint
+    //typealias PlatformView                  = NSView
+    //typealias PlatformPoint                 = NSPoint
     typealias PlatformViewController        = NSViewController
 //    typealias PlatformPanGestureRecognizer  = NSPanGestureRecognizer
 //    typealias PlatformZoomGestureRecognizer = NSMagnificationGestureRecognizer

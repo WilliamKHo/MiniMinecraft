@@ -10,8 +10,8 @@
 
 import Foundation
 import simd
-import Cocoa
-import Carbon.HIToolbox.Events
+//import Cocoa
+//import Carbon.HIToolbox.Events
 import Dispatch
 
 
@@ -36,6 +36,13 @@ class Camera {
     var acceleration : float3 = float3(0.0, 0.0, 0.0)
     var rotVelocity : float3 = float3(0.0, 0.0, 0.0)
     var rotAcceleration : float3 = float3(0.0, 0.0, 0.0)
+    
+    enum MovementCommand {
+        case moveForward
+        case moveBackwards
+        case moveRight
+        case moveLeft
+    }
     
     init(fovy: Float,
          aspect: Float,
@@ -184,83 +191,155 @@ class Camera {
         ref = ref + pos
     }
     
-    func keyUpEvent(_ event : NSEvent) {
-        guard !event.isARepeat else { return }
-        
-        switch Int(event.keyCode) {
-        case kVK_ANSI_W:
+    func inputEvent(_ event : InputCode) {
+        switch event {
+        case .camDecelerate:
             acceleration = float3(0.0, 0.0, 0.0)
-            
-        case kVK_ANSI_A:
-            acceleration = float3(0.0, 0.0, 0.0)
-            
-        case kVK_ANSI_S:
-            acceleration = float3(0.0, 0.0, 0.0)
-            
-        case kVK_ANSI_D:
-            acceleration = float3(0.0, 0.0, 0.0)
-            
-        case kVK_ANSI_Q:
-            acceleration = float3(0.0, 0.0, 0.0)
-            
-        case kVK_ANSI_Z:
-            acceleration = float3(0.0, 0.0, 0.0)
-            
-        case 123:
+        case .camDecelerateRot:
             rotAcceleration = float3(0.0, 0.0, 0.0)
-            
-        case 124:
-            rotAcceleration = float3(0.0, 0.0, 0.0)
-            
-        case 125:
-            rotAcceleration = float3(0.0, 0.0, 0.0)
-            
-        case 126:
-            rotAcceleration = float3(0.0, 0.0, 0.0)
-            
+        case .camMoveForward:
+            acceleration += 250 * self.forward
+        case .camMoveLeft:
+            acceleration -= 150 * self.right
+        case .camMoveRight:
+            acceleration += 150 * self.right
+        case .camMoveBackward:
+            acceleration -= 250 * self.forward
+        case .camMoveUp:
+            acceleration += 150 * self.up
+        case .camMoveDown:
+            acceleration -= 150 * self.up
+        case .camRotLeft:
+            rotAcceleration.y = 50
+        case .camRotRight:
+            rotAcceleration.y = -50
+        case .camRotUp:
+            rotAcceleration.x = 50
+        case .camRotDown:
+            rotAcceleration.x = -50
         default:
-            break;
+            return
         }
     }
     
-    func keyDownEvent(_ event : NSEvent) {
+//    func decelerate() {
+//        acceleration = float3(0.0, 0.0, 0.0)
+//    }
+//    
+//    func accelerateForward() {
+//        acceleration += 250 * self.forward
+//    }
+//    
+//    func accelerateLeft() {
+//        acceleration -= 150 * self.right
+//    }
+//    
+//    func accelerateRight() {
+//        acceleration += 150 * self.right
+//    }
+//    
+//    func accelerateBackwards() {
+//        acceleration -= 250 * self.forward
+//    }
+//    
+//    func decelerateRotation() {
+//        rotAcceleration = float3(0.0, 0.0, 0.0)
+//    }
+//    
+//    func rotLeft() {
+//        rotAcceleration.y = 50
+//    }
+//    
+//    func rotRight() {
+//        rotAcceleration.y = -50
+//    }
+//    
+//    func rotUp() {
+//        rotAcceleration.x = 50
+//    }
+//    
+//    func rotDown() {
+//        rotAcceleration.x = -50
+//    }
+//    func
+//
+//    func keyUpEvent(_ event : NSEvent) {
 //        guard !event.isARepeat else { return }
-        
-        switch Int(event.keyCode) {
-        case kVK_ANSI_W:
-            acceleration += 250 * self.forward
-            
-        case kVK_ANSI_A:
-            acceleration -= 150 * self.right
-            
-        case kVK_ANSI_S:
-            acceleration -= 250 * self.forward
-            
-        case kVK_ANSI_D:
-            acceleration += 150 * self.right
-            
-        case kVK_ANSI_Q:
-            acceleration += 150 * self.up
-        
-        case kVK_ANSI_Z:
-            acceleration -= 150 * self.up
-            
-        case 123:
-            rotAcceleration.y = 50
-            
-        case 124:
-            rotAcceleration.y = -50
-            
-        case 125:
-            rotAcceleration.x = 50
-        
-        case 126:
-            rotAcceleration.x = -50
-            
-        default:
-            break;
-        }
-    }
+//
+//        switch Int(event.keyCode) {
+//        case kVK_ANSI_W:
+//            acceleration = float3(0.0, 0.0, 0.0)
+//
+//        case kVK_ANSI_A:
+//            acceleration = float3(0.0, 0.0, 0.0)
+//
+//        case kVK_ANSI_S:
+//            acceleration = float3(0.0, 0.0, 0.0)
+//
+//        case kVK_ANSI_D:
+//            acceleration = float3(0.0, 0.0, 0.0)
+//
+//        case kVK_ANSI_Q:
+//            acceleration = float3(0.0, 0.0, 0.0)
+//
+//        case kVK_ANSI_Z:
+//            acceleration = float3(0.0, 0.0, 0.0)
+//
+//        case 123:
+//            rotAcceleration = float3(0.0, 0.0, 0.0)
+//
+//        case 124:
+//            rotAcceleration = float3(0.0, 0.0, 0.0)
+//
+//        case 125:
+//            rotAcceleration = float3(0.0, 0.0, 0.0)
+//
+//        case 126:
+//            rotAcceleration = float3(0.0, 0.0, 0.0)
+//
+//        default:
+//            break;
+//        }
+//    }
+//
+//    func keyDownEvent(_ event : NSEvent) {
+////        guard !event.isARepeat else { return }
+//
+//        switch Int(event.keyCode) {
+//        case kVK_ANSI_W:
+//            acceleration += 250 * self.forward
+//
+//        case kVK_ANSI_A:
+//            acceleration -= 150 * self.right
+//
+//        case kVK_ANSI_S:
+//            acceleration -= 250 * self.forward
+//
+//        case kVK_ANSI_D:
+//
+//
+//        case kVK_ANSI_Q:
+//            acceleration += 150 * self.up
+//
+//        case kVK_ANSI_Z:
+//            acceleration -= 150 * self.up
+//
+//        case 123:
+//            rotAcceleration.y = 50
+//
+//        case 124:
+//            rotAcceleration.y = -50
+//
+//        case 125:
+//            rotAcceleration.x = 50
+//
+//        case 126:
+//            rotAcceleration.x = -50
+//
+//        default:
+//            break;
+//        }
+//    }
     
 }
 

@@ -7,11 +7,11 @@
 //
 
 
-import Cocoa
+//import Cocoa
 import MetalKit
 import Dispatch
 
-import Carbon.HIToolbox.Events
+//import Carbon.HIToolbox.Events
 import simd
 
 struct Uniforms {
@@ -61,7 +61,7 @@ public class RenderManager {
             up : [0.0, 1.0, 0.0]
         )
         
-        self.terrainManager = TerrainManager(device: device, library: library!, inflightChunksCount: 150)
+        self.terrainManager = TerrainManager(device: device, library: library!, inflightChunksCount: 100)
         
         registerGraphicsShaders()
         buildDepthTexture()
@@ -123,12 +123,12 @@ public class RenderManager {
         renderPipelineDescriptor.tessellationFactorStepFunction = .perPatch
         renderPipelineDescriptor.tessellationOutputWindingOrder = .clockwise
         renderPipelineDescriptor.tessellationPartitionMode = .fractionalEven
-        renderPipelineDescriptor.maxTessellationFactor = 64;
+        renderPipelineDescriptor.maxTessellationFactor = 16;
         renderPipelineDescriptor.vertexFunction = vert_func
         do {
             try rps = device!.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
         } catch let error {
-            self.view.printView("\(error)")
+            //self.view.printView("\(error)")
         }
     }
     
@@ -183,14 +183,13 @@ public class RenderManager {
         memcpy(bufferPointer, &uniforms, MemoryLayout<Uniforms>.stride)
     }
     
-    func keyUpEvent(_ event : NSEvent) {
-        if (event.keyCode == kVK_ANSI_F) {
+    func inputEvent(_ event : InputCode) {
+        switch event {
+        case .freezeFrustrum:
             terrainManager.toggleFreeze()
+        default:
+            camera.inputEvent(event)
         }
-        camera.keyUpEvent(event)
     }
     
-    func keyDownEvent(_ event : NSEvent) {
-        camera.keyDownEvent(event)
-    }
 }

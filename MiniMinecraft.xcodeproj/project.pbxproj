@@ -47,6 +47,25 @@
 		0B446D8B2080254600709D4E /* data_types.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0BCC3B46207191EC007B345A /* data_types.metal */; };
 		0B446D8C2080254900709D4E /* signed_distance_functions.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B443B412076E31000DA4921 /* signed_distance_functions.metal */; };
 		0B446D8D2080254B00709D4E /* signed_distance_functions_header.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B443B432076E32200DA4921 /* signed_distance_functions_header.metal */; };
+		0B446D8E208029F200709D4E /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9EC200C0211003ADD36 /* Shaders.metal */; };
+		0B446D8F208029F500709D4E /* TessellationShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B798965201D1F980060855A /* TessellationShaders.metal */; };
+		0B446D90208029F700709D4E /* terrain_header.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B53A279202C0C5D00164119 /* terrain_header.metal */; };
+		0B446D91208029F900709D4E /* terrain.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B53A27B202C0C6800164119 /* terrain.metal */; };
+		0B446D92208029FB00709D4E /* data_types.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0BCC3B46207191EC007B345A /* data_types.metal */; };
+		0B446D93208029FD00709D4E /* signed_distance_functions.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B443B412076E31000DA4921 /* signed_distance_functions.metal */; };
+		0B446D94208029FF00709D4E /* signed_distance_functions_header.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B443B432076E32200DA4921 /* signed_distance_functions_header.metal */; };
+		0B446D9520802A0300709D4E /* MetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9E6200BFE15003ADD36 /* MetalView.swift */; };
+		0B446D9620802A0600709D4E /* simd_la.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9E8200BFE93003ADD36 /* simd_la.swift */; };
+		0B446D9720802A0800709D4E /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0CC9EA200BFEAB003ADD36 /* Camera.swift */; };
+		0B446D9820802A0A00709D4E /* RenderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3A583320432EC2003CD13B /* RenderManager.swift */; };
+		0B446D9920802A0C00709D4E /* TerrainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3A583520433CA4003CD13B /* TerrainManager.swift */; };
+		0B446D9A20802A0E00709D4E /* simd+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3A583720435C1E003CD13B /* simd+ext.swift */; };
+		0B446D9B20802A1000709D4E /* TerrainState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3A58392043A475003CD13B /* TerrainState.swift */; };
+		0B446D9C20802A1200709D4E /* TerrainTables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCC3B3E20697BDA007B345A /* TerrainTables.swift */; };
+		0B446D9D20802A1500709D4E /* MathUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BAA4C6B204F576900AAAC4A /* MathUtils.swift */; };
+		0B446D9F208034DF00709D4E /* InputCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B446D9E208034DF00709D4E /* InputCode.swift */; };
+		0B446DA0208034DF00709D4E /* InputCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B446D9E208034DF00709D4E /* InputCode.swift */; };
+		0B446DA120803CEA00709D4E /* InputCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B446D9E208034DF00709D4E /* InputCode.swift */; };
 		0B489BD3203E3B6400BDDBC2 /* BufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B489BD2203E3B6400BDDBC2 /* BufferProvider.swift */; };
 		0B53A27A202C0C5D00164119 /* terrain_header.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B53A279202C0C5D00164119 /* terrain_header.metal */; };
 		0B53A27C202C0C6800164119 /* terrain.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B53A27B202C0C6800164119 /* terrain.metal */; };
@@ -92,6 +111,7 @@
 		0B3A58392043A475003CD13B /* TerrainState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerrainState.swift; sourceTree = "<group>"; };
 		0B443B412076E31000DA4921 /* signed_distance_functions.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = signed_distance_functions.metal; sourceTree = "<group>"; };
 		0B443B432076E32200DA4921 /* signed_distance_functions_header.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = signed_distance_functions_header.metal; sourceTree = "<group>"; };
+		0B446D9E208034DF00709D4E /* InputCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputCode.swift; sourceTree = "<group>"; };
 		0B489BD2203E3B6400BDDBC2 /* BufferProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferProvider.swift; sourceTree = "<group>"; };
 		0B53A279202C0C5D00164119 /* terrain_header.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = terrain_header.metal; sourceTree = "<group>"; };
 		0B53A27B202C0C6800164119 /* terrain.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = terrain.metal; sourceTree = "<group>"; };
@@ -175,6 +195,7 @@
 				0BAA4C6B204F576900AAAC4A /* MathUtils.swift */,
 				0BCC3B3E20697BDA007B345A /* TerrainTables.swift */,
 				0B3820F0207E789F00B4D957 /* ShaderTypes.h */,
+				0B446D9E208034DF00709D4E /* InputCode.swift */,
 			);
 			path = MiniMinecraft;
 			sourceTree = "<group>";
@@ -378,6 +399,7 @@
 				0B443B442076E32200DA4921 /* signed_distance_functions_header.metal in Sources */,
 				0B0CC9D7200BEAB0003ADD36 /* AppDelegate.swift in Sources */,
 				0B53A27A202C0C5D00164119 /* terrain_header.metal in Sources */,
+				0B446D9F208034DF00709D4E /* InputCode.swift in Sources */,
 				0B3A583A2043A475003CD13B /* TerrainState.swift in Sources */,
 				0BCC3B47207191EC007B345A /* data_types.metal in Sources */,
 			);
@@ -387,9 +409,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B446D9B20802A1000709D4E /* TerrainState.swift in Sources */,
+				0B446D90208029F700709D4E /* terrain_header.metal in Sources */,
+				0B446D9920802A0C00709D4E /* TerrainManager.swift in Sources */,
+				0B446D9A20802A0E00709D4E /* simd+ext.swift in Sources */,
+				0B446D9620802A0600709D4E /* simd_la.swift in Sources */,
+				0B446D9D20802A1500709D4E /* MathUtils.swift in Sources */,
+				0B446D94208029FF00709D4E /* signed_distance_functions_header.metal in Sources */,
+				0B446D8E208029F200709D4E /* Shaders.metal in Sources */,
 				0B3820ED207E735E00B4D957 /* PlatformTypes.swift in Sources */,
+				0B446D93208029FD00709D4E /* signed_distance_functions.metal in Sources */,
 				0B3820E9207E730B00B4D957 /* ViewController.swift in Sources */,
+				0B446D9C20802A1200709D4E /* TerrainTables.swift in Sources */,
+				0B446D9820802A0A00709D4E /* RenderManager.swift in Sources */,
+				0B446D9520802A0300709D4E /* MetalView.swift in Sources */,
+				0B446D91208029F900709D4E /* terrain.metal in Sources */,
 				0B3820B8207E702900B4D957 /* AppDelegate.swift in Sources */,
+				0B446D9720802A0800709D4E /* Camera.swift in Sources */,
+				0B446DA120803CEA00709D4E /* InputCode.swift in Sources */,
+				0B446D8F208029F500709D4E /* TessellationShaders.metal in Sources */,
+				0B446D92208029FB00709D4E /* data_types.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,6 +453,7 @@
 				0B446D8C2080254900709D4E /* signed_distance_functions.metal in Sources */,
 				0B446D822080251D00709D4E /* TerrainManager.swift in Sources */,
 				0B446D862080252700709D4E /* TerrainTables.swift in Sources */,
+				0B446DA0208034DF00709D4E /* InputCode.swift in Sources */,
 				0B3820D7207E723500B4D957 /* AppDelegate.swift in Sources */,
 				0B446D8B2080254600709D4E /* data_types.metal in Sources */,
 			);
