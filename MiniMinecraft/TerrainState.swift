@@ -29,8 +29,8 @@ class TerrainState {
         self.inflightChunksCount = inflightChunksCount
         self.chunks = [TerrainChunk]()
         self.LODDistances = [Float]()
-        LODDistances.append(48.0)
-        LODDistances.append(100.0)
+        LODDistances.append(80.0)
+        LODDistances.append(140.0)
         let numVoxels = chunkDimension * chunkDimension * chunkDimension
         let floatsPerVoxel = 40; //5 faces * 8 floats
         let uIntsPerVoxel = 20; //3 faces * 4 tessellation factors
@@ -44,105 +44,57 @@ class TerrainState {
         }
     }
     
-    func containsChunk( chunks : inout [Int32 : [Int32 : [Int32 : Float]]], chunk : simd_int4) -> Bool {
+    func containsChunk( chunks : inout [Int32 : [Int32 : [Int32 : [Int32 :Float]]]], chunk : simd_int4) -> Bool {
         if let xLayer = chunks[chunk.x] {
             if let yLayer = xLayer[chunk.y] {
-                if let _ = yLayer[chunk.z] { return true } else { return false }
+                if let zLayer = yLayer[chunk.z] {
+                    if let _ = zLayer[chunk.w] { return true } else { return false }
+                } else { return false }
             } else { return false }
         } else { return false }
     }
     
-    func addChunk( chunks : inout [Int32 : [Int32 : [Int32 : Float]]], chunk : simd_int4) {
+    func addChunk( chunks : inout [Int32 : [Int32 : [Int32 : [Int32 : Float]]]], chunk : simd_int4) {
         if let xLayer = chunks[chunk.x] {
             if let yLayer = xLayer[chunk.y] {
-                if let _ = yLayer[chunk.z] { chunks[chunk.x]![chunk.y]![chunk.z] = 0.0 //This should also never happen
-                } else { chunks[chunk.x]![chunk.y]![chunk.z] = 0.0 }
-            } else { chunks[chunk.x]![chunk.y] = [chunk.z : 0.0] }
-        } else { chunks[chunk.x] = [chunk.y : [chunk.z : 0.0]] }
+                if let zLayer = yLayer[chunk.z] {
+                    if let _ = zLayer[chunk.w] { chunks[chunk.x]![chunk.y]![chunk.z]![chunk.w] = 0.0 //This should also never happen
+                    } else { chunks[chunk.x]![chunk.y]![chunk.z]![chunk.w] = 0.0 }
+                } else { chunks[chunk.x]![chunk.y]![chunk.z] = [chunk.w : 0.0] }
+            } else { chunks[chunk.x]![chunk.y] = [chunk.z : [chunk.w : 0.0]] }
+        } else { chunks[chunk.x] = [chunk.y : [chunk.z : [chunk.w : 0.0]]] }
     }
     
-    func addNeighbors( queue : inout [simd_int4], chunk : simd_int4, traversed : inout [Int32 : [Int32 : [Int32 : Float]]]) {
-        // Calculate LOD of current chunk
-        let dimensionScale = containingChunkDimensionScale(float3(Float(chunk.x) + lowestUnitDistance / 2.0,
-                                                                  Float(chunk.y) + lowestUnitDistance / 2.0,
-                                                                  Float(chunk.z) + lowestUnitDistance / 2.0))
-        let chunkCenter : float3 = float3(Float(chunk.x) + dimensionScale / 2.0, Float(chunk.y) + dimensionScale / 2.0, Float(chunk.z) + dimensionScale / 2.0)
-        let testDistance = dimensionScale / 2.0 + lowestUnitDistance / 2.0
+    func addNeighbors( queue : inout [simd_int4], chunk : simd_int4, traversed : inout [Int32 : [Int32 : [Int32 : [Int32 : Float]]]]) {
         for x in -1...1 {
             for y in -1...1 {
                 for z in -1...1 {
                     if !(x == 0 && y == 0 && z == 0) {
-                        let testPos : float3 = chunkCenter + float3(Float(x) * testDistance, Float(y) * testDistance, Float(z) * testDistance)
-                        let testPosDimensionScale = containingChunkDimensionScale(testPos)
-                        if testPosDimensionScale < dimensionScale {
-                            addPossibleLowLODNeighbors(testPos: testPos, queue: &queue, traversed: &traversed)
-                        } else {
-                            let pos = computeContainingChunk(testPos)
-                            if !containsChunk(chunks: &traversed, chunk: pos) {
-                                queue.append(pos)
-                                addChunk(chunks: &traversed, chunk: pos)
-                            }
+                        let pos = simd_int4(chunk.x + Int32(x) * chunk.w, chunk.y + Int32(y) * chunk.w, chunk.z + Int32(z) * chunk.w, chunk.w)
+                        if !containsChunk(chunks: &traversed, chunk: pos) {
+                            queue.append(pos)
+                            addChunk(chunks: &traversed, chunk: pos)
                         }
-                        
                     }
                 }
             }
         }
     }
     
-    func containingChunkDimensionScale( _ chunkFloatId : float3) -> Float {
-        let absFloatId : float3 = abs(chunkFloatId)
-        let LOD = fmaxf(floorf(fmaxf(fmaxf(absFloatId.x, absFloatId.y), absFloatId.z)), 1.0)
-        return powf(2.0, floorf(log2(LOD)))
-    }
-    
-    func computeContainingChunk( _ pos : float3) -> simd_int4 {
-        let dimensionScale = containingChunkDimensionScale(pos)
-        var chunkFloatId = floor(pos / dimensionScale) * dimensionScale
-        return int4(Int32(chunkFloatId.x), Int32(chunkFloatId.y), Int32(chunkFloatId.z), Int32(dimensionScale))
-    }
-    
-    func addPossibleLowLODNeighbors( testPos : float3, queue : inout [simd_int4], traversed : inout [Int32 : [Int32 : [Int32 : Float]]]) {
-        let posXTest = testPos + float3(lowestUnitDistance / 4.0, 0.0, 0.0)
-        var pos = computeContainingChunk(posXTest)
-        if !containsChunk(chunks: &traversed, chunk: pos) {
-            queue.append(pos)
-            addChunk(chunks: &traversed, chunk: pos)
-        }
-        
-        let negXTest = testPos - float3(lowestUnitDistance / 4.0, 0.0, 0.0)
-        pos = computeContainingChunk(negXTest)
-        if !containsChunk(chunks: &traversed, chunk: pos) {
-            queue.append(pos)
-            addChunk(chunks: &traversed, chunk: pos)
-        }
-        
-        let posYTest = testPos + float3(0.0, lowestUnitDistance / 4.0, 0.0)
-        pos = computeContainingChunk(posYTest)
-        if !containsChunk(chunks: &traversed, chunk: pos) {
-            queue.append(pos)
-            addChunk(chunks: &traversed, chunk: pos)
-        }
-        
-        let negYTest = testPos - float3(0.0, lowestUnitDistance / 4.0, 0.0)
-        pos = computeContainingChunk(negYTest)
-        if !containsChunk(chunks: &traversed, chunk: pos) {
-            queue.append(pos)
-            addChunk(chunks: &traversed, chunk: pos)
-        }
-        
-        let posZTest = testPos + float3(0.0, 0.0, lowestUnitDistance / 4.0)
-        pos = computeContainingChunk(posZTest)
-        if !containsChunk(chunks: &traversed, chunk: pos) {
-            queue.append(pos)
-            addChunk(chunks: &traversed, chunk: pos)
-        }
-        
-        let negZTest = testPos - float3(0.0, 0.0, lowestUnitDistance / 4.0)
-        pos = computeContainingChunk(negZTest)
-        if !containsChunk(chunks: &traversed, chunk: pos) {
-            queue.append(pos)
-            addChunk(chunks: &traversed, chunk: pos)
+    func addChildren( queue : inout [simd_int4], chunk : simd_int4, traversed :inout [Int32 : [Int32 : [Int32 : [Int32 : Float]]]]) {
+        if chunk.w == 1 { return }
+        let LOD = chunk.w / 2
+        for x in 0...1 {
+            for y in 0...1 {
+                for z in 0...1 {
+                    var pos = chunk &+ simd_int4(LOD * Int32(x), LOD * Int32(y), LOD * Int32(z), 0)
+                    pos.w = LOD
+                    if !containsChunk(chunks: &traversed, chunk: pos) {
+                        queue.append(pos)
+                        addChunk(chunks: &traversed, chunk: pos)
+                    }
+                }
+            }
         }
     }
     
@@ -180,8 +132,42 @@ class TerrainState {
             if !possible { return false }
         }
         return true
-//        let chunkVector = normalize(chunkWorld - camera.pos)
-//        if abs(dot(chunkVector, camera.forward)) > 0.7 { return true } else { return false }
+    }
+    
+    func isCorrectLOD(chunk : simd_int4) -> Bool {
+        if chunk.w == 1 { return true }
+        // Identify what the correct LOD is
+        let startPos = float3(Float(chunk.x) * Float(chunkDimension), Float(chunk.y) * Float(chunkDimension), Float(chunk.z) * Float(chunkDimension))
+        let startPosDistance = startPos.x * startPos.x + startPos.y * startPos.y + startPos.z * startPos.z
+        var correctLOD = 1
+        var radius1 : Float = 0.0
+        var radius2 : Float = 0.0
+        for i in 0..<LODDistances.count {
+            radius1 = radius2
+            radius2 = LODDistances[i] * LODDistances[i]
+            if startPosDistance < radius2 {
+                break
+            }
+            correctLOD *= 2
+        }
+        if correctLOD != chunk.w {
+            if correctLOD > chunk.w { return true }
+            else { return false }
+        }
+        for x in 0..<2 {
+            for y in 0..<2 {
+                for z in 0..<2 {
+                    let pos = startPos + float3(Float(x * chunkDimension), Float(y * chunkDimension), Float(z * chunkDimension))
+                    let posDistance = pos.x * pos.x + pos.y * pos.y + pos.z * pos.z
+                    if startPosDistance > radius2 {
+                        if posDistance < radius2 { return false }
+                    } else {
+                        if posDistance < radius1 || posDistance > radius2 { return false }
+                    }
+                }
+            }
+        }
+        return true
     }
     
     func distanceToCamera(_ s : vector_float4, camera: Camera) -> Float {
@@ -191,13 +177,15 @@ class TerrainState {
     // Populates chunks with chunk render data and returns the number of chunks to render
     func computeChunksToRender(eye : vector_float3, count : Int, camera : Camera) -> Int {
         // Queue for traversal and table for recording traversed
-        var traversed : [Int32 : [Int32 : [Int32 : Float]]] = [0 : [0 : [0 : 0.0]]] // Chunk currently inside of
+        var traversed : [Int32 : [Int32 : [Int32 : [Int32 : Float]]]] = [0 : [0 : [0 : [1 : 0.0]]]] // Chunk currently inside of
         var planes = [float4]()
         camera.extractPlanes(planes: &planes)
         var queue = [simd_int4]()
         var chunkInfoList = [vector_float4]()
+        let highestLOD = Int32(powf(2.0, Float(LODDistances.count)))
         addNeighbors(queue: &queue, chunk: int4(0, 0, 0, 1), traversed: &traversed)
         chunkInfoList.append(chunkIntToWorld(chunkId: int4(0, 0, 0, 1), camera: camera))
+        queue.append(int4(0, 0, 0, highestLOD))
         for _ in 1..<count {
             // Dequeue until we see something valid
             var validChunkFound = false
@@ -208,11 +196,16 @@ class TerrainState {
                 } else {
                     chunk = queue.removeFirst()
                     if inCameraView(chunk : chunk, camera : camera, planes : planes) {
-                        addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed)
+                        // If it's the correct LOD, add it to our chunksToRender
+                        if isCorrectLOD(chunk: chunk) {
+                            chunkInfoList.append(chunkIntToWorld(chunkId: chunk, camera: camera))
+                            validChunkFound = true
+                        } else {
+                            addChildren(queue: &queue, chunk: chunk, traversed: &traversed)
+                        }
+                        if chunk.w == highestLOD { addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed) }
+                        // If not, add it's children to the queue
                         // debug
-//                        print(chunk.x, chunk.y, chunk.z, chunk.w)
-                        chunkInfoList.append(chunkIntToWorld(chunkId: chunk, camera: camera))
-                        validChunkFound = true
                     }
                 }
             }

@@ -86,4 +86,7 @@ class GameViewController: UIViewController {
     @IBAction func buttonMoveRight(_ sender: Any) {
         RenderManager.sharedInstance.inputEvent(InputCode.camMoveRight)
     }
+    @IBAction func toggleFreeze(_ sender: Any) {
+        RenderManager.sharedInstance.inputEvent(InputCode.freezeFrustrum)
+    }
 }

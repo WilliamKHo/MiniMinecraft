@@ -209,7 +209,7 @@ float inMarble2DTerrain(thread float3 pos) {
 
 float inMarblePerlinTerrain(thread float3 pos) {
     //return inMarble2DTerrain(pos) - 3 * max(inPerlin3DTerrain(pos), 0.f) + 4 * max(sdSphere(pos, float3(10.f, 100.f, 10.f), 40.f), 0.f);
-    return min(sdSphere(pos, float3(10.f, 100.f, 10.f), 40.f),max(-inPerlin3DTerrain(pos), inMarble2DTerrain(pos)));
+    return min(min(sdSphere(pos, float3(-50.f, 120.f, 10.f), 30.f), sdSphere(pos, float3(10.f, 100.f, 10.f), 40.f)),max(-inPerlin3DTerrain(pos), inMarble2DTerrain(pos)));
 }
 
 

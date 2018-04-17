@@ -61,7 +61,7 @@ public class RenderManager {
             up : [0.0, 1.0, 0.0]
         )
         
-        self.terrainManager = TerrainManager(device: device, library: library!, inflightChunksCount: 100)
+        self.terrainManager = TerrainManager(device: device, library: library!, inflightChunksCount: 300)
         
         registerGraphicsShaders()
         buildDepthTexture()
@@ -78,6 +78,7 @@ public class RenderManager {
         depthAttachmentDescriptor.clearDepth = 1.0
         depthAttachmentDescriptor.texture = depthTexture
         renderPassDescriptor?.depthAttachment = depthAttachmentDescriptor
+        renderPassDescriptor?.colorAttachments[0].clearColor = MTLClearColorMake(0, 0.5, 0.5, 1.0)
         
         let renderCommandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor!)
         renderCommandEncoder?.setRenderPipelineState(rps!)
@@ -125,6 +126,7 @@ public class RenderManager {
         renderPipelineDescriptor.tessellationPartitionMode = .fractionalEven
         renderPipelineDescriptor.maxTessellationFactor = 16;
         renderPipelineDescriptor.vertexFunction = vert_func
+        
         do {
             try rps = device!.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
         } catch let error {
