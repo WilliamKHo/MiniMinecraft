@@ -15,7 +15,7 @@ float sdTorus(float3 p, float3 c, float r) {
 }
 
 float sdSphere(float3 p, float3 c, float r) {
-    return max(min(r - length(p-c), 0.5f), -0.5f);
+    return length(p-c) - r;
 }
 
 

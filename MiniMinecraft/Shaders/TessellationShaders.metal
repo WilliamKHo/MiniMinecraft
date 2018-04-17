@@ -117,10 +117,10 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
     
     
     // Interpolate between the 3 vertex positions to define current vertex position at it's pre-transformed position
-    float3 preTransformPosition = (u * v2 + v * v1 + w * v0);
+    float3 preTransformPosition = (u * v0 + v * v1 + w * v2);
     
     // Output
-    float3 normal = normalize(cross(v0 - v1, v2 - v1));
+    float3 normal = normalize(cross(v2 - v1, v0 - v1));
     vertexOut.position = modViewProjMatrix * float4(preTransformPosition, 1.0);
 //    vertexOut.color = half4(u + 0.5, v + 0.5, 1.0-(v + 1.0), 1.0);
 //    vertexOut.color = myColor;

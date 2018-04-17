@@ -204,11 +204,12 @@ float inMarble2DTerrain(thread float3 pos) {
     xzValue = pos.x / xPeriod + pos.z / zPeriod + turbPower * perlin(sample);
     sineValue += 50.f * sin(xzValue);
 
-    return min(max(sineValue - pos.y, -.5f), .5f);
+    return pos.y - sineValue;
 }
 
 float inMarblePerlinTerrain(thread float3 pos) {
-    return inMarble2DTerrain(pos) - 3 * max(inPerlin3DTerrain(pos), 0.f) + 4 * max(sdSphere(pos, float3(10.f, 100.f, 10.f), 40.f), 0.f);
+    //return inMarble2DTerrain(pos) - 3 * max(inPerlin3DTerrain(pos), 0.f) + 4 * max(sdSphere(pos, float3(10.f, 100.f, 10.f), 40.f), 0.f);
+    return min(sdSphere(pos, float3(10.f, 100.f, 10.f), 40.f),max(-inPerlin3DTerrain(pos), inMarble2DTerrain(pos)));
 }
 
 

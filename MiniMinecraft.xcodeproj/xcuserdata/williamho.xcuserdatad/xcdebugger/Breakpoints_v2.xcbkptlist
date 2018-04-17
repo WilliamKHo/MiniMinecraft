@@ -58,7 +58,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MiniMinecraft/Camera.swift"
-            timestampString = "545298146.239898"
+            timestampString = "545627158.758523"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "191"
@@ -111,7 +111,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "chunkIntToWorld(chunkId:camera:)"
+            landmarkName = "addPossibleLowLODNeighbors(testPos:queue:traversed:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -127,7 +127,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "chunkIntToWorld(chunkId:camera:)"
+            landmarkName = "addPossibleLowLODNeighbors(testPos:queue:traversed:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -143,7 +143,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "chunkIntToWorld(chunkId:camera:)"
+            landmarkName = "addPossibleLowLODNeighbors(testPos:queue:traversed:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -159,7 +159,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "chunkIntToWorld(chunkId:camera:)"
+            landmarkName = "addPossibleLowLODNeighbors(testPos:queue:traversed:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -170,7 +170,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MiniMinecraft/Camera.swift"
-            timestampString = "545298146.24061"
+            timestampString = "545627158.771317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "141"
@@ -207,7 +207,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "chunkIntToWorld(chunkId:camera:)"
+            landmarkName = "addPossibleLowLODNeighbors(testPos:queue:traversed:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -239,7 +239,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "chunkIntToWorld(chunkId:camera:)"
+            landmarkName = "addPossibleLowLODNeighbors(testPos:queue:traversed:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -266,7 +266,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MiniMinecraft/RenderManager.swift"
-            timestampString = "545298146.241114"
+            timestampString = "545627158.771749"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "45"
@@ -365,7 +365,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "43"
             endingLineNumber = "43"
-            landmarkName = "containsChunk(chunks:chunk:)"
+            landmarkName = "init(device:inflightChunksCount:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -381,7 +381,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "chunkIntToWorld(chunkId:camera:)"
+            landmarkName = "addPossibleLowLODNeighbors(testPos:queue:traversed:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -397,7 +397,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "chunkIntToWorld(chunkId:camera:)"
+            landmarkName = "addPossibleLowLODNeighbors(testPos:queue:traversed:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -413,7 +413,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "chunkIntToWorld(chunkId:camera:)"
+            landmarkName = "addPossibleLowLODNeighbors(testPos:queue:traversed:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -424,7 +424,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MiniMinecraft/RenderManager.swift"
-            timestampString = "545298146.241694"
+            timestampString = "545627158.772211"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "68"
@@ -477,7 +477,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "chunkIntToWorld(chunkId:camera:)"
+            landmarkName = "addPossibleLowLODNeighbors(testPos:queue:traversed:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -509,7 +509,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "145"
             endingLineNumber = "145"
-            landmarkName = "chunkIntToWorld(chunkId:camera:)"
+            landmarkName = "addPossibleLowLODNeighbors(testPos:queue:traversed:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

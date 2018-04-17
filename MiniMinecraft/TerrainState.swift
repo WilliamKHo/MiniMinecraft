@@ -19,13 +19,18 @@ struct TerrainChunk {
 
 class TerrainState {
     private var chunks : [TerrainChunk]
+    private var LODDistances : [Float]
     public let chunkDimension = 16
     public let lowestUnitDistance : Float = 1.0
     var inflightChunksCount : Int
     
+    
     init(device: MTLDevice, inflightChunksCount: Int) {
         self.inflightChunksCount = inflightChunksCount
         self.chunks = [TerrainChunk]()
+        self.LODDistances = [Float]()
+        LODDistances.append(48.0)
+        LODDistances.append(100.0)
         let numVoxels = chunkDimension * chunkDimension * chunkDimension
         let floatsPerVoxel = 40; //5 faces * 8 floats
         let uIntsPerVoxel = 20; //3 faces * 4 tessellation factors
