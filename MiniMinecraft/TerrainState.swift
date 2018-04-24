@@ -66,14 +66,35 @@ class TerrainState {
     }
     
     func addNeighbors( queue : inout [simd_int4], chunk : simd_int4, traversed : inout [Int32 : [Int32 : [Int32 : [Int32 : Float]]]]) {
+//        for x in -1...1 {
+//            for y in -1...1 {
+//                for z in -1...1 {
+//                    if !(x == 0 && y == 0 && z == 0) {
+//                        let pos = simd_int4(chunk.x + Int32(x) * chunk.w, chunk.y + Int32(y) * chunk.w, chunk.z + Int32(z) * chunk.w, chunk.w)
+//                        if !containsChunk(chunks: &traversed, chunk: pos) {
+//                            queue.append(pos)
+//                            addChunk(chunks: &traversed, chunk: pos)
+//                        }
+//                    }
+//                }
+//            }
+//        }
+        
         for x in -1...1 {
             for y in -1...1 {
                 for z in -1...1 {
                     if !(x == 0 && y == 0 && z == 0) {
-                        let pos = simd_int4(chunk.x + Int32(x) * chunk.w, chunk.y + Int32(y) * chunk.w, chunk.z + Int32(z) * chunk.w, chunk.w)
+                        var pos = simd_int4(chunk.x + Int32(x), chunk.y + Int32(y), chunk.z + Int32(z), chunk.w)
                         if !containsChunk(chunks: &traversed, chunk: pos) {
                             queue.append(pos)
                             addChunk(chunks: &traversed, chunk: pos)
+                        }
+                        if (chunk.w * 2 <= 4) {
+                            pos = simd_int4(chunk.x + Int32(x), chunk.y + Int32(y), chunk.z + Int32(z), chunk.w * 2)
+                            if !containsChunk(chunks: &traversed, chunk: pos) {
+                                queue.append(pos)
+                                addChunk(chunks: &traversed, chunk: pos)
+                            }
                         }
                     }
                 }
@@ -170,6 +191,17 @@ class TerrainState {
         return true
     }
     
+    func isValidChunk(chunk: simd_int4, camera: Camera) -> Bool
+    {
+        let chunkInWorld = chunkIntToWorld(chunkId: chunk, camera: camera)
+        let dimension = chunkInWorld.w * Float(chunkDimension)
+        for i in 0..<3 {
+            let x = abs(chunkInWorld[i]) / dimension
+            if x - floor(x) > 0.0001 { return false }
+        }
+        return true
+    }
+    
     func distanceToCamera(_ s : vector_float4, camera: Camera) -> Float {
         return distance_squared(float3(s.x, s.y, s.z), camera.pos) + (s.w / 10.0)
     }
@@ -185,7 +217,6 @@ class TerrainState {
         let highestLOD = Int32(powf(2.0, Float(LODDistances.count)))
         addNeighbors(queue: &queue, chunk: int4(0, 0, 0, 1), traversed: &traversed)
         chunkInfoList.append(chunkIntToWorld(chunkId: int4(0, 0, 0, 1), camera: camera))
-        queue.append(int4(0, 0, 0, highestLOD))
         for _ in 1..<count {
             // Dequeue until we see something valid
             var validChunkFound = false
@@ -196,16 +227,12 @@ class TerrainState {
                 } else {
                     chunk = queue.removeFirst()
                     if inCameraView(chunk : chunk, camera : camera, planes : planes) {
+                        addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed)
                         // If it's the correct LOD, add it to our chunksToRender
-                        if isCorrectLOD(chunk: chunk) {
+                        if isCorrectLOD(chunk: chunk) && isValidChunk(chunk: chunk, camera: camera){
                             chunkInfoList.append(chunkIntToWorld(chunkId: chunk, camera: camera))
                             validChunkFound = true
-                        } else {
-                            addChildren(queue: &queue, chunk: chunk, traversed: &traversed)
                         }
-                        if chunk.w == highestLOD { addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed) }
-                        // If not, add it's children to the queue
-                        // debug
                     }
                 }
             }
