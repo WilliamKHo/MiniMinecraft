@@ -198,17 +198,17 @@ class Camera {
         case .camDecelerateRot:
             rotAcceleration = float3(0.0, 0.0, 0.0)
         case .camMoveForward:
-            acceleration += 250 * self.forward
+            acceleration += 150 * self.forward
         case .camMoveLeft:
-            acceleration -= 150 * self.right
+            acceleration -= 100 * self.right
         case .camMoveRight:
-            acceleration += 150 * self.right
+            acceleration += 100 * self.right
         case .camMoveBackward:
-            acceleration -= 250 * self.forward
+            acceleration -= 150 * self.forward
         case .camMoveUp:
-            acceleration += 150 * self.up
+            acceleration += 100 * self.up
         case .camMoveDown:
-            acceleration -= 150 * self.up
+            acceleration -= 100 * self.up
         case .camRotLeft:
             rotAcceleration.y = 30
         case .camRotRight:
