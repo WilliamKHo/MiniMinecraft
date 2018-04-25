@@ -17,6 +17,7 @@ import simd
 struct Uniforms {
     var modelMatrix : float4x4
     var viewProjectionMatrix : float4x4
+    var camPos : float3
 }
 
 public class RenderManager {
@@ -180,7 +181,8 @@ public class RenderManager {
         let bufferPointer = graphicsBuffer.contents()
         var uniforms = Uniforms(
             modelMatrix: simd_rotation(dr: [0, 0, 0]),
-            viewProjectionMatrix: camera.computeViewProjectionMatrix()
+            viewProjectionMatrix: camera.computeViewProjectionMatrix(),
+            camPos: camera.pos
         )
         memcpy(bufferPointer, &uniforms, MemoryLayout<Uniforms>.stride)
     }

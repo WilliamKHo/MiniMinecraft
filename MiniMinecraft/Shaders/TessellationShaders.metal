@@ -16,12 +16,14 @@ struct FunctionOutIn {
     float4 position [[position]];
     float3 normal [[attribute(1)]];
     half4  color [[flat]];
+    float fogRatio;
 };
 
 // Uniform variables
 struct Uniforms{
     float4x4 modelMatrix;
     float4x4 viewProjectionMatrix;
+    float3 camPos;
 };
 
 // Triangle compute kernel
@@ -118,6 +120,8 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
     
     // Interpolate between the 3 vertex positions to define current vertex position at it's pre-transformed position
     float3 preTransformPosition = (u * v0 + v * v1 + w * v2);
+    float fogRatio = length(preTransformPosition - uniforms.camPos) / 200.f;
+    fogRatio = smoothstep(0.8f, 1.f, fogRatio);
     
     // Output
     float3 normal = normalize(cross(v2 - v1, v0 - v1));
@@ -126,9 +130,10 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
 //    vertexOut.color = half4(u + 0.5, v + 0.5, 1.0-(v + 1.0), 1.0);
 //    vertexOut.color = myColor;
 //    vertexOut.color = half4(0.2 * LOD, 0.2 * LOD, 0.2 * LOD, 1.0);
-    vertexOut.color = half4(0.6, 0.6, 0.6, 1.0);
+    vertexOut.color = half4(0.6, 0.6, 0.6 , 1.0);
 
     vertexOut.normal = normal;
+    vertexOut.fogRatio = fogRatio;
     return vertexOut;
 }
 
@@ -136,5 +141,5 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
 fragment half4 tessellation_fragment(FunctionOutIn fragmentIn [[stage_in]])
 {
     float lambertTerm = max(min(dot(fragmentIn.normal, normalize(float3(1.f, 1.f, 1.f))), 1.f), 0.2f);
-    return lambertTerm * fragmentIn.color;
+    return (1.f - fragmentIn.fogRatio) * lambertTerm * fragmentIn.color + fragmentIn.fogRatio * half4(0.0, 0.5, 0.5, 1.0);
 }

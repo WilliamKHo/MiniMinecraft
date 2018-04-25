@@ -10,8 +10,10 @@
 #include "signed_distance_functions_header.metal"
 using namespace metal;
 
-float sdTorus(float3 p, float3 c, float r) {
-    return 0.f;
+float sdTorus(float3 p, float3 c, float2 t) {
+    float3 P = p - c;
+    float2 q = float2(length(P.xz) - t.x, P.y);
+    return length(q) - t.y;
 }
 
 float sdSphere(float3 p, float3 c, float r) {

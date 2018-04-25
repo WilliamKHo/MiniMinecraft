@@ -9,7 +9,7 @@
 #include <metal_stdlib>
 using namespace metal;
 
-float sdTorus(float3 p, float3 c, float r);
+float sdTorus(float3 p, float3 c, float2 t);
 
 float sdSphere(float3 p, float3 c, float r);
 

@@ -209,7 +209,11 @@ float inMarble2DTerrain(thread float3 pos) {
 
 float inMarblePerlinTerrain(thread float3 pos) {
     //return inMarble2DTerrain(pos) - 3 * max(inPerlin3DTerrain(pos), 0.f) + 4 * max(sdSphere(pos, float3(10.f, 100.f, 10.f), 40.f), 0.f);
-    return min(min(sdSphere(pos, float3(-50.f, 120.f, 10.f), 30.f), sdSphere(pos, float3(10.f, 100.f, 10.f), 40.f)),max(-inPerlin3DTerrain(pos), inMarble2DTerrain(pos)));
+    float3 s = float3(100.f, 200.f, 89.f);
+    float3 spheresCenter = float3(floor(pos.x / s.x), floor(pos.y / s.y), floor(pos.z / s.z));
+    spheresCenter *= s;
+    spheresCenter += 0.5f * s;
+    return min(min(sdSphere(pos, spheresCenter, 30.f), sdSphere(pos, spheresCenter + float3(60.f, -20.f, 0.f), 40.f)),max(-inPerlin3DTerrain(pos), inMarble2DTerrain(pos)));
 }
 
 
