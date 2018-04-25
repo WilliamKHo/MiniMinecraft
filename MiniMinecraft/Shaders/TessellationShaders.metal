@@ -120,7 +120,7 @@ vertex FunctionOutIn tessellation_vertex_triangle(PatchIn patchIn               
     
     // Interpolate between the 3 vertex positions to define current vertex position at it's pre-transformed position
     float3 preTransformPosition = (u * v0 + v * v1 + w * v2);
-    float fogRatio = length(preTransformPosition - uniforms.camPos) / 200.f;
+    float fogRatio = length(preTransformPosition - uniforms.camPos) / 150.f;
     fogRatio = smoothstep(0.8f, 1.f, fogRatio);
     
     // Output

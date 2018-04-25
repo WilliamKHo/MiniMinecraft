@@ -46,7 +46,7 @@ kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
                                       device float3* cubeMarchTable [[buffer(2)]],
                                       device MTLQuadTessellationFactorsHalf* factors [[ buffer(3) ]],
                                       uint pid [[ thread_position_in_grid ]]) {
-    if (pid >= CHUNKDIM * CHUNKDIM * CHUNKDIM) return;
+    if (pid >= (CHUNKDIM+1) * (CHUNKDIM+1) * (CHUNKDIM+1)) return;
     uint voxelId = pid * 3;
     
     uint z = (uint) floor(pid / (float)(CHUNKDIM * CHUNKDIM));

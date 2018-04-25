@@ -29,9 +29,9 @@ class TerrainState {
         self.inflightChunksCount = inflightChunksCount
         self.chunks = [TerrainChunk]()
         self.LODDistances = [Float]()
-        LODDistances.append(60.0)
-        LODDistances.append(140.0)
-        let numVoxels = chunkDimension * chunkDimension * chunkDimension
+        LODDistances.append(40.0)
+        LODDistances.append(100.0)
+        let numVoxels = (chunkDimension + 1) * (chunkDimension + 1) * (chunkDimension + 1)
         let floatsPerVoxel = 40; //5 faces * 8 floats
         let uIntsPerVoxel = 20; //3 faces * 4 tessellation factors
         for _ in 0..<inflightChunksCount {
@@ -161,7 +161,7 @@ class TerrainState {
         return true
     }
     
-    func correctLOD(chunk : simd_int4) -> Int32 {
+    func correctLOD(chunk : simd_int4, isClose : inout Bool) -> Int32 {
 //        if chunk.w == 1 { return true }
         // Identify what the correct LOD is
         let scaledDimension = Float(chunkDimension) * Float(chunk.w)
@@ -176,6 +176,11 @@ class TerrainState {
                 break
             }
             correctLOD *= 2
+        }
+        if (radius2 - distance) < (scaledDimension * scaledDimension) {
+            isClose = true
+        } else {
+            isClose = false
         }
         return correctLOD
     }
@@ -216,7 +221,8 @@ class TerrainState {
                 } else {
                     chunk = queue.removeFirst()
                     if inCameraView(chunk : chunk, camera : camera, planes : planes) {
-                        let correct = correctLOD(chunk: chunk)
+                        var isClose : Bool = false
+                        let correct = correctLOD(chunk: chunk, isClose: &isClose)
                         if (chunk.w == correct) {
                             addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed, camera: camera)
                             // If it's the correct LOD, add it to our chunksToRender
@@ -225,6 +231,9 @@ class TerrainState {
                         } else if (chunk.w < correct){
                             addHigherLOD(queue: &queue, chunk: chunk, traversed: &traversed, camera: camera)
                             chunkInfoList.append(chunkIntToWorld(chunkId: chunk, camera: camera))
+                            if (isClose) {
+                                addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed, camera: camera)
+                            }
                             validChunkFound = true
                         }
                     }
