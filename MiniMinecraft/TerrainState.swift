@@ -29,8 +29,8 @@ class TerrainState {
         self.inflightChunksCount = inflightChunksCount
         self.chunks = [TerrainChunk]()
         self.LODDistances = [Float]()
-        LODDistances.append(40.0)
-        LODDistances.append(120.0)
+        LODDistances.append(60.0)
+        LODDistances.append(140.0)
         let numVoxels = chunkDimension * chunkDimension * chunkDimension
         let floatsPerVoxel = 40; //5 faces * 8 floats
         let uIntsPerVoxel = 20; //3 faces * 4 tessellation factors
@@ -81,20 +81,16 @@ class TerrainState {
         }
     }
     
-    func addHigherLOD(queue : inout [simd_int4], chunk : simd_int4, traversed : inout [Int32 : [Int32 : [Int32 : [Int32 : Float]]]], camera : Camera) {
-        var upperLODChunk = chunk
-        upperLODChunk.w *= 2
-        var worldChunk = chunkIntToWorld(chunkId: upperLODChunk, camera: camera)
-        let dimensionScale = worldChunk.w * Float(chunkDimension)
-        worldChunk.x = floor(worldChunk.x / dimensionScale) * dimensionScale
-        worldChunk.y = floor(worldChunk.x / dimensionScale) * dimensionScale
-        worldChunk.z = floor(worldChunk.x / dimensionScale) * dimensionScale
+    func addHigherLOD(queue : inout [simd_int4], chunk : simd_int4, traversed : inout [Int32 : [Int32 : [Int32 : [Int32 : Float]]]], camera : Camera) -> simd_int4 {
+        var worldChunk = chunkIntToWorld(chunkId: chunk, camera: camera)
+        worldChunk.w *= 2.0
         let intChunk = chunkWorldToInt(chunkWorld: worldChunk, camera: camera)
         if !containsChunk(chunks: &traversed, chunk: intChunk) {
             queue.append(intChunk)
             addChunk(chunks: &traversed, chunk: intChunk)
         }
         addNeighbors(queue: &queue, chunk: intChunk, traversed: &traversed, camera: camera)
+        return intChunk
 
     }
     
@@ -127,9 +123,10 @@ class TerrainState {
     
     func chunkWorldToInt(chunkWorld : vector_float4, camera : Camera) -> simd_int4 {
         let chunkRelToCamera = chunkWorld - float4(camera.pos.x, camera.pos.y, camera.pos.z, 0.0)
-        let chunkLocal = float4(chunkRelToCamera.x / Float(chunkDimension),
-                                chunkRelToCamera.y / Float(chunkDimension),
-                                chunkRelToCamera.z / Float(chunkDimension),
+        let scaledDimension = Float(chunkDimension) * chunkWorld.w
+        let chunkLocal = float4(floorf(chunkRelToCamera.x / scaledDimension),
+                                floorf(chunkRelToCamera.y / scaledDimension),
+                                floorf(chunkRelToCamera.z / scaledDimension),
                                 chunkRelToCamera.w)
         return simd_int4(Int32(chunkLocal.x),
                          Int32(chunkLocal.y),
@@ -164,17 +161,16 @@ class TerrainState {
         return true
     }
     
-    func correctLOD(chunk : simd_int4) -> Int {
+    func correctLOD(chunk : simd_int4) -> Int32 {
 //        if chunk.w == 1 { return true }
         // Identify what the correct LOD is
-        var center = float3(Float(chunk.x) * Float(chunkDimension), Float(chunk.y) * Float(chunkDimension), Float(chunk.z) * Float(chunkDimension))
-        center = center + 0.5 * float3(Float(Int32(chunkDimension) * chunk.w), Float(Int32(chunkDimension) * chunk.w), Float(Int32(chunkDimension) * chunk.w))
+        let scaledDimension = Float(chunkDimension) * Float(chunk.w)
+        var center = float3(Float(chunk.x) * scaledDimension, Float(chunk.y) * scaledDimension, Float(chunk.z) * scaledDimension)
+        center = center + 0.5 * float3(scaledDimension)
         let distance = center.x * center.x + center.y * center.y + center.z * center.z
-        var correctLOD = 1
-        var radius1 : Float = 0.0
+        var correctLOD : Int32 = 1
         var radius2 : Float = 0.0
         for i in 0..<LODDistances.count {
-            radius1 = radius2
             radius2 = LODDistances[i] * LODDistances[i]
             if distance < radius2 {
                 break
@@ -182,20 +178,6 @@ class TerrainState {
             correctLOD *= 2
         }
         return correctLOD
-//        for x in 0..<2 {
-//            for y in 0..<2 {
-//                for z in 0..<2 {
-//                    let pos = startPos + float3(Float(x * chunkDimension), Float(y * chunkDimension), Float(z * chunkDimension))
-//                    let posDistance = pos.x * pos.x + pos.y * pos.y + pos.z * pos.z
-//                    if startPosDistance > radius2 {
-//                        if posDistance < radius2 { return false }
-//                    } else {
-//                        if posDistance < radius1 || posDistance > radius2 { return false }
-//                    }
-//                }
-//            }
-//        }
-//        return true
     }
     
     func isValidChunk(chunk: simd_int4, camera: Camera) -> Bool
@@ -210,7 +192,7 @@ class TerrainState {
     }
     
     func distanceToCamera(_ s : vector_float4, camera: Camera) -> Float {
-        return distance_squared(float3(s.x, s.y, s.z), camera.pos) + (s.w / 10.0)
+        return distance_squared(float3(s.x, s.y, s.z), camera.pos) + s.w
     }
     
     // Populates chunks with chunk render data and returns the number of chunks to render
@@ -222,7 +204,6 @@ class TerrainState {
         camera.extractPlanes(planes: &planes)
         var queue = [simd_int4]()
         var chunkInfoList = [vector_float4]()
-        //let highestLOD = Int32(powf(2.0, Float(LODDistances.count)))
         addNeighbors(queue: &queue, chunk: int4(0, 0, 0, Int32(baseLOD)), traversed: &traversed, camera: camera)
         chunkInfoList.append(chunkIntToWorld(chunkId: int4(0, 0, 0, Int32(baseLOD)), camera: camera))
         for _ in 1..<count {
@@ -235,7 +216,7 @@ class TerrainState {
                 } else {
                     chunk = queue.removeFirst()
                     if inCameraView(chunk : chunk, camera : camera, planes : planes) {
-                        var correct = Int32(baseLOD)//= correctLOD(chunk: chunk)
+                        let correct = correctLOD(chunk: chunk)
                         if (chunk.w == correct) {
                             addNeighbors(queue: &queue, chunk: chunk, traversed: &traversed, camera: camera)
                             // If it's the correct LOD, add it to our chunksToRender
@@ -243,7 +224,8 @@ class TerrainState {
                             validChunkFound = true
                         } else if (chunk.w < correct){
                             addHigherLOD(queue: &queue, chunk: chunk, traversed: &traversed, camera: camera)
-                            
+                            chunkInfoList.append(chunkIntToWorld(chunkId: chunk, camera: camera))
+                            validChunkFound = true
                         }
                     }
                 }

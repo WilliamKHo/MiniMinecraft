@@ -53,7 +53,7 @@ public class RenderManager {
         self.camera = Camera(
             fovy : 60,
             aspect : Float(view.frame.size.width / view.frame.size.height),
-            farClip : 8000,
+            farClip : 500,
             nearClip : 0.01,
             pos : [0.0, 12.0, 30.0],
             forward : [0.0, 0.0, -1.0],
@@ -189,6 +189,11 @@ public class RenderManager {
         switch event {
         case .freezeFrustrum:
             terrainManager.toggleFreeze()
+            if (camera.farClip == 500) {
+                camera.farClip = 2000
+            } else {
+                camera.farClip = 500
+            }
         default:
             camera.inputEvent(event)
         }
