@@ -20,4 +20,18 @@ float sdSphere(float3 p, float3 c, float r) {
     return length(p-c) - r;
 }
 
+float sdBox(float3 p, float3 c, float3 b) {
+    float3 d = abs(p - c) - b;
+    return min(max(d.x,max(d.y,d.z)),0.f) + length(max(d,0.0));
+}
+
+float sdHexPrism(float3 p, float3 c, float2 h) {
+    float3 q = abs(p - c);
+    return max(q.z-h.y,max((q.x*0.866025f+q.y*0.5f),q.y)-h.x);
+}
+
+float sdEllipsoid(float3 p, float3 c, float3 r) {
+    return (length( (p - c) /r ) - 1.f) * min(min(r.x,r.y),r.z);
+}
+
 

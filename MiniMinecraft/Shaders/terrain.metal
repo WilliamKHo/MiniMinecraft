@@ -216,4 +216,25 @@ float inMarblePerlinTerrain(thread float3 pos) {
     return min(min(sdSphere(pos, spheresCenter, 30.f), sdSphere(pos, spheresCenter + float3(60.f, -20.f, 0.f), 40.f)),max(-inPerlin3DTerrain(pos), inMarble2DTerrain(pos)));
 }
 
+float sdfTestScene(thread float3 pos) {
+    float3 torusC = float3(-50.f, 0.f, -20.f);
+    float2 t = float2(10.f, 3.f);
+    
+    float3 sphereC = float3(0.f, 0.f, -20.f);
+    float r = 10.f;
+    
+    float3 boxC = float3(50.f, 0.f, -20.f);
+    float3 b = float3(5.f, 10.f, 15.f);
+    
+    float3 hexC = float3(0.f, 50.f, -20.f);
+    float2 h = float2(10.f, 5.f);
+    
+    float3 ellipC = float3(0.f, -50.f, -20.f);
+    float3 e = float3(5.f, 4.f, 3.f);
+    
+    return min(min(min(sdTorus(pos, torusC, t), sdSphere(pos, sphereC, r)),
+                   min(sdBox(pos, boxC, b), sdHexPrism(pos, hexC, h))),
+               sdEllipsoid(pos, ellipC, e));
+}
+
 

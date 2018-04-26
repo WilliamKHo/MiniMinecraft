@@ -141,14 +141,14 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     //    if (inFrameTerrain(output) > 0) valid = 0.0f;
     //    if (inSinPerlinTerrain(output) > 0) valid = 0.0f;
     
-    densities[0] = inMarblePerlinTerrain(output);
-    densities[1] = inMarblePerlinTerrain(output + float3(0.0f, scale, 0.0f));
-    densities[2] = inMarblePerlinTerrain(output + float3(0.0f, scale, scale));
-    densities[3] = inMarblePerlinTerrain(output + float3(0.0f, 0.0f, scale));
-    densities[4] = inMarblePerlinTerrain(output + float3(scale, 0.0f, 0.0f));
-    densities[5] = inMarblePerlinTerrain(output + float3(scale, scale, 0.0f));
-    densities[6] = inMarblePerlinTerrain(output + float3(scale, scale, scale));
-    densities[7] = inMarblePerlinTerrain(output + float3(scale, 0.0f, scale));
+    densities[0] = sdfTestScene(output);
+    densities[1] = sdfTestScene(output + float3(0.0f, scale, 0.0f));
+    densities[2] = sdfTestScene(output + float3(0.0f, scale, scale));
+    densities[3] = sdfTestScene(output + float3(0.0f, 0.0f, scale));
+    densities[4] = sdfTestScene(output + float3(scale, 0.0f, 0.0f));
+    densities[5] = sdfTestScene(output + float3(scale, scale, 0.0f));
+    densities[6] = sdfTestScene(output + float3(scale, scale, scale));
+    densities[7] = sdfTestScene(output + float3(scale, 0.0f, scale));
     
     uint8_t caseKey = (densities[0] > 0.f) ? 1 : 0;
     caseKey = caseKey^((densities[1] > 0.f) ? 2 : 0);
