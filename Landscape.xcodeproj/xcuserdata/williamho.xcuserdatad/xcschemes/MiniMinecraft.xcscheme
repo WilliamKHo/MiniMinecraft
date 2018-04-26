@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "0B0CC9D2200BEAB0003ADD36"
-               BuildableName = "MiniMinecraft.app"
-               BlueprintName = "MiniMinecraft"
-               ReferencedContainer = "container:MiniMinecraft.xcodeproj">
+               BuildableName = "Landscape.app"
+               BlueprintName = "Landscape"
+               ReferencedContainer = "container:Landscape.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,9 +34,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0B0CC9D2200BEAB0003ADD36"
-            BuildableName = "MiniMinecraft.app"
-            BlueprintName = "MiniMinecraft"
-            ReferencedContainer = "container:MiniMinecraft.xcodeproj">
+            BuildableName = "Landscape.app"
+            BlueprintName = "Landscape"
+            ReferencedContainer = "container:Landscape.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -58,9 +58,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0B0CC9D2200BEAB0003ADD36"
-            BuildableName = "MiniMinecraft.app"
-            BlueprintName = "MiniMinecraft"
-            ReferencedContainer = "container:MiniMinecraft.xcodeproj">
+            BuildableName = "Landscape.app"
+            BlueprintName = "Landscape"
+            ReferencedContainer = "container:Landscape.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -77,9 +77,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0B0CC9D2200BEAB0003ADD36"
-            BuildableName = "MiniMinecraft.app"
-            BlueprintName = "MiniMinecraft"
-            ReferencedContainer = "container:MiniMinecraft.xcodeproj">
+            BuildableName = "Landscape.app"
+            BlueprintName = "Landscape"
+            ReferencedContainer = "container:Landscape.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

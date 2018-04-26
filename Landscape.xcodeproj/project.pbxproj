@@ -80,7 +80,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0B0CC9D3200BEAB0003ADD36 /* MiniMinecraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniMinecraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0B0CC9D3200BEAB0003ADD36 /* Landscape.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Landscape.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B0CC9D6200BEAB0003ADD36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0B0CC9DA200BEAB0003ADD36 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0B0CC9DD200BEAB0003ADD36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -167,7 +167,7 @@
 		0B0CC9D4200BEAB0003ADD36 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0B0CC9D3200BEAB0003ADD36 /* MiniMinecraft.app */,
+				0B0CC9D3200BEAB0003ADD36 /* Landscape.app */,
 				0B3820B5207E702900B4D957 /* Landscape-iOS.app */,
 				0B3820D4207E723500B4D957 /* Landscape-macOS.app */,
 			);
@@ -253,9 +253,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0B0CC9D2200BEAB0003ADD36 /* MiniMinecraft */ = {
+		0B0CC9D2200BEAB0003ADD36 /* Landscape */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0B0CC9E3200BEAB0003ADD36 /* Build configuration list for PBXNativeTarget "MiniMinecraft" */;
+			buildConfigurationList = 0B0CC9E3200BEAB0003ADD36 /* Build configuration list for PBXNativeTarget "Landscape" */;
 			buildPhases = (
 				0B0CC9CF200BEAB0003ADD36 /* Sources */,
 				0B0CC9D0200BEAB0003ADD36 /* Frameworks */,
@@ -265,9 +265,9 @@
 			);
 			dependencies = (
 			);
-			name = MiniMinecraft;
+			name = Landscape;
 			productName = MiniMinecraft;
-			productReference = 0B0CC9D3200BEAB0003ADD36 /* MiniMinecraft.app */;
+			productReference = 0B0CC9D3200BEAB0003ADD36 /* Landscape.app */;
 			productType = "com.apple.product-type.application";
 		};
 		0B3820B4207E702900B4D957 /* Landscape-iOS */ = {
@@ -328,7 +328,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 0B0CC9CE200BEAB0003ADD36 /* Build configuration list for PBXProject "MiniMinecraft" */;
+			buildConfigurationList = 0B0CC9CE200BEAB0003ADD36 /* Build configuration list for PBXProject "Landscape" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -341,7 +341,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0B0CC9D2200BEAB0003ADD36 /* MiniMinecraft */,
+				0B0CC9D2200BEAB0003ADD36 /* Landscape */,
 				0B3820B4207E702900B4D957 /* Landscape-iOS */,
 				0B3820D3207E723500B4D957 /* Landscape-macOS */,
 			);
@@ -714,7 +714,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0B0CC9CE200BEAB0003ADD36 /* Build configuration list for PBXProject "MiniMinecraft" */ = {
+		0B0CC9CE200BEAB0003ADD36 /* Build configuration list for PBXProject "Landscape" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0B0CC9E1200BEAB0003ADD36 /* Debug */,
@@ -723,7 +723,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0B0CC9E3200BEAB0003ADD36 /* Build configuration list for PBXNativeTarget "MiniMinecraft" */ = {
+		0B0CC9E3200BEAB0003ADD36 /* Build configuration list for PBXNativeTarget "Landscape" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0B0CC9E4200BEAB0003ADD36 /* Debug */,

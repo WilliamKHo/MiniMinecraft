@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:MiniMinecraft.xcodeproj">
+      location = "self:/Users/williamho/Documents/XcodeProject1/MiniMinecraft/Landscape.xcodeproj">
    </FileRef>
 </Workspace>
