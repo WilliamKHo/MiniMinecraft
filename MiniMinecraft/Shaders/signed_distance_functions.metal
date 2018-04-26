@@ -34,4 +34,16 @@ float sdEllipsoid(float3 p, float3 c, float3 r) {
     return (length( (p - c) /r ) - 1.f) * min(min(r.x,r.y),r.z);
 }
 
+float unionOp(float a, float b) {
+    return min(a, b);
+}
+
+float intersectionOp(float a, float b) {
+    return max(a, b);
+}
+
+float differenceOp(float a, float b) {
+    return max(a, -b);
+}
+
 

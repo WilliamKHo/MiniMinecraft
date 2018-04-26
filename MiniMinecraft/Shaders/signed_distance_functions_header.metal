@@ -19,3 +19,9 @@ float sdBox(float3 p, float3 c, float3 b);
 float sdHexPrism(float3 p, float3 c, float2 h);
 
 float sdEllipsoid(float3 p, float3 c, float3 r);
+
+float unionOp(float a, float b);
+
+float intersectionOp(float a, float b);
+
+float differenceOp(float a, float b);

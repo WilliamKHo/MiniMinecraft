@@ -55,7 +55,7 @@ public class TerrainManager {
         print(numChunks)
         if numChunks == 0 { return }
         let computeCommandEncoder = commandBuffer?.makeComputeCommandEncoder()
-        let chunkDimension = self.terrainState.chunkDimension
+        let chunkDimension = self.terrainState.chunkDimension + 1 // For overlapping seams
         
         computeCommandEncoder?.setComputePipelineState(ps_computeControlPoints!)
         computeCommandEncoder?.setBuffer(triangleTableBuffer, offset: 0, index: 2)
@@ -83,7 +83,7 @@ public class TerrainManager {
     }
     
     func drawTerrain(_ commandEncoder : MTLRenderCommandEncoder?, tessellationBuffer: MTLBuffer!) {
-        let chunkDimension = self.terrainState.chunkDimension
+        let chunkDimension = self.terrainState.chunkDimension + 1 // for overlap of seams
         commandEncoder?.setVertexBuffer(triangleTableBuffer, offset: 0, index: 2)
         commandEncoder?.setVertexBuffer(edgeCornersBuffer, offset: 0, index: 3)
         for i in 0..<self.terrainState.inflightChunksCount {

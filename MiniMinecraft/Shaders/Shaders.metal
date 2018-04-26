@@ -6,7 +6,7 @@
 //  Copyright © 2017 William Ho. All rights reserved.
 //
 
-#define CHUNKDIM 16
+#define CHUNKDIM 17
 
 #include <metal_stdlib>
 #include "terrain_header.metal"
@@ -46,7 +46,7 @@ kernel void kern_computeControlPoints(constant float3& startPos [[buffer(0)]],
                                       device float3* cubeMarchTable [[buffer(2)]],
                                       device MTLQuadTessellationFactorsHalf* factors [[ buffer(3) ]],
                                       uint pid [[ thread_position_in_grid ]]) {
-    if (pid >= (CHUNKDIM+1) * (CHUNKDIM+1) * (CHUNKDIM+1)) return;
+    if (pid >= (CHUNKDIM) * (CHUNKDIM) * (CHUNKDIM)) return;
     uint voxelId = pid * 3;
     
     uint z = (uint) floor(pid / (float)(CHUNKDIM * CHUNKDIM));
@@ -123,7 +123,7 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
                                               constant int *triangle_lookup_table [[buffer(2)]],
                                               device MTLTriangleTessellationFactorsHalf* factors [[ buffer(3) ]],
                                               uint pid [[ thread_position_in_grid ]]) {
-    if (pid >= CHUNKDIM * CHUNKDIM * CHUNKDIM) return;
+    if (pid >= (CHUNKDIM) * (CHUNKDIM) * (CHUNKDIM)) return;
     float densities[8];
     uint voxelId = pid * 5;
     
@@ -141,14 +141,14 @@ kernel void kern_computeTriangleControlPoints(constant float4& startPos [[buffer
     //    if (inFrameTerrain(output) > 0) valid = 0.0f;
     //    if (inSinPerlinTerrain(output) > 0) valid = 0.0f;
     
-    densities[0] = sdfTestScene(output);
-    densities[1] = sdfTestScene(output + float3(0.0f, scale, 0.0f));
-    densities[2] = sdfTestScene(output + float3(0.0f, scale, scale));
-    densities[3] = sdfTestScene(output + float3(0.0f, 0.0f, scale));
-    densities[4] = sdfTestScene(output + float3(scale, 0.0f, 0.0f));
-    densities[5] = sdfTestScene(output + float3(scale, scale, 0.0f));
-    densities[6] = sdfTestScene(output + float3(scale, scale, scale));
-    densities[7] = sdfTestScene(output + float3(scale, 0.0f, scale));
+    densities[0] = csgTestScene(output);
+    densities[1] = csgTestScene(output + float3(0.0f, scale, 0.0f));
+    densities[2] = csgTestScene(output + float3(0.0f, scale, scale));
+    densities[3] = csgTestScene(output + float3(0.0f, 0.0f, scale));
+    densities[4] = csgTestScene(output + float3(scale, 0.0f, 0.0f));
+    densities[5] = csgTestScene(output + float3(scale, scale, 0.0f));
+    densities[6] = csgTestScene(output + float3(scale, scale, scale));
+    densities[7] = csgTestScene(output + float3(scale, 0.0f, scale));
     
     uint8_t caseKey = (densities[0] > 0.f) ? 1 : 0;
     caseKey = caseKey^((densities[1] > 0.f) ? 2 : 0);
